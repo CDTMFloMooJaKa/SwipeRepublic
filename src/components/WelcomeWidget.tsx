@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -105,21 +104,17 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
         
         <div className="px-6 max-w-md mx-auto">
           <h2 className="text-2xl font-bold mb-1">Willkommen zurück, {userName}!</h2>
-          <p className="text-gray-500 mb-6">Seit du weg warst, haben Nutzer investiert in:</p>
+          <p className="text-gray-500 mb-2">Seit du weg warst, haben Nutzer investiert in:</p>
           
-          <div className="pb-8">
+          <div className="mt-2">
             {activeCategory !== null && (
               <button 
                 onClick={handleBackToCategories}
-                className="text-sm text-gray-500 hover:text-gray-700 mb-10"
+                className="text-sm text-gray-500 hover:text-gray-700 mb-6"
               >
                 ← Zurück zu allen Kategorien
               </button>
             )}
-            
-            <h3 className="text-lg font-medium mb-3">
-              {activeCategory === null ? "Trending Investments" : investmentCategories[activeCategory].name}
-            </h3>
             
             <BubbleChart
               categories={investmentCategories}
