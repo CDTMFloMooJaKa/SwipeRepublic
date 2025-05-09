@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -92,8 +91,8 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
   const [currentSlide, setCurrentSlide] = useState(0);
   const isMobile = useIsMobile();
   
-  // If not mobile, don't render the widget
-  if (!isMobile) {
+  // If device status is still determining or definitely not mobile, don't render
+  if (isMobile === undefined || isMobile === false) {
     return null;
   }
 
@@ -116,16 +115,7 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
           <h2 className="text-2xl font-bold mb-1">Willkommen zurück, {userName}!</h2>
           <p className="text-gray-500 mb-6">Seit du weg warst, haben Nutzer investiert in:</p>
           
-          <Carousel 
-            className="w-full" 
-            onSelect={(api) => {
-              // Use the embla API to get the selected index
-              const emblaApi = api.target as HTMLDivElement;
-              // Since we can't directly get the index from the event,
-              // we'll use our current implementation of carousel indicators
-              // and just keep the code working with manual navigation
-            }}
-          >
+          <Carousel className="w-full">
             <CarouselContent>
               {recentInvestments.map((slide, index) => (
                 <CarouselItem key={index} className="pl-0">
