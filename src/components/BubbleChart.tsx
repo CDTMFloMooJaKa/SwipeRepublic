@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from "framer-motion";
 import Bubble from './Bubble';
@@ -39,6 +40,8 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
   };
   
   useEffect(() => {
+    console.log("Active Category:", activeCategory);
+    
     // Determine what data we're working with
     const itemsToProcess = activeCategory === null 
       ? categories 
@@ -49,6 +52,8 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
           subcategories: []
         })) || [];
     
+    console.log("Items to process:", itemsToProcess);
+    
     // Container dimensions
     const containerWidth = 350;
     const containerHeight = 500; // Increased height
@@ -58,14 +63,17 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     const verticalOffset = activeCategory !== null ? 80 : 0; // Lift the child bubbles higher by 80px
     
     // Bubble size constraints
-    const MIN_SIZE = 70;
-    const MAX_SIZE = 120;
+    const MIN_SIZE = activeCategory === null ? 70 : 50;  // Smaller minimum size for subcategories
+    const MAX_SIZE = activeCategory === null ? 120 : 100; // Smaller maximum size for subcategories
     
     // Step 1: Calculate initial sizes based on percentages
     const initialBubbles = itemsToProcess.map(item => {
       const percentValue = percentToDecimal(item.percentage);
+      console.log(`Item: ${item.name}, Percentage: ${item.percentage}, Decimal: ${percentValue}`);
+      
       // Calculate size proportionally, ensuring it's between MIN_SIZE and MAX_SIZE
       const size = Math.max(MIN_SIZE, Math.min(MAX_SIZE, MIN_SIZE + (percentValue * 300)));
+      console.log(`Calculated size for ${item.name}: ${size}`);
       
       return {
         name: item.name,
@@ -76,8 +84,11 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
       };
     });
     
+    console.log("Initial bubbles with sizes:", initialBubbles);
+    
     // Sort bubbles by size (largest first)
     initialBubbles.sort((a, b) => b.size - a.size);
+    console.log("Sorted bubbles:", initialBubbles);
     
     // Step 2: Place bubbles with collision detection
     const placedBubbles: ProcessedBubble[] = [];
@@ -197,6 +208,8 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
         placedBubbles.push(currentBubble);
       }
     }
+    
+    console.log("Final placed bubbles:", placedBubbles);
     
     // Update state with placed bubbles
     setBubbles(placedBubbles);
