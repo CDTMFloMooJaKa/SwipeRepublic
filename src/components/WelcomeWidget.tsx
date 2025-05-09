@@ -111,10 +111,9 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
           
           <Carousel 
             className="w-full" 
-            onSelect={(api) => {
-              if (api) {
-                const selected = api.selectedScrollSnap();
-                setCurrentSlide(selected);
+            onSelect={(selectedIndex) => {
+              if (selectedIndex !== undefined) {
+                setCurrentSlide(selectedIndex);
               }
             }}
           >
