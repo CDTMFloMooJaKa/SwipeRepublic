@@ -7,6 +7,7 @@ import {
   Drawer,
   DrawerContent,
   DrawerClose,
+  DrawerTitle,
 } from "@/components/ui/drawer";
 import BubbleChart, { Category } from './BubbleChart';
 
@@ -97,6 +98,7 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
       <DrawerContent className="h-[92vh] rounded-t-xl">
+        <DrawerTitle className="sr-only">Welcome Widget</DrawerTitle>
         <div className="flex justify-end p-4">
           <DrawerClose className="rounded-full p-2 hover:bg-gray-100">
             <X className="h-6 w-6" />
