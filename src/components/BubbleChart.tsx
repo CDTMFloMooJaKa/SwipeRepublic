@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from "framer-motion";
 import Bubble from './Bubble';
 
@@ -12,11 +12,11 @@ export interface Category {
   position?: {x: number, y: number};
 }
 
-interface ProcessedSubcategory {
+interface ProcessedBubble {
   name: string;
   percentage: string;
   color: string;
-  bubbleSize: number;
+  size: number;
   position: {x: number, y: number};
 }
 
@@ -31,161 +31,186 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
   activeCategory,
   onCategoryClick
 }) => {
-  // Calculate bubble sizes and positions based on percentages
-  const calculateBubbleSizes = (items: Category[] | { name: string; percentage: string; color: string; subcategories?: { name: string; percentage: string; }[] }[]) => {
-    // Make sure all items have subcategories property (even if empty array)
-    const itemsWithSubcategories = items.map(item => {
-      return {
-        ...item,
-        subcategories: item.subcategories || []
-      };
-    }) as Category[];
+  const [bubbles, setBubbles] = useState<ProcessedBubble[]>([]);
+  
+  // Map percentage string to a number between 0 and 1
+  const percentToDecimal = (percentStr: string): number => {
+    // Remove % sign and convert to number
+    return parseFloat(percentStr.replace('%', '')) / 100;
+  };
+  
+  useEffect(() => {
+    // Determine what data we're working with
+    const itemsToProcess = activeCategory === null 
+      ? categories 
+      : categories[activeCategory]?.subcategories.map(sub => ({
+          name: sub.name,
+          percentage: sub.percentage,
+          color: categories[activeCategory].color,
+          subcategories: []
+        })) || [];
     
-    const MIN_SIZE = 70; // Minimum bubble size
-    const MAX_SIZE = 120; // Maximum bubble size (reduced slightly)
-    const containerHeight = 450; // Increased container height
-    const containerWidth = 350;  // Container width
-    const padding = 20;         // Padding from edges
+    // Container dimensions
+    const containerWidth = 350;
+    const containerHeight = 500; // Increased height
+    const padding = 30; // Increased padding from edges
+
+    // Bubble size constraints
+    const MIN_SIZE = 70;
+    const MAX_SIZE = 120;
     
-    // First, determine sizes based on percentages
-    let processedItems = itemsWithSubcategories.map(item => {
-      // Extract numeric value from percentage
-      const percentValue = parseInt(item.percentage);
-      // Calculate size proportionally to percentage value
-      const size = Math.min(MAX_SIZE, Math.max(MIN_SIZE, 70 + percentValue * 1.2));
+    // Step 1: Calculate initial sizes based on percentages
+    const initialBubbles = itemsToProcess.map(item => {
+      const percentValue = percentToDecimal(item.percentage);
+      // Calculate size proportionally, ensuring it's between MIN_SIZE and MAX_SIZE
+      const size = Math.max(MIN_SIZE, Math.min(MAX_SIZE, MIN_SIZE + (percentValue * 300)));
       
       return {
-        ...item,
-        bubbleSize: size,
-        position: { x: 0, y: 0 } // Will be calculated in the next step
+        name: item.name,
+        percentage: item.percentage,
+        color: item.color,
+        size,
+        position: { x: 0, y: 0 } // Will be calculated later
       };
     });
     
-    // Sort items by size (larger bubbles first)
-    processedItems.sort((a, b) => 
-      (b.bubbleSize as number) - (a.bubbleSize as number)
-    );
-
-    // Define positions based on fixed patterns
-    const positionBubbles = () => {
-      if (processedItems.length === 0) return;
+    // Sort bubbles by size (largest first)
+    initialBubbles.sort((a, b) => b.size - a.size);
+    
+    // Step 2: Place bubbles with collision detection
+    const placedBubbles: ProcessedBubble[] = [];
+    
+    const checkCollision = (bubble1: ProcessedBubble, bubble2: ProcessedBubble): boolean => {
+      const dx = bubble1.position.x + (bubble1.size / 2) - (bubble2.position.x + (bubble2.size / 2));
+      const dy = bubble1.position.y + (bubble1.size / 2) - (bubble2.position.y + (bubble2.size / 2));
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const minDistance = (bubble1.size + bubble2.size) / 2 + 8; // Add 8px buffer
       
+      return distance < minDistance;
+    };
+    
+    // Place the first (largest) bubble in the center
+    if (initialBubbles.length > 0) {
+      const firstBubble = initialBubbles[0];
+      firstBubble.position = {
+        x: (containerWidth - firstBubble.size) / 2,
+        y: (containerHeight - firstBubble.size) / 2
+      };
+      placedBubbles.push(firstBubble);
+    }
+    
+    // Place remaining bubbles
+    for (let i = 1; i < initialBubbles.length; i++) {
+      const currentBubble = initialBubbles[i];
       const centerX = containerWidth / 2;
       const centerY = containerHeight / 2;
       
-      // For a single bubble, center it
-      if (processedItems.length === 1) {
-        const item = processedItems[0];
-        const size = item.bubbleSize as number;
-        item.position = {
-          x: centerX - size / 2,
-          y: centerY - size / 2
-        };
-        return;
-      }
+      // Try to place in spiral pattern
+      let placed = false;
+      let angle = 0;
+      let radius = 80; // Starting distance from center
+      let attempts = 0;
+      const maxAttempts = 500;
+      const angleIncrement = Math.PI / 12; // Smaller angle increments for better placement
       
-      // Position the largest bubble in the center
-      const largestBubble = processedItems[0];
-      const largestSize = largestBubble.bubbleSize as number;
-      largestBubble.position = {
-        x: centerX - largestSize / 2,
-        y: centerY - largestSize / 2
-      };
-      
-      // For remaining bubbles, position them around the center bubble without overlaps
-      // Different arrangements based on number of bubbles
-      if (processedItems.length > 1) {
-        // For exactly 5 bubbles (our current case), use a specific arrangement
-        if (processedItems.length === 5) {
-          // Technology (largest) is already in the center
+      while (!placed && attempts < maxAttempts) {
+        // Calculate position on the spiral
+        const x = centerX - currentBubble.size / 2 + radius * Math.cos(angle);
+        const y = centerY - currentBubble.size / 2 + radius * Math.sin(angle);
+        
+        // Check if position is within bounds
+        if (
+          x >= padding && 
+          x + currentBubble.size <= containerWidth - padding &&
+          y >= padding && 
+          y + currentBubble.size <= containerHeight - padding
+        ) {
+          // Test position
+          currentBubble.position = { x, y };
           
-          // Consumer Goods - top right
-          const consumerGoods = processedItems[1];
-          const cgSize = consumerGoods.bubbleSize as number;
-          consumerGoods.position = {
-            x: centerX + 20,
-            y: centerY - cgSize - 20
-          };
+          // Check for collisions with already placed bubbles
+          let hasCollision = false;
+          for (const placedBubble of placedBubbles) {
+            if (checkCollision(currentBubble, placedBubble)) {
+              hasCollision = true;
+              break;
+            }
+          }
           
-          // Healthcare - bottom left
-          const healthcare = processedItems[2];
-          const hcSize = healthcare.bubbleSize as number;
-          healthcare.position = {
-            x: centerX - hcSize - 20,
-            y: centerY + 30
-          };
-          
-          // Infrastructure - bottom right
-          const infrastructure = processedItems[3];
-          const infSize = infrastructure.bubbleSize as number;
-          infrastructure.position = {
-            x: centerX + 40,
-            y: centerY + 60
-          };
-          
-          // Sustainability - top left
-          const sustainability = processedItems[4];
-          const susSize = sustainability.bubbleSize as number;
-          sustainability.position = {
-            x: centerX - susSize - 20,
-            y: centerY - susSize - 20
-          };
-        } else {
-          // For different numbers of bubbles, distribute them evenly in a circle
-          const startAngle = Math.PI / 4; // Start from 45 degrees
-          const totalItems = processedItems.length - 1; // Excluding the centered bubble
-          
-          for (let i = 1; i < processedItems.length; i++) {
-            const item = processedItems[i];
-            const size = item.bubbleSize as number;
-            const angle = startAngle + ((i - 1) * (2 * Math.PI / totalItems));
-            
-            // Distance from center should be enough to prevent overlaps
-            // Base radius on the size of the largest bubble plus current bubble
-            const radius = (largestSize / 2) + (size / 2) + 20; // 20px buffer
-            
-            const x = centerX + radius * Math.cos(angle) - (size / 2);
-            const y = centerY + radius * Math.sin(angle) - (size / 2);
-            
-            // Ensure the bubble stays within container bounds
-            item.position = {
-              x: Math.max(padding, Math.min(containerWidth - size - padding, x)),
-              y: Math.max(padding, Math.min(containerHeight - size - padding, y))
-            };
+          if (!hasCollision) {
+            placed = true;
+            placedBubbles.push(currentBubble);
           }
         }
+        
+        // Move along the spiral
+        angle += angleIncrement;
+        if (angle >= 2 * Math.PI) {
+          angle = 0;
+          radius += 10; // Increase radius after a full circle
+        }
+        
+        attempts++;
       }
-    };
+      
+      // If we couldn't place the bubble, try a different strategy
+      if (!placed) {
+        // Find the most space between existing bubbles
+        let bestX = padding;
+        let bestY = padding;
+        let maxMinDistance = 0;
+        
+        // Try a grid of positions
+        for (let testX = padding; testX <= containerWidth - padding - currentBubble.size; testX += 20) {
+          for (let testY = padding; testY <= containerHeight - padding - currentBubble.size; testY += 20) {
+            let minDistance = Number.MAX_VALUE;
+            
+            // Calculate minimum distance to any placed bubble
+            for (const placedBubble of placedBubbles) {
+              const testBubble = {
+                ...currentBubble,
+                position: { x: testX, y: testY }
+              };
+              
+              const dx = testBubble.position.x + (testBubble.size / 2) - (placedBubble.position.x + (placedBubble.size / 2));
+              const dy = testBubble.position.y + (testBubble.size / 2) - (placedBubble.position.y + (placedBubble.size / 2));
+              const distance = Math.sqrt(dx * dx + dy * dy);
+              const collisionDistance = (testBubble.size + placedBubble.size) / 2 + 8;
+              
+              // Calculate how far we are from collision (negative means collision)
+              minDistance = Math.min(minDistance, distance - collisionDistance);
+            }
+            
+            // If this position is better than our best so far and doesn't collide
+            if (minDistance > maxMinDistance && minDistance >= 0) {
+              maxMinDistance = minDistance;
+              bestX = testX;
+              bestY = testY;
+            }
+          }
+        }
+        
+        // Use the best position we found
+        currentBubble.position = { x: bestX, y: bestY };
+        placedBubbles.push(currentBubble);
+      }
+    }
     
-    positionBubbles();
-    return processedItems;
-  };
-
-  // Calculate bubble data
-  const bubbleData = activeCategory === null 
-    ? calculateBubbleSizes(categories)
-    : calculateBubbleSizes(
-        categories[activeCategory].subcategories.map(sub => ({
-          ...sub,
-          color: categories[activeCategory].color,
-          subcategories: [] // Add the required subcategories property
-        }))
-      );
+    // Update state with placed bubbles
+    setBubbles(placedBubbles);
+  }, [categories, activeCategory]);
 
   return (
-    <div className="relative h-[450px] w-full">
+    <div className="relative h-[500px] w-full">
       <AnimatePresence>
-        {bubbleData.map((bubble, index) => (
+        {bubbles.map((bubble, index) => (
           <Bubble
             key={`${bubble.name}-${index}`}
             name={bubble.name}
             percentage={bubble.percentage}
             color={bubble.color}
-            size={bubble.bubbleSize as number}
-            onClick={activeCategory === null 
-              ? () => onCategoryClick(index)
-              : undefined
-            }
+            size={bubble.size}
+            onClick={activeCategory === null ? () => onCategoryClick(index) : undefined}
             position={bubble.position}
             isChild={activeCategory !== null}
           />

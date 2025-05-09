@@ -96,7 +96,7 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
-      <DrawerContent className="h-[85vh] rounded-t-xl">
+      <DrawerContent className="h-[92vh] rounded-t-xl">
         <div className="flex justify-end p-4">
           <DrawerClose className="rounded-full p-2 hover:bg-gray-100">
             <X className="h-6 w-6" />

@@ -24,7 +24,7 @@ const Bubble: React.FC<BubbleProps> = ({
 }) => {
   return (
     <motion.div 
-      className="absolute rounded-full flex flex-col items-center justify-center text-center cursor-pointer shadow-md"
+      className="absolute rounded-full flex flex-col items-center justify-center text-center cursor-pointer shadow-lg"
       style={{ 
         backgroundColor: color,
         width: size,
@@ -33,17 +33,20 @@ const Bubble: React.FC<BubbleProps> = ({
         top: position?.y,
       }}
       onClick={onClick}
-      initial={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
+      initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0, opacity: 0, transition: { duration: 0.1 } }} // Quick exit for parent bubbles
-      transition={isChild 
-        ? { type: "spring", stiffness: 300, damping: 20, delay: 0.1 } // Slight delay for children
-        : { duration: 0.1 } // Quick exit for parents
-      }
+      exit={{ scale: 0, opacity: 0 }}
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 20,
+        duration: 0.3,
+        delay: isChild ? 0.1 : 0
+      }}
       whileHover={{ scale: 1.05 }}
     >
       <span className="text-lg font-bold">{percentage}</span>
-      <span className="text-xs px-2">{name}</span>
+      <span className="text-xs px-2 line-clamp-2">{name}</span>
     </motion.div>
   );
 };
