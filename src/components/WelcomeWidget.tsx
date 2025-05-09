@@ -8,10 +8,10 @@ import {
   DrawerContent,
   DrawerClose,
 } from "@/components/ui/drawer";
-import { motion, AnimatePresence } from "framer-motion";
+import BubbleChart, { Category } from './BubbleChart';
 
 // Mock data for investments with categories and subcategories
-const investmentCategories = [
+const investmentCategories: Category[] = [
   {
     name: "Technology",
     percentage: "53%",
@@ -64,49 +64,6 @@ const investmentCategories = [
   }
 ];
 
-interface BubbleProps {
-  name: string;
-  percentage: string;
-  color: string;
-  size: number;
-  onClick?: () => void;
-  position?: {x: number, y: number};
-  isChild?: boolean;
-}
-
-// Bubble component for visualization
-const Bubble: React.FC<BubbleProps> = ({ 
-  name, 
-  percentage, 
-  color,
-  size,
-  onClick,
-  position,
-  isChild = false
-}) => {
-  return (
-    <motion.div 
-      className="absolute rounded-full flex flex-col items-center justify-center text-center cursor-pointer"
-      style={{ 
-        backgroundColor: color,
-        width: size,
-        height: size,
-        left: position?.x,
-        top: position?.y,
-      }}
-      onClick={onClick}
-      initial={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      whileHover={{ scale: 1.05 }}
-    >
-      <span className="text-lg font-bold">{percentage}</span>
-      <span className="text-xs px-2">{name}</span>
-    </motion.div>
-  );
-};
-
 interface WelcomeWidgetProps {
   userName: string;
   isOpen: boolean;
@@ -137,57 +94,6 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
     setActiveCategory(null);
   };
 
-  // Calculate bubble sizes and positions based on percentages
-  const calculateBubbleSizes = (items: typeof investmentCategories) => {
-    const MIN_SIZE = 80; // Minimum bubble size
-    const baseSize = 120;
-    const containerHeight = 300;
-    const containerWidth = 300;
-    
-    return items.map((item, index) => {
-      // Extract numeric value from percentage
-      const percentValue = parseInt(item.percentage);
-      // Calculate size proportional to percentage, but not smaller than minimum
-      const size = Math.max(MIN_SIZE, baseSize * (percentValue / 30));
-      
-      // Calculate positions in a circular pattern
-      // For main categories, arrange in a circular pattern
-      let x, y;
-      
-      // Arrange bubbles in a somewhat circular pattern
-      if (items.length <= 2) {
-        // For 1-2 items, center them
-        x = containerWidth / 2 - size / 2;
-        y = containerHeight / 2 - size / 2;
-        if (items.length === 2 && index === 1) {
-          x = containerWidth / 2 - size / 2;
-          y = containerHeight / 2 + 20;
-        }
-      } else {
-        // For 3+ items, arrange in a circular pattern
-        const angle = (2 * Math.PI * index) / items.length;
-        const radius = containerWidth / 3; // Distance from center
-        
-        x = containerWidth / 2 - size / 2 + radius * Math.cos(angle);
-        y = containerHeight / 2 - size / 2 + radius * Math.sin(angle);
-      }
-      
-      return {
-        ...item,
-        bubbleSize: size,
-        position: {x, y},
-      };
-    });
-  };
-
-  // Calculate bubble data
-  const bubbleData = activeCategory === null 
-    ? calculateBubbleSizes(investmentCategories)
-    : calculateBubbleSizes(investmentCategories[activeCategory].subcategories.map(sub => ({
-        ...sub,
-        color: investmentCategories[activeCategory].color
-      })));
-
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
       <DrawerContent className="h-[85vh] rounded-t-xl">
@@ -215,25 +121,11 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
               {activeCategory === null ? "Trending Investments" : investmentCategories[activeCategory].name}
             </h3>
             
-            <div className="relative h-[350px] w-full">
-              <AnimatePresence>
-                {bubbleData.map((bubble, index) => (
-                  <Bubble
-                    key={`${bubble.name}-${index}`}
-                    name={bubble.name}
-                    percentage={bubble.percentage}
-                    color={bubble.color}
-                    size={bubble.bubbleSize}
-                    onClick={activeCategory === null 
-                      ? () => handleCategoryClick(index)
-                      : undefined
-                    }
-                    position={bubble.position}
-                    isChild={activeCategory !== null}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
+            <BubbleChart
+              categories={investmentCategories}
+              activeCategory={activeCategory}
+              onCategoryClick={handleCategoryClick}
+            />
           </div>
         </div>
       </DrawerContent>
