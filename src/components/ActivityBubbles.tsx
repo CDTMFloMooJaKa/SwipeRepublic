@@ -58,16 +58,9 @@ const ActivityBubbles: React.FC<ActivityBubblesProps> = ({
   const investmentsSize = Math.max(baseSize, Math.round(baseSize * 1.2 * (investmentsValue / total)));
 
   return (
-    <div className="grid grid-cols-3 gap-2 items-center justify-items-center h-64 my-8">
-      <div className="flex items-center justify-center">
-        <Bubble 
-          amount={income} 
-          label="Einnahmen" 
-          color="hsl(var(--tr-green))" 
-          size={incomeSize} 
-        />
-      </div>
-      <div className="flex items-center justify-center">
+    <div className="relative h-64 my-8">
+      {/* Top row - expenses in the center */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
         <Bubble 
           amount={expenses} 
           label="Ausgaben" 
@@ -75,7 +68,18 @@ const ActivityBubbles: React.FC<ActivityBubblesProps> = ({
           size={expensesSize} 
         />
       </div>
-      <div className="flex items-center justify-center">
+      
+      {/* Bottom row - income on the left, investments on the right */}
+      <div className="absolute bottom-0 left-1/4 transform -translate-x-1/2">
+        <Bubble 
+          amount={income} 
+          label="Einnahmen" 
+          color="hsl(var(--tr-green))" 
+          size={incomeSize} 
+        />
+      </div>
+      
+      <div className="absolute bottom-0 right-1/4 transform translate-x-1/2">
         <Bubble 
           amount={investments} 
           label="Investments" 
