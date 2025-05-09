@@ -8,32 +8,32 @@ import InvestmentItem from '@/components/InvestmentItem';
 // Mock data for the chart
 const generateChartData = () => {
   const result = [];
-  let value = 9000;
+  let value = 10000;
   
   for (let i = 0; i < 100; i++) {
     value = value + Math.random() * 200 - 100;
-    if (value < 8500) value = 8500 + Math.random() * 500;
-    if (value > 11000) value = 11000 - Math.random() * 500;
+    if (value < 9500) value = 9500 + Math.random() * 500;
+    if (value > 12000) value = 12000 - Math.random() * 500;
     result.push({ value });
   }
   
   return result;
 };
 
-// Mock investments data
+// Anonymized investments data
 const investments = [
-  { name: "FTSE India USD (Acc)", price: "38,39 €", change: 0.38, changePercent: 1.00 },
-  { name: "TDK", price: "9,58 €", change: 0.20, changePercent: 2.13 },
-  { name: "RWE", price: "32,56 €", change: 0.06, changePercent: 0.18 },
-  { name: "Intel", price: "43,21 €", change: 1.50, changePercent: 3.59 },
-  { name: "E.ON", price: "15,48 €", change: -0.005, changePercent: -0.03 },
+  { name: "Global Tech ETF", price: "45,23 €", change: 0.42, changePercent: 0.95 },
+  { name: "Clean Energy Fund", price: "28,76 €", change: 0.85, changePercent: 3.05 },
+  { name: "European Dividend", price: "62,19 €", change: 0.18, changePercent: 0.29 },
+  { name: "Emerging Markets", price: "18,45 €", change: -0.32, changePercent: -1.71 },
+  { name: "Healthcare Innovation", price: "36,92 €", change: 1.27, changePercent: 3.56 },
 ];
 
 const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'1T' | '1W' | '1M' | '1J' | 'Max'>('Max');
   const chartData = generateChartData();
-  const totalValue = "10.425,99 €";
-  const change = "▲ 1.807,72 €";
+  const totalValue = "11.286,45 €";
+  const change = "▲ 752,18 €";
   
   return (
     <div className="max-w-md mx-auto pb-24">
@@ -43,7 +43,7 @@ const Portfolio: React.FC = () => {
         <div>
           <p className="text-gray-400">Insgesamt</p>
           <h1 className="text-3xl font-bold mb-1">{totalValue}</h1>
-          <p className="text-[hsl(var(--tr-green))]">{change}</p>
+          <p className="text-tr-green">{change}</p>
         </div>
         
         <div className="flex mt-5 mb-2">

@@ -6,15 +6,15 @@ import ActivityBubbles from '@/components/ActivityBubbles';
 import TransactionItem from '@/components/TransactionItem';
 import { ChevronRight } from 'lucide-react';
 
-// Mock transactions data
+// Anonymized transactions data
 const transactions = [
-  { name: "Lovable", date: "9. Mai", status: "Kartenprüfung", amount: "0,00 €" },
-  { name: "Google Chrome", date: "9. Mai", status: "Kartenprüfung", amount: "0,00 €" },
-  { name: "Kai Ponel", date: "9. Mai", status: "Gesendet", amount: "700,00 €", isPositive: true },
+  { name: "Grocery Store", date: "15. Mai", status: "Abgebucht", amount: "42,75 €" },
+  { name: "Coffee Shop", date: "14. Mai", status: "Abgebucht", amount: "5,80 €" },
+  { name: "Alex Schmidt", date: "10. Mai", status: "Eingegangen", amount: "220,00 €", isPositive: true },
 ];
 
 const Cash: React.FC = () => {
-  const [activeMonth, setActiveMonth] = useState<'Jan' | 'Feb' | 'Mär' | 'Apr' | 'Mai'>('Jan');
+  const [activeMonth, setActiveMonth] = useState<'Jan' | 'Feb' | 'Mär' | 'Apr' | 'Mai'>('Mai');
   const months: Array<'Jan' | 'Feb' | 'Mär' | 'Apr' | 'Mai'> = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai'];
   
   return (
@@ -24,7 +24,7 @@ const Cash: React.FC = () => {
       <div className="p-4">
         <div>
           <p className="text-gray-400">Verfügbar</p>
-          <h1 className="text-3xl font-bold mb-1">344,53 €</h1>
+          <h1 className="text-3xl font-bold mb-1">512,38 €</h1>
         </div>
         
         <div className="flex mt-5 mb-4">
@@ -40,9 +40,9 @@ const Cash: React.FC = () => {
         </div>
         
         <ActivityBubbles 
-          income="75 €"
-          expenses="1.040 €"
-          investments="90 €"
+          income="650 €"
+          expenses="325 €"
+          investments="150 €"
         />
         
         <div className="mt-8">
