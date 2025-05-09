@@ -35,8 +35,11 @@ const Bubble: React.FC<BubbleProps> = ({
       onClick={onClick}
       initial={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      exit={{ scale: 0, opacity: 0 }}
+      transition={isChild 
+        ? { type: "spring", stiffness: 300, damping: 20 } 
+        : { type: "spring", stiffness: 300, damping: 20, duration: 0.1 } // Quick exit for parents
+      }
       whileHover={{ scale: 1.05 }}
     >
       <span className="text-lg font-bold">{percentage}</span>
