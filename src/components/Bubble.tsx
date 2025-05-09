@@ -35,10 +35,10 @@ const Bubble: React.FC<BubbleProps> = ({
       onClick={onClick}
       initial={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0, opacity: 0 }}
+      exit={{ scale: 0, opacity: 0, transition: { duration: 0.15 } }}
       transition={isChild 
         ? { type: "spring", stiffness: 300, damping: 20 } 
-        : { type: "spring", stiffness: 300, damping: 20, duration: 0.1 } // Quick exit for parents
+        : { duration: 0.15 } // Quicker exit animation for parents
       }
       whileHover={{ scale: 1.05 }}
     >
