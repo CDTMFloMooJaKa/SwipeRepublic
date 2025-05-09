@@ -35,9 +35,9 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
   const calculateBubbleSizes = (items: Category[] | { name: string; percentage: string; color: string }[]) => {
     const MIN_SIZE = 80; // Minimum bubble size
     const MAX_SIZE = 140; // Maximum bubble size to prevent very large bubbles
-    const containerHeight = 300;
+    const containerHeight = 350; // Increased container height to give more room
     const containerWidth = 300;
-    const padding = 20; // Padding from container edges
+    const padding = 30; // Increased padding from container edges
     
     // First, determine sizes based on percentages
     let processedItems = items.map((item, index) => {
@@ -65,14 +65,14 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
         };
       }
     } else {
-      // For multiple items, use a spiral layout algorithm
-      // This helps avoid overlap and ensures bubbles stay within container bounds
+      // For multiple items, distribute them more evenly
+      const totalItems = processedItems.length;
       const availableWidth = containerWidth - 2 * padding;
       const availableHeight = containerHeight - 2 * padding;
       const centerX = containerWidth / 2;
       const centerY = containerHeight / 2;
       
-      // Sort items by size (largest first) to place larger bubbles near center
+      // Sort items by size (largest first) for better distribution
       processedItems.sort((a, b) => 
         (b.bubbleSize as number) - (a.bubbleSize as number)
       );
@@ -90,8 +90,8 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
           const dy = y + size/2 - (otherY + otherSize/2);
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          // If distance is less than sum of radii, there's overlap
-          if (distance < (size + otherSize) / 2) {
+          // If distance is less than sum of radii plus a small buffer, there's overlap
+          if (distance < (size + otherSize) / 2 + 10) {
             return true;
           }
         }
@@ -106,51 +106,65 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
         return false;
       };
       
-      // Place each bubble
-      processedItems.forEach((item, index) => {
+      // Place first bubble in center
+      const firstItem = processedItems[0];
+      const firstSize = firstItem.bubbleSize as number;
+      firstItem.position = {
+        x: centerX - firstSize / 2,
+        y: centerY - firstSize / 2
+      };
+      
+      // For remaining bubbles, use a more aggressive spiral algorithm
+      for (let i = 1; i < processedItems.length; i++) {
+        const item = processedItems[i];
         const size = item.bubbleSize as number;
         
-        if (index === 0) {
-          // Place the first (largest) bubble in the center
-          item.position = {
-            x: centerX - size / 2,
-            y: centerY - size / 2
-          };
-        } else {
-          // For subsequent bubbles, find a non-overlapping position
-          // Start from the center and spiral outwards
-          let angle = 0;
-          let radius = 10;
-          let x, y;
-          let found = false;
+        // Start with a smaller angle and radius step for more positions
+        let angle = 0;
+        let radius = 20;
+        let spiralStep = Math.PI / 8; // Smaller step for more positions to try
+        let radiusIncrement = 5;
+        let foundPosition = false;
+        let iterations = 0;
+        const maxIterations = 500; // Prevent infinite loops
+        
+        // Spiral out until we find a good position
+        while (!foundPosition && iterations < maxIterations) {
+          iterations++;
           
-          // Spiral out until we find a good position
-          while (!found && radius < Math.max(containerWidth, containerHeight)) {
-            // Try positions along the current radius
-            for (let i = 0; i < 20; i++) { // Try multiple angles at each radius
-              angle += Math.PI / 10; // Increment angle
-              x = centerX - size / 2 + radius * Math.cos(angle);
-              y = centerY - size / 2 + radius * Math.sin(angle);
-              
-              if (!wouldOverlap(x, y, size, index)) {
-                item.position = { x, y };
-                found = true;
-                break;
-              }
-            }
-            
-            radius += 5; // Increase radius if no position found
+          // Try this position
+          const x = centerX - size / 2 + radius * Math.cos(angle);
+          const y = centerY - size / 2 + radius * Math.sin(angle);
+          
+          if (!wouldOverlap(x, y, size, i)) {
+            item.position = { x, y };
+            foundPosition = true;
+            break;
           }
           
-          // If still not found, place it somewhere even if there's overlap
-          if (!found) {
-            item.position = {
-              x: Math.max(padding, Math.min(containerWidth - size - padding, centerX - size / 2 + Math.random() * 50 - 25)),
-              y: Math.max(padding, Math.min(containerHeight - size - padding, centerY - size / 2 + Math.random() * 50 - 25))
-            };
+          // Increment angle and occasionally increase radius
+          angle += spiralStep;
+          if (angle >= Math.PI * 2) {
+            angle = 0;
+            radius += radiusIncrement;
+            // Slightly reduce the spiral step to get more positions at larger radii
+            spiralStep = Math.max(spiralStep * 0.95, Math.PI / 16);
           }
         }
-      });
+        
+        // If we couldn't find a position, place it somewhere with minimum overlap
+        if (!foundPosition) {
+          // As a last resort, place it at a random position with some distance from center
+          const randomAngle = Math.random() * Math.PI * 2;
+          const randomRadius = 50 + Math.random() * 100;
+          item.position = {
+            x: Math.max(padding, Math.min(containerWidth - size - padding, 
+               centerX - size / 2 + randomRadius * Math.cos(randomAngle))),
+            y: Math.max(padding, Math.min(containerHeight - size - padding, 
+               centerY - size / 2 + randomRadius * Math.sin(randomAngle)))
+          };
+        }
+      }
     }
     
     return processedItems;
