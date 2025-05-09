@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Carousel, 
   CarouselContent, 
@@ -88,6 +90,12 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
 }) => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const isMobile = useIsMobile();
+  
+  // If not mobile, don't render the widget
+  if (!isMobile) {
+    return null;
+  }
 
   // Handle navigation to portfolio
   const handleNavigateToPortfolio = () => {
