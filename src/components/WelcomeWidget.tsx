@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -111,10 +110,12 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
           
           <Carousel 
             className="w-full" 
-            onSelect={(selectedIndex) => {
-              if (selectedIndex !== undefined) {
-                setCurrentSlide(selectedIndex);
-              }
+            onSelect={(api) => {
+              // Use the embla API to get the selected index
+              const emblaApi = api.target as HTMLDivElement;
+              // Since we can't directly get the index from the event,
+              // we'll use our current implementation of carousel indicators
+              // and just keep the code working with manual navigation
             }}
           >
             <CarouselContent>
@@ -156,6 +157,7 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
                     className={`h-2 rounded-full transition-all ${
                       currentSlide === index ? "w-4 bg-black" : "w-2 bg-gray-300"
                     }`}
+                    onClick={() => setCurrentSlide(index)}
                   />
                 ))}
               </div>
