@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from "framer-motion";
 import Bubble from './Bubble';
