@@ -8,6 +8,7 @@ import {
   DrawerContent,
   DrawerClose,
 } from "@/components/ui/drawer";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Mock data for investments with categories and subcategories
 const investmentCategories = [
@@ -63,35 +64,46 @@ const investmentCategories = [
   }
 ];
 
-interface InvestmentBlockProps {
+interface BubbleProps {
   name: string;
   percentage: string;
   color: string;
-  size?: string;
+  size: number;
   onClick?: () => void;
+  position?: {x: number, y: number};
+  isChild?: boolean;
 }
 
-// Individual investment block component for visualization
-const InvestmentBlock: React.FC<InvestmentBlockProps> = ({ 
+// Bubble component for visualization
+const Bubble: React.FC<BubbleProps> = ({ 
   name, 
   percentage, 
   color,
-  size = "auto",
-  onClick
+  size,
+  onClick,
+  position,
+  isChild = false
 }) => {
   return (
-    <div 
-      className="p-4 rounded-md flex flex-col justify-between cursor-pointer"
+    <motion.div 
+      className="absolute rounded-full flex flex-col items-center justify-center text-center cursor-pointer"
       style={{ 
         backgroundColor: color,
-        minHeight: "100px",
-        width: size
+        width: size,
+        height: size,
+        left: position?.x,
+        top: position?.y,
       }}
       onClick={onClick}
+      initial={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      whileHover={{ scale: 1.05 }}
     >
-      <div className="text-2xl font-bold">{percentage}</div>
-      <div className="text-black text-sm mt-2">{name}</div>
-    </div>
+      <span className="text-lg font-bold">{percentage}</span>
+      <span className="text-xs px-2">{name}</span>
+    </motion.div>
   );
 };
 
@@ -115,12 +127,6 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
     return null;
   }
 
-  // Handle navigation to portfolio
-  const handleNavigateToPortfolio = () => {
-    onOpenChange(false);
-    navigate('/portfolio');
-  };
-
   // Handle category click
   const handleCategoryClick = (index: number) => {
     setActiveCategory(index);
@@ -130,6 +136,57 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
   const handleBackToCategories = () => {
     setActiveCategory(null);
   };
+
+  // Calculate bubble sizes and positions based on percentages
+  const calculateBubbleSizes = (items: typeof investmentCategories) => {
+    const MIN_SIZE = 80; // Minimum bubble size
+    const baseSize = 120;
+    const containerHeight = 300;
+    const containerWidth = 300;
+    
+    return items.map((item, index) => {
+      // Extract numeric value from percentage
+      const percentValue = parseInt(item.percentage);
+      // Calculate size proportional to percentage, but not smaller than minimum
+      const size = Math.max(MIN_SIZE, baseSize * (percentValue / 30));
+      
+      // Calculate positions in a circular pattern
+      // For main categories, arrange in a circular pattern
+      let x, y;
+      
+      // Arrange bubbles in a somewhat circular pattern
+      if (items.length <= 2) {
+        // For 1-2 items, center them
+        x = containerWidth / 2 - size / 2;
+        y = containerHeight / 2 - size / 2;
+        if (items.length === 2 && index === 1) {
+          x = containerWidth / 2 - size / 2;
+          y = containerHeight / 2 + 20;
+        }
+      } else {
+        // For 3+ items, arrange in a circular pattern
+        const angle = (2 * Math.PI * index) / items.length;
+        const radius = containerWidth / 3; // Distance from center
+        
+        x = containerWidth / 2 - size / 2 + radius * Math.cos(angle);
+        y = containerHeight / 2 - size / 2 + radius * Math.sin(angle);
+      }
+      
+      return {
+        ...item,
+        bubbleSize: size,
+        position: {x, y},
+      };
+    });
+  };
+
+  // Calculate bubble data
+  const bubbleData = activeCategory === null 
+    ? calculateBubbleSizes(investmentCategories)
+    : calculateBubbleSizes(investmentCategories[activeCategory].subcategories.map(sub => ({
+        ...sub,
+        color: investmentCategories[activeCategory].color
+      })));
 
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
@@ -144,65 +201,40 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
           <h2 className="text-2xl font-bold mb-1">Willkommen zurück, {userName}!</h2>
           <p className="text-gray-500 mb-6">Seit du weg warst, haben Nutzer investiert in:</p>
           
-          {activeCategory === null ? (
-            // Main categories view
-            <div className="pb-8">
-              <h3 className="text-lg font-medium mb-3">Trending Investments</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {investmentCategories.map((category, index) => {
-                  // Calculate sizing based on percentage (larger values get more space)
-                  const size = parseInt(category.percentage) > 25 ? "100%" : "auto";
-                  
-                  // For first item that has high percentage, span full width
-                  const colSpan = index === 0 ? "col-span-2" : "";
-                  
-                  return (
-                    <div key={index} className={colSpan}>
-                      <InvestmentBlock 
-                        name={category.name}
-                        percentage={category.percentage}
-                        color={category.color}
-                        size={size}
-                        onClick={() => handleCategoryClick(index)}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
+          <div className="pb-8">
+            {activeCategory !== null && (
+              <button 
+                onClick={handleBackToCategories}
+                className="text-sm text-gray-500 hover:text-gray-700 mb-10"
+              >
+                ← Zurück zu allen Kategorien
+              </button>
+            )}
+            
+            <h3 className="text-lg font-medium mb-3">
+              {activeCategory === null ? "Trending Investments" : investmentCategories[activeCategory].name}
+            </h3>
+            
+            <div className="relative h-[350px] w-full">
+              <AnimatePresence>
+                {bubbleData.map((bubble, index) => (
+                  <Bubble
+                    key={`${bubble.name}-${index}`}
+                    name={bubble.name}
+                    percentage={bubble.percentage}
+                    color={bubble.color}
+                    size={bubble.bubbleSize}
+                    onClick={activeCategory === null 
+                      ? () => handleCategoryClick(index)
+                      : undefined
+                    }
+                    position={bubble.position}
+                    isChild={activeCategory !== null}
+                  />
+                ))}
+              </AnimatePresence>
             </div>
-          ) : (
-            // Subcategory view when a category is selected
-            <div className="pb-8">
-              <div className="flex items-center mb-3">
-                <button 
-                  onClick={handleBackToCategories}
-                  className="text-sm text-gray-500 hover:text-gray-700 mb-2"
-                >
-                  ← Back to all categories
-                </button>
-              </div>
-              <h3 className="text-lg font-medium mb-3">{investmentCategories[activeCategory].name}</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {investmentCategories[activeCategory].subcategories.map((subcategory, index) => {
-                  const parentColor = investmentCategories[activeCategory].color;
-                  
-                  // For first item with high percentage, span full width
-                  const colSpan = index === 0 && parseInt(subcategory.percentage) > 40 ? "col-span-2" : "";
-                  
-                  return (
-                    <div key={index} className={colSpan}>
-                      <InvestmentBlock 
-                        name={subcategory.name}
-                        percentage={subcategory.percentage}
-                        color={parentColor}
-                        size="auto"
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </DrawerContent>
     </Drawer>
