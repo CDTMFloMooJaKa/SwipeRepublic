@@ -12,7 +12,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab }) => {
     <header className="pt-8 pb-4 px-4 flex items-center justify-between">
       <div className="flex items-center space-x-2">
         <Link 
-          to="/" 
+          to="/portfolio" 
           className={cn(
             "text-3xl font-bold", 
             activeTab === 'portfolio' ? 'text-black' : 'text-tr-gray'
