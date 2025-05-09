@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -49,6 +50,13 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    --tr-green: 142 100% 40%;
+    --tr-red: 0 100% 66%;
+    --tr-purple: 265 100% 65%;
+    --tr-blue: 217 100% 58%;
+    --tr-black: 0 0% 15%;
+    --tr-gray: 220 15% 80%;
   }
 
   .dark {
@@ -97,5 +105,23 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .period-button {
+    @apply px-4 py-1 text-tr-gray font-medium;
+  }
+  
+  .period-button.active {
+    @apply text-black font-bold;
+  }
+  
+  .increase {
+    @apply text-[hsl(var(--tr-green))] flex items-center;
+  }
+  
+  .decrease {
+    @apply text-[hsl(var(--tr-red))] flex items-center;
   }
 }
