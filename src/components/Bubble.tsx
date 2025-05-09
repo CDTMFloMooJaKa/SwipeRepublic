@@ -24,7 +24,7 @@ const Bubble: React.FC<BubbleProps> = ({
 }) => {
   return (
     <motion.div 
-      className="absolute rounded-full flex flex-col items-center justify-center text-center cursor-pointer"
+      className="absolute rounded-full flex flex-col items-center justify-center text-center cursor-pointer shadow-md"
       style={{ 
         backgroundColor: color,
         width: size,
@@ -35,10 +35,10 @@ const Bubble: React.FC<BubbleProps> = ({
       onClick={onClick}
       initial={isChild ? { scale: 0, opacity: 0 } : { scale: 1 }}
       animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0, opacity: 0, transition: { duration: 0.15 } }}
+      exit={{ scale: 0, opacity: 0, transition: { duration: 0.1 } }} // Quick exit for parent bubbles
       transition={isChild 
-        ? { type: "spring", stiffness: 300, damping: 20 } 
-        : { duration: 0.15 } // Quicker exit animation for parents
+        ? { type: "spring", stiffness: 300, damping: 20, delay: 0.1 } // Slight delay for children
+        : { duration: 0.1 } // Quick exit for parents
       }
       whileHover={{ scale: 1.05 }}
     >
