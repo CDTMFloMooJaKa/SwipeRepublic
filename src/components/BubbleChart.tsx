@@ -53,8 +53,11 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     // Container dimensions
     const containerWidth = 350;
     const containerHeight = 500; // Increased height
-    const padding = 30; // Increased padding from edges
+    const padding = 30; // Padding from edges
 
+    // For child bubbles, use more central positioning
+    const verticalOffset = activeCategory !== null ? 80 : 0; // Lift the child bubbles higher by 80px
+    
     // Bubble size constraints
     const MIN_SIZE = 70;
     const MAX_SIZE = 120;
@@ -89,12 +92,12 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
       return distance < minDistance;
     };
     
-    // Place the first (largest) bubble in the center
+    // Place the first (largest) bubble in the center, adjusted by vertical offset for child bubbles
     if (initialBubbles.length > 0) {
       const firstBubble = initialBubbles[0];
       firstBubble.position = {
         x: (containerWidth - firstBubble.size) / 2,
-        y: (containerHeight - firstBubble.size) / 2
+        y: (containerHeight - firstBubble.size) / 2 - verticalOffset
       };
       placedBubbles.push(firstBubble);
     }
@@ -103,7 +106,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     for (let i = 1; i < initialBubbles.length; i++) {
       const currentBubble = initialBubbles[i];
       const centerX = containerWidth / 2;
-      const centerY = containerHeight / 2;
+      const centerY = containerHeight / 2 - verticalOffset; // Apply vertical offset
       
       // Try to place in spiral pattern
       let placed = false;
