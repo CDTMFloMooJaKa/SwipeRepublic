@@ -89,7 +89,7 @@ const Portfolio: React.FC = () => {
         <div className="mt-6 mb-6">
           <Button variant="outline" className="w-full p-4 h-auto flex flex-col items-start border rounded-lg hover:bg-gray-50 transition-all" onClick={() => console.log("Annual review clicked")}>
             <h2 className="text-xl font-bold text-left">2025 in Numbers</h2>
-            <p className="text-gray-500 text-left text-sm mt-1 w-full">Discover how your investments performed this  
+            <p className="text-gray-500 text-left text-sm mt-1 w-full">Discover how your investments performed this
 year</p>
             <div className="flex items-center w-full justify-end mt-1">
               <ArrowRight className="h-5 w-5 text-tr-green" />
