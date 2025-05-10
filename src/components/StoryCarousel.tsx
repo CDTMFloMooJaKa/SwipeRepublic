@@ -1,19 +1,21 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { X, ArrowLeft, ArrowRight } from 'lucide-react';
-import { Sheet, SheetContent, SheetClose } from '@/components/ui/sheet';
-import StoryProgressIndicator from './StoryProgressIndicator';
 import { Button } from './ui/button';
+import { ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import StoryProgressIndicator from './StoryProgressIndicator';
+import { useNavigate } from 'react-router-dom';
 
-interface StoryCarouselProps {
+export interface StoryCarouselProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   slides: React.ReactNode[];
-  title: string;
+  title: React.ReactNode;
   autoAdvanceDuration?: number;
   isPaused?: boolean;
   onPauseChange?: (paused: boolean) => void;
-  onSlideChange?: (index: number) => void;
+  onClose?: () => void; // For custom close handling
+  onSlideChange?: (newSlideIndex: number) => void; // Add new prop to handle slide changes
 }
 
 const StoryCarousel: React.FC<StoryCarouselProps> = ({
@@ -21,151 +23,196 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   onOpenChange,
   slides,
   title,
-  autoAdvanceDuration = 5000,
-  isPaused = false,
+  autoAdvanceDuration = 8000, // Default to 8 seconds per slide
+  isPaused: externalIsPaused,
   onPauseChange,
+  onClose,
   onSlideChange
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
+  const [activeSlide, setActiveSlide] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [isTouching, setIsTouching] = useState(false);
-  const timerRef = useRef<number | null>(null);
-
-  // Reset state when drawer closes
-  useEffect(() => {
-    if (!isOpen) {
-      setCurrentSlide(0);
-      setProgress(0);
-      if (onPauseChange) onPauseChange(false);
-    }
-  }, [isOpen, onPauseChange]);
+  const [internalIsPaused, setInternalIsPaused] = useState(false);
+  const intervalRef = useRef<number | null>(null);
   
-  // Handle slide change with external callback
-  useEffect(() => {
-    if (onSlideChange) {
-      onSlideChange(currentSlide);
+  // Determine actual pause state (external prop takes precedence if provided)
+  const isPaused = externalIsPaused !== undefined ? externalIsPaused : internalIsPaused;
+  
+  const totalSlides = slides.length;
+  const PROGRESS_INTERVAL = 30; // Update every 30ms
+  const STEPS = autoAdvanceDuration / PROGRESS_INTERVAL;
+  
+  // Reset timer when slide changes
+  const resetTimer = () => {
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
-  }, [currentSlide, onSlideChange]);
-
-  // Progress bar animation
-  useEffect(() => {
-    if (!isOpen || isPaused || isTouching) return;
-
-    const startTime = Date.now();
-    const animate = () => {
-      const now = Date.now();
-      const elapsed = now - startTime;
-      const newProgress = Math.min(100, (elapsed / autoAdvanceDuration) * 100);
-      
-      setProgress(newProgress);
-      
-      if (newProgress < 100) {
-        timerRef.current = window.requestAnimationFrame(animate);
-      } else {
-        handleNext();
-      }
-    };
+    setProgress(0);
+  };
+  
+  // Start timer for auto-advancing slides
+  const startTimer = () => {
+    resetTimer();
+    setProgress(0);
     
-    timerRef.current = window.requestAnimationFrame(animate);
+    intervalRef.current = window.setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + (100 / STEPS);
+        
+        // Move to next slide when progress hits 100%
+        if (newProgress >= 100) {
+          if (activeSlide < totalSlides - 1) {
+            handleSlideChange(activeSlide + 1);
+          } else {
+            handleClose(); // Use our close handler
+          }
+          return 0;
+        }
+        
+        return newProgress;
+      });
+    }, PROGRESS_INTERVAL);
+  };
+  
+  // Effect to handle timer
+  useEffect(() => {
+    if (isOpen && !isPaused) {
+      startTimer();
+    } else {
+      resetTimer();
+    }
     
     return () => {
-      if (timerRef.current) {
-        window.cancelAnimationFrame(timerRef.current);
-      }
+      resetTimer();
     };
-  }, [isOpen, currentSlide, isPaused, isTouching, autoAdvanceDuration]);
+  }, [isOpen, activeSlide, isPaused]);
+  
+  // Handle manual slide change with additional callback
+  const handleSlideChange = (index: number) => {
+    // Only change slide if it's actually different
+    if (index !== activeSlide) {
+      setActiveSlide(index);
+      resetTimer();
+      
+      // Call the onSlideChange callback if provided
+      if (onSlideChange) {
+        onSlideChange(index);
+      }
+    }
+  };
 
-  // Custom slide controls
-  const handleNext = () => {
-    if (currentSlide < slides.length - 1) {
-      setCurrentSlide(prev => prev + 1);
-      setProgress(0);
+  // Handle closing the carousel properly
+  const handleClose = () => {
+    if (onClose) {
+      onClose(); // Call the custom close handler if provided
+    }
+    onOpenChange(false);
+  };
+
+  // Handle navigation with left/right clicks
+  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const containerWidth = e.currentTarget.clientWidth;
+    const clickX = e.nativeEvent.offsetX;
+    
+    // If click is in the right third of the screen
+    if (clickX > containerWidth * 0.7) {
+      if (activeSlide < totalSlides - 1) {
+        // If not on last slide, go to next slide
+        handleSlideChange(activeSlide + 1);
+      } else {
+        // If on last slide, close and navigate to home
+        handleClose();
+        navigate("/portfolio");
+      }
+    } 
+    // If click is in the left third of the screen, go to previous slide
+    else if (clickX < containerWidth * 0.3) {
+      if (activeSlide > 0) {
+        handleSlideChange(activeSlide - 1);
+      }
+    }
+  };
+  
+  // Pause on touch
+  const handleTouch = () => {
+    if (onPauseChange) {
+      onPauseChange(true);
     } else {
-      onOpenChange(false);
+      setInternalIsPaused(true);
     }
   };
   
-  const handlePrev = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide(prev => prev - 1);
-      setProgress(0);
+  // Resume on touch end
+  const handleTouchEnd = () => {
+    if (onPauseChange) {
+      onPauseChange(false);
+    } else {
+      setInternalIsPaused(false);
     }
   };
 
-  // Touch events to pause progress
-  const handleTouchStart = () => {
-    setIsTouching(true);
-    if (onPauseChange) onPauseChange(true);
-  };
+  // Reset to first slide when opening
+  useEffect(() => {
+    if (isOpen) {
+      setActiveSlide(0);
+      // Call onSlideChange with initial slide 0
+      if (onSlideChange) {
+        onSlideChange(0);
+      }
+    }
+  }, [isOpen, onSlideChange]);
   
-  const handleTouchEnd = () => {
-    setIsTouching(false);
-    if (onPauseChange) onPauseChange(false);
-  };
+  if (!isOpen) return null;
   
   return (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetContent 
-        side="bottom" 
-        className="h-[92vh] p-0 rounded-t-xl overflow-hidden" 
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+    <div 
+      className="fixed inset-0 z-50 flex flex-col bg-white"
+      onPointerDown={handleTouch}
+      onPointerUp={handleTouchEnd}
+    >
+      {/* Header */}
+      <div className="px-4 py-3 flex items-center border-b">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={handleClose}
+          className="mr-2"
+        >
+          <ArrowLeft className="h-6 w-6" />
+        </Button>
+        <h2 className="text-xl font-bold">{title}</h2>
+      </div>
+      
+      {/* Progress Indicator */}
+      <div className="px-4 py-2">
+        <StoryProgressIndicator 
+          totalSlides={totalSlides} 
+          activeSlide={activeSlide} 
+          progress={progress} 
+          onSlideClick={handleSlideChange}
+        />
+      </div>
+      
+      {/* Content */}
+      <div 
+        className="flex-1 w-full overflow-hidden" 
+        onClick={handleContainerClick}
       >
-        <div className="h-full flex flex-col bg-background">
-          {/* Header with progress indicators */}
-          <div className="sticky top-0 z-10 bg-background/90 backdrop-blur-sm border-b">
-            <div className="flex justify-between items-center p-4">
-              <h2 className="text-lg font-semibold">{title}</h2>
-              <SheetClose className="rounded-full p-1.5 hover:bg-gray-100">
-                <X className="h-5 w-5" />
-              </SheetClose>
-            </div>
-            
-            <div className="px-4 pb-2 flex gap-1">
-              {slides.map((_, i) => (
-                <StoryProgressIndicator 
-                  key={i}
-                  isActive={i === currentSlide}
-                  progress={i === currentSlide ? progress : i < currentSlide ? 100 : 0}
-                />
-              ))}
-            </div>
-          </div>
-          
-          {/* Slide content */}
-          <div className="flex-1 overflow-hidden relative">
-            <div className="h-full p-6">
-              {slides[currentSlide]}
-            </div>
-            
-            {/* Navigation buttons */}
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className={`absolute left-4 top-1/2 transform -translate-y-1/2 rounded-full bg-background/80 backdrop-blur-sm ${currentSlide === 0 ? 'invisible' : ''}`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePrev();
-              }}
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 rounded-full bg-background/80 backdrop-blur-sm"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNext();
-              }}
-            >
-              <ArrowRight className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={activeSlide}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="h-full p-4"
+          >
+            {slides[activeSlide]}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
   );
 };
 

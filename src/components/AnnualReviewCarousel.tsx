@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
@@ -105,14 +105,6 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   onOpenChange 
 }) => {
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
-  const [currentSlide, setCurrentSlide] = useState(0);
-  
-  // Reset activeCategory when carousel closes or slide changes
-  useEffect(() => {
-    if (!isOpen || currentSlide !== 0) {
-      setActiveCategory(null);
-    }
-  }, [isOpen, currentSlide]);
   
   // Handle category click
   const handleCategoryClick = (index: number) => {
@@ -124,9 +116,15 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
     setActiveCategory(null);
   };
   
-  // Handle slide change
-  const handleSlideChange = (index: number) => {
-    setCurrentSlide(index);
+  // Reset category selection when closing the carousel
+  const handleClose = () => {
+    setActiveCategory(null);
+  };
+  
+  // Handle slide change to reset category view
+  const handleSlideChange = () => {
+    // Always reset category view when slides change
+    setActiveCategory(null);
   };
   
   // Define the slide contents
@@ -313,8 +311,8 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       slides={slides}
       title="2025 in Numbers"
       autoAdvanceDuration={10000} // 10 seconds per slide for this carousel
+      onClose={handleClose}
       onSlideChange={handleSlideChange}
-      key={`annual-review-${isOpen}`} // Add key to force re-render when opened
     />
   );
 };
