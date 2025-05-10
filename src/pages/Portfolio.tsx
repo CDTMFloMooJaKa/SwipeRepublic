@@ -103,7 +103,7 @@ const Portfolio: React.FC = () => {
             <div className="relative z-20 w-full">
               <h2 className="text-xl font-bold text-left text-white">2025 in Numbers</h2>
               <p className="text-gray-100 text-left text-sm mt-1 w-full">Discover how your investments performed this
-year</p>
+ year</p>
               <div className="flex items-center w-full justify-end mt-1">
                 <ArrowRight className="h-5 w-5 text-white" />
               </div>
