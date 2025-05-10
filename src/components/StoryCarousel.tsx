@@ -14,7 +14,8 @@ export interface StoryCarouselProps {
   autoAdvanceDuration?: number;
   isPaused?: boolean;
   onPauseChange?: (paused: boolean) => void;
-  onClose?: () => void; // Add a new prop for custom close handling
+  onClose?: () => void; // Custom close handler
+  onSlideChange?: (slideIndex: number) => void; // Add new prop for slide change
 }
 
 const StoryCarousel: React.FC<StoryCarouselProps> = ({
@@ -25,7 +26,8 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   autoAdvanceDuration = 8000, // Default to 8 seconds per slide
   isPaused: externalIsPaused,
   onPauseChange,
-  onClose
+  onClose,
+  onSlideChange
 }) => {
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
@@ -85,6 +87,13 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
       resetTimer();
     };
   }, [isOpen, activeSlide, isPaused]);
+  
+  // Effect to call onSlideChange when activeSlide changes
+  useEffect(() => {
+    if (onSlideChange && isOpen) {
+      onSlideChange(activeSlide);
+    }
+  }, [activeSlide, onSlideChange, isOpen]);
   
   // Handle manual slide change
   const handleSlideChange = (index: number) => {

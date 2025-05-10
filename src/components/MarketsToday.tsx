@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
-import { Button } from './ui/button';
+import { Button } from './ui/card';
 import { Card } from './ui/card';
 import StoryCarousel from './StoryCarousel';
 import { Bot, Bookmark } from 'lucide-react';
@@ -188,6 +188,12 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     setIsPaused(false);
   };
   
+  // Handle slide change to reset bubble categories
+  const handleSlideChange = () => {
+    setActiveBubbleCategory(null);
+    setIsPaused(false);
+  };
+  
   // Generate news articles based on watchlist
   const getNewsArticles = () => {
     // Start with general market news that's always shown
@@ -349,6 +355,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       isPaused={isPaused}
       onPauseChange={setIsPaused}
       onClose={handleClose}
+      onSlideChange={handleSlideChange}
     />
   );
 };
