@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Portfolio from "./pages/Portfolio";
 import Cash from "./pages/Cash";
 import { WatchlistProvider } from "./contexts/WatchlistContext";
+import PhoneFrame from "./components/PhoneFrame";
 
 const queryClient = new QueryClient();
 
@@ -19,13 +20,15 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/portfolio" element={<Portfolio />} />
-            <Route path="/cash" element={<Cash />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <PhoneFrame>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/cash" element={<Cash />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </PhoneFrame>
         </BrowserRouter>
       </WatchlistProvider>
     </TooltipProvider>
