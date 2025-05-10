@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Dialog,
   DialogContent,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import BubbleChart, { Category } from './BubbleChart';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -155,6 +156,9 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
       <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white text-foreground shadow-lg h-full"
         onPointerDown={handleTouch}
         onPointerUp={handleTouchEnd}>
+        
+        {/* Accessibility title */}
+        <DialogTitle className="sr-only">Annual Review</DialogTitle>
         
         {/* Story indicators */}
         <div className="px-2 pt-2">
@@ -332,6 +336,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
           <div 
             className="w-1/3 h-full cursor-pointer z-10 pointer-events-auto" 
             onClick={goToPrevSlide}
+            style={{ marginTop: '40px' }} // Add space at the top to not interfere with close button
           />
           {/* Middle area - no action */}
           <div className="w-1/3 h-full" />
@@ -339,6 +344,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
           <div 
             className="w-1/3 h-full cursor-pointer z-10 pointer-events-auto" 
             onClick={goToNextSlide}
+            style={{ marginTop: '40px' }} // Add space at the top to not interfere with close button
           />
         </div>
       </DialogContent>
