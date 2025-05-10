@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 3000,
+    port: 8080,
     proxy: {
       '/load_top_investments': {
         target: 'https://cdtmbackend.onrender.com',  // Your backend API
