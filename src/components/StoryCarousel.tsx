@@ -14,8 +14,8 @@ export interface StoryCarouselProps {
   autoAdvanceDuration?: number;
   isPaused?: boolean;
   onPauseChange?: (paused: boolean) => void;
-  onClose?: () => void; // Custom close handler
-  onSlideChange?: (slideIndex: number) => void; // Add new prop for slide change
+  onClose?: () => void; // For custom close handling
+  onSlideChange?: (newSlideIndex: number) => void; // Add new prop to handle slide changes
 }
 
 const StoryCarousel: React.FC<StoryCarouselProps> = ({
@@ -63,9 +63,9 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         // Move to next slide when progress hits 100%
         if (newProgress >= 100) {
           if (activeSlide < totalSlides - 1) {
-            setActiveSlide(prev => prev + 1);
+            handleSlideChange(activeSlide + 1);
           } else {
-            handleClose(); // Use our new close handler
+            handleClose(); // Use our close handler
           }
           return 0;
         }
@@ -88,18 +88,16 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     };
   }, [isOpen, activeSlide, isPaused]);
   
-  // Effect to call onSlideChange when activeSlide changes
-  useEffect(() => {
-    if (onSlideChange && isOpen) {
-      onSlideChange(activeSlide);
-    }
-  }, [activeSlide, onSlideChange, isOpen]);
-  
-  // Handle manual slide change
+  // Handle manual slide change with additional callback
   const handleSlideChange = (index: number) => {
     setActiveSlide(index);
     resetTimer();
     startTimer();
+    
+    // Call the onSlideChange callback if provided
+    if (onSlideChange) {
+      onSlideChange(index);
+    }
   };
 
   // Handle closing the carousel properly
@@ -119,7 +117,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     if (clickX > containerWidth * 0.7) {
       if (activeSlide < totalSlides - 1) {
         // If not on last slide, go to next slide
-        setActiveSlide(prev => prev + 1);
+        handleSlideChange(activeSlide + 1);
       } else {
         // If on last slide, close and navigate to home
         handleClose();
@@ -129,7 +127,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     // If click is in the left third of the screen, go to previous slide
     else if (clickX < containerWidth * 0.3) {
       if (activeSlide > 0) {
-        setActiveSlide(prev => prev - 1);
+        handleSlideChange(activeSlide - 1);
       }
     }
   };
@@ -156,8 +154,12 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   useEffect(() => {
     if (isOpen) {
       setActiveSlide(0);
+      // Call onSlideChange with initial slide 0
+      if (onSlideChange) {
+        onSlideChange(0);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, onSlideChange]);
   
   if (!isOpen) return null;
   
