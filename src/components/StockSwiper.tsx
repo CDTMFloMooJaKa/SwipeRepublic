@@ -25,33 +25,33 @@ export interface Stock {
 export const stocks: Stock[] = [
   {
     id: 1,
-    name: "Apple Inc.",
-    ticker: "AAPL",
+    name: "Tesla, Inc.",
+    ticker: "TSLA",
     price: "$182.63",
     change: 1.25,
-    description: "Technology company that designs, manufactures, and markets smartphones, personal computers, tablets, wearables and accessories.",
-    industry: "Technology",
-    image: "/lovable-uploads/62d7a477-be26-455b-a75e-a9c614db04ac.png"
+    description: "Electric vehicle and clean energy company that designs and manufactures electric cars, battery energy storage, solar panels and more.",
+    industry: "Automotive",
+    image: "/lovable-uploads/87e9327e-9fdd-4acb-8304-e8c06eadf118.png" // Tesla logo
   },
   {
     id: 2,
-    name: "Tesla, Inc.",
-    ticker: "TSLA",
+    name: "Amazon.com, Inc.",
+    ticker: "AMZN",
     price: "$187.24",
     change: -0.89,
-    description: "Electric vehicle and clean energy company that designs and manufactures electric cars, battery energy storage, solar panels and more.",
-    industry: "Automotive",
-    image: "/lovable-uploads/88d6a29b-923a-4da2-b04e-81ca9bf9874c.png"
+    description: "E-commerce, cloud computing, digital streaming, and artificial intelligence company.",
+    industry: "E-Commerce",
+    image: "/lovable-uploads/edd95656-1015-4ca4-885a-4f5e9e11a355.png" // Amazon logo
   },
   {
     id: 3,
-    name: "Amazon.com, Inc.",
-    ticker: "AMZN",
+    name: "Apple Inc.",
+    ticker: "AAPL",
     price: "$178.92",
     change: 2.34,
-    description: "E-commerce, cloud computing, digital streaming, and artificial intelligence company.",
-    industry: "E-Commerce",
-    image: "/lovable-uploads/42dec5de-4be6-487c-902e-1c251e61c932.png"
+    description: "Technology company that designs, manufactures, and markets smartphones, personal computers, tablets, wearables and accessories.",
+    industry: "Technology",
+    image: "/lovable-uploads/dfb629e1-1416-408e-a2ac-324755938194.png" // Apple logo
   },
   {
     id: 4,
@@ -61,7 +61,7 @@ export const stocks: Stock[] = [
     change: 0.78,
     description: "Technology company that develops, licenses, and supports software, services, devices, and solutions worldwide.",
     industry: "Technology",
-    image: "/lovable-uploads/8abae172-83fe-4ef8-aadd-fb27c22ba5a7.png"
+    image: "/lovable-uploads/c7edeaa5-a457-4903-92b0-1545667af436.png" // Microsoft logo
   },
   {
     id: 5,
@@ -71,7 +71,7 @@ export const stocks: Stock[] = [
     change: 3.21,
     description: "Technology company that designs graphics processing units (GPUs) for the gaming and professional markets, as well as system-on-a-chip units for mobile computing and automotive markets.",
     industry: "Semiconductors",
-    image: "/lovable-uploads/62d7a477-be26-455b-a75e-a9c614db04ac.png"
+    image: "/lovable-uploads/e903ee92-f1bc-4b4f-bb9f-869da81fe818.png" // NVIDIA logo
   }
 ];
 

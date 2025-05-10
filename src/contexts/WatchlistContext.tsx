@@ -12,7 +12,7 @@ const defaultWatchlistStocks: Stock[] = [
     change: 0.87,
     description: "Technology company focusing on online advertising, search engine, cloud computing, and more.",
     industry: "Technology",
-    image: "/lovable-uploads/8abae172-83fe-4ef8-aadd-fb27c22ba5a7.png"
+    image: "/lovable-uploads/dfb629e1-1416-408e-a2ac-324755938194.png" // Updated image
   },
   {
     id: 7,
@@ -22,7 +22,7 @@ const defaultWatchlistStocks: Stock[] = [
     change: 1.54,
     description: "Technology company that owns Facebook, Instagram, WhatsApp, and focuses on social media, advertising, and metaverse technologies.",
     industry: "Technology",
-    image: "/lovable-uploads/42dec5de-4be6-487c-902e-1c251e61c932.png"
+    image: "/lovable-uploads/dfb629e1-1416-408e-a2ac-324755938194.png" // Updated image
   },
 ];
 
