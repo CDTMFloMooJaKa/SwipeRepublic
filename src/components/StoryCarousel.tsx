@@ -5,7 +5,6 @@ import { ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StoryProgressIndicator from './StoryProgressIndicator';
 import { useNavigate } from 'react-router-dom';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 export interface StoryCarouselProps {
   isOpen: boolean;
@@ -27,7 +26,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   onPauseChange
 }) => {
   const navigate = useNavigate();
-  const isMobile = useIsMobile();
   const [activeSlide, setActiveSlide] = useState(0);
   const [progress, setProgress] = useState(0);
   const [internalIsPaused, setInternalIsPaused] = useState(false);
@@ -147,18 +145,11 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   return (
     <div 
-      className={isMobile 
-        ? "fixed inset-0 z-50 flex flex-col bg-white" 
-        : "fixed z-50 flex flex-col bg-white phone-frame-overlay"}
-      style={!isMobile ? { 
-        height: '750px', 
-        maxHeight: '750px',
-        overflow: 'hidden' 
-      } : undefined}
+      className="fixed inset-0 z-50 flex flex-col bg-white"
       onPointerDown={handleTouch}
       onPointerUp={handleTouchEnd}
     >
-      {/* Header - Fixed at the top */}
+      {/* Header */}
       <div className="px-4 py-3 flex items-center border-b">
         <Button 
           variant="ghost" 
@@ -171,7 +162,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         <h2 className="text-xl font-bold">{title}</h2>
       </div>
       
-      {/* Progress Indicator - Fixed below header */}
+      {/* Progress Indicator */}
       <div className="px-4 py-2">
         <StoryProgressIndicator 
           totalSlides={totalSlides} 
@@ -181,10 +172,10 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         />
       </div>
       
-      {/* Scrollable Content Area */}
+      {/* Content - No automatic overflow */}
       <div 
         className="flex-1 w-full overflow-hidden" 
-        style={!isMobile ? { maxHeight: 'calc(750px - 120px)' } : undefined}
+        onClick={handleContainerClick}
       >
         <AnimatePresence mode="wait">
           <motion.div 
@@ -193,12 +184,9 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="h-full overflow-y-auto"
-            onClick={handleContainerClick}
+            className="h-full p-4 overflow-auto"
           >
-            <div className="p-4">
-              {slides[activeSlide]}
-            </div>
+            {slides[activeSlide]}
           </motion.div>
         </AnimatePresence>
       </div>
