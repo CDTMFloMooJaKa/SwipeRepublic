@@ -6,7 +6,7 @@ import { ProcessedBubble } from '@/utils/bubblePositioning';
 
 interface BubbleDisplayProps {
   bubbles: ProcessedBubble[];
-  onCategoryClick?: (index: number) => void;
+  onCategoryClick?: (index: number, e: React.MouseEvent) => void;
   activeCategory: number | null;
 }
 
@@ -19,7 +19,7 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
     // Stop propagation to prevent the click from reaching the carousel container
     e.stopPropagation();
     if (onCategoryClick) {
-      onCategoryClick(index);
+      onCategoryClick(index, e);
     }
   };
 
