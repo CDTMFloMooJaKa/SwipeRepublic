@@ -242,21 +242,35 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       </ScrollArea>
     </div>,
     
-    // Slide 2: Bought Today
-    <BubbleChartView
-      key="bought-today"
-      categories={boughtToday}
-      title="Bought Today"
-      isOpen={isOpen}
-    />,
+    // Slide 2: Bought Today - Updated with subtext
+    <div className="h-full">
+      <div className="mb-4">
+        <h3 className="text-2xl font-bold">Bought Today</h3>
+        <p className="text-gray-500 mt-1">People today have bought...</p>
+      </div>
+      <div className="flex-grow relative">
+        <BubbleChartView
+          categories={boughtToday}
+          title=""
+          isOpen={isOpen}
+        />
+      </div>
+    </div>,
     
-    // Slide 3: Sold Today
-    <BubbleChartView
-      key="sold-today"
-      categories={soldToday}
-      title="Sold Today"
-      isOpen={isOpen}
-    />,
+    // Slide 3: Sold Today - Updated with subtext
+    <div className="h-full">
+      <div className="mb-4">
+        <h3 className="text-2xl font-bold">Sold Today</h3>
+        <p className="text-gray-500 mt-1">People today have sold...</p>
+      </div>
+      <div className="flex-grow relative">
+        <BubbleChartView
+          categories={soldToday}
+          title=""
+          isOpen={isOpen}
+        />
+      </div>
+    </div>,
     
     // Slide 4: Your Assets
     <div className="h-full">
