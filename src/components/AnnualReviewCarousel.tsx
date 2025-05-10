@@ -1,22 +1,15 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription
 } from "@/components/ui/dialog";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import BubbleChart, { Category } from './BubbleChart';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
+import StoryProgressIndicator from './StoryProgressIndicator';
+import { Progress } from './ui/progress';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Investment focus data
 const investmentCategories: Category[] = [
@@ -86,8 +79,25 @@ interface AnnualReviewCarouselProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const AUTOPLAY_DURATION = 10000; // 10 seconds per slide
+
 const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onOpenChange }) => {
-  const [activeCategory, setActiveCategory] = React.useState<number | null>(null);
+  const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  
+  const totalSlides = 5;
+  
+  // Pause on touch
+  const handleTouch = () => {
+    setIsPaused(true);
+  };
+  
+  // Resume on touch end
+  const handleTouchEnd = () => {
+    setIsPaused(false);
+  };
 
   // Handle category click
   const handleCategoryClick = (index: number) => {
@@ -98,34 +108,89 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
   const handleBackToCategories = () => {
     setActiveCategory(null);
   };
-
+  
+  // Navigate to previous slide
+  const goToPrevSlide = () => {
+    setActiveSlide((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+    setProgress(0);
+  };
+  
+  // Navigate to next slide
+  const goToNextSlide = () => {
+    setActiveSlide((prev) => (prev === totalSlides - 1 ? 0 : prev + 1));
+    setProgress(0);
+  };
+  
+  // Jump to specific slide
+  const goToSlide = (index: number) => {
+    setActiveSlide(index);
+    setProgress(0);
+  };
+  
+  // Auto-advance slides and progress bar
+  useEffect(() => {
+    if (!isOpen || isPaused) return;
+    
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        const newProgress = prev + 1;
+        
+        // When progress reaches 100, advance to next slide
+        if (newProgress >= 100) {
+          setTimeout(() => {
+            goToNextSlide();
+          }, 0);
+          return 0;
+        }
+        
+        return newProgress;
+      });
+    }, AUTOPLAY_DURATION / 100);
+    
+    return () => clearInterval(progressInterval);
+  }, [isOpen, activeSlide, isPaused]);
+  
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-0">
-          <DialogTitle className="text-2xl font-bold">2025 in Numbers</DialogTitle>
-          <DialogDescription className="text-sm text-gray-500">
-            Your annual financial review
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-black text-white shadow-2xl"
+        onPointerDown={handleTouch}
+        onPointerUp={handleTouchEnd}>
         
-        <div className="p-6 pt-2">
-          <Carousel className="w-full" opts={{ loop: true }}>
-            <CarouselContent>
+        {/* Story indicators */}
+        <div className="px-2 pt-2">
+          <StoryProgressIndicator 
+            totalSlides={totalSlides} 
+            activeSlide={activeSlide} 
+            progress={progress} 
+            onSlideClick={goToSlide}
+          />
+        </div>
+        
+        {/* Slide content */}
+        <div className="p-6 h-[500px] relative">
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={activeSlide}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+              className="h-full"
+            >
               {/* Slide 1: Your Investment Focus */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="rounded-lg p-4">
-                    <h3 className="text-xl font-semibold mb-4">Your Investment Focus</h3>
-                    <div className="h-[300px]">
-                      {activeCategory !== null && (
-                        <button 
-                          onClick={handleBackToCategories}
-                          className="text-sm text-gray-500 hover:text-gray-700 mb-4"
-                        >
-                          ← Back to all categories
-                        </button>
-                      )}
+              {activeSlide === 0 && (
+                <div className="h-full flex flex-col">
+                  <h2 className="text-2xl font-bold mb-4">Your Investment Focus</h2>
+                  <div className="flex-grow relative">
+                    {activeCategory !== null && (
+                      <button 
+                        onClick={handleBackToCategories}
+                        className="text-sm text-gray-300 hover:text-white mb-4 inline-flex items-center"
+                      >
+                        <ArrowLeft className="h-4 w-4 mr-1" /> Back to all categories
+                      </button>
+                    )}
+                    <div className="h-full">
                       <BubbleChart
                         categories={investmentCategories}
                         activeCategory={activeCategory}
@@ -134,100 +199,144 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                     </div>
                   </div>
                 </div>
-              </CarouselItem>
+              )}
               
               {/* Slide 2: Your Spending */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="rounded-lg p-4">
-                    <h3 className="text-xl font-semibold mb-2">You spent 3.750€</h3>
-                    <p className="text-gray-500 mb-4">These are your top categories:</p>
-                    <div className="space-y-4">
+              {activeSlide === 1 && (
+                <div className="h-full flex flex-col">
+                  <h2 className="text-2xl font-bold mb-4">Your Spending</h2>
+                  <div className="flex-grow">
+                    <div className="text-xl mb-2">You spent <span className="font-bold">3.750€</span></div>
+                    <p className="text-gray-300 mb-6">These are your top categories:</p>
+                    <div className="space-y-5">
                       {spendingCategories.map((category, index) => (
-                        <div key={index} className="flex items-center justify-between border-b pb-2">
-                          <div className="flex items-center">
-                            <span className="font-medium mr-2">{index + 1}.</span>
-                            <span>{category.name}</span>
-                          </div>
-                          <div className="text-right">
-                            <div className="font-semibold">{category.amount}</div>
-                            <div className={`text-xs ${category.status === 'Highest' ? 'text-tr-green' : 
-                              category.status === 'Lowest' ? 'text-red-500' : 'text-gray-500'}`}>
-                              {category.status} {category.percentage}
+                        <div key={index} className="mb-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center">
+                              <span className="text-gray-300 mr-2">{index + 1}.</span>
+                              <span className="font-medium">{category.name}</span>
                             </div>
+                            <div className="text-right">
+                              <div className="font-bold">{category.amount}</div>
+                            </div>
+                          </div>
+                          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+                            <div 
+                              className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500" 
+                              style={{ width: category.percentage }}
+                            ></div>
+                          </div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            {category.status} · {category.percentage}
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
-              </CarouselItem>
+              )}
               
               {/* Slide 3: Saveback */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="rounded-lg p-4">
-                    <h3 className="text-xl font-semibold mb-4">Saveback</h3>
-                    <div className="bg-gray-50 rounded-lg p-6 text-center">
-                      <p className="text-lg mb-2">You collected <span className="font-bold">285€</span> with Saveback</p>
-                      <p className="text-gray-600 mb-6">Invested with 7% p.a, this will turn out to <span className="font-bold">1,240€</span> when you retire (before tax)</p>
-                      
-                      <Button className="w-full">
-                        Invest more to close the pension gap
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+              {activeSlide === 2 && (
+                <div className="h-full flex flex-col">
+                  <h2 className="text-2xl font-bold mb-4">Saveback</h2>
+                  <div className="flex-grow flex flex-col justify-center items-center text-center">
+                    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-200 mb-3">285€</div>
+                    <p className="text-xl mb-6">collected with Saveback</p>
+                    <div className="mb-10 w-full">
+                      <div className="w-full flex items-center justify-between mb-2">
+                        <span className="text-gray-400 text-sm">Current</span>
+                        <span className="text-gray-400 text-sm">When you retire</span>
+                      </div>
+                      <Progress value={22} className="h-3 bg-gray-800" />
+                      <div className="w-full flex items-center justify-between mt-2">
+                        <span className="text-lg font-medium">285€</span>
+                        <span className="text-lg font-medium text-tr-green">1,240€</span>
+                      </div>
                     </div>
+                    <Button 
+                      className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    >
+                      Invest more to close the pension gap
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-              </CarouselItem>
+              )}
               
               {/* Slide 4: RoundUp */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="rounded-lg p-4">
-                    <h3 className="text-xl font-semibold mb-4">RoundUp</h3>
-                    <div className="bg-gray-50 rounded-lg p-6 text-center">
-                      <p className="text-lg mb-2">You collected <span className="font-bold">124€</span> with RoundUp</p>
-                      <p className="text-gray-600 mb-6">Invested with 7% p.a, this will turn out to <span className="font-bold">540€</span> when you retire (before tax)</p>
-                      
-                      <Button className="w-full">
-                        Invest more to close the pension gap
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+              {activeSlide === 3 && (
+                <div className="h-full flex flex-col">
+                  <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
+                  <div className="flex-grow flex flex-col justify-center items-center text-center">
+                    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400 mb-3">124€</div>
+                    <p className="text-xl mb-6">collected with RoundUp</p>
+                    <div className="mb-10 w-full">
+                      <div className="w-full flex items-center justify-between mb-2">
+                        <span className="text-gray-400 text-sm">Current</span>
+                        <span className="text-gray-400 text-sm">When you retire</span>
+                      </div>
+                      <Progress value={18} className="h-3 bg-gray-800" />
+                      <div className="w-full flex items-center justify-between mt-2">
+                        <span className="text-lg font-medium">124€</span>
+                        <span className="text-lg font-medium text-tr-green">540€</span>
+                      </div>
                     </div>
+                    <Button 
+                      className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600"
+                    >
+                      Invest more to close the pension gap
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-              </CarouselItem>
+              )}
               
               {/* Slide 5: Investment Performance */}
-              <CarouselItem>
-                <div className="p-1">
-                  <div className="rounded-lg p-4">
-                    <h3 className="text-xl font-semibold mb-4">Investment Performance</h3>
-                    <div className="bg-gray-50 rounded-lg p-6 text-center">
-                      <p className="text-2xl font-bold text-tr-green mb-4">+7.2%</p>
-                      <p className="text-gray-700">Your investments went up <span className="font-bold">7.2%</span> this year.</p>
-                      <p className="text-tr-green font-medium mb-6">You beat the MSCI World Index by 1.3%</p>
-                      
-                      <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden mb-2">
-                        <div className="bg-tr-green h-2 rounded-full" style={{ width: "85%" }}></div>
+              {activeSlide === 4 && (
+                <div className="h-full flex flex-col">
+                  <h2 className="text-2xl font-bold mb-4">Investment Performance</h2>
+                  <div className="flex-grow flex flex-col justify-center items-center">
+                    <div className="text-5xl font-bold text-tr-green mb-3">+7.2%</div>
+                    <p className="text-center mb-8">
+                      Your investments went up <span className="font-bold">7.2%</span> this year.<br/>
+                      <span className="text-tr-green">You beat the MSCI World Index by 1.3%</span>
+                    </p>
+                    
+                    <div className="w-full">
+                      <div className="flex justify-between text-xs text-gray-400 mb-1">
+                        <span>0%</span>
+                        <span>8%</span>
                       </div>
-                      <div className="flex justify-between text-xs text-gray-500">
-                        <span>Your portfolio: 7.2%</span>
-                        <span>MSCI World: 5.9%</span>
+                      <div className="w-full bg-gray-800 h-6 rounded-full overflow-hidden mb-1 relative">
+                        {/* MSCI Marker */}
+                        <div className="absolute h-full bg-gray-600 w-[1px] left-[73.75%]"></div>
+                        {/* Your Portfolio */}
+                        <div className="h-full bg-gradient-to-r from-green-500 to-tr-green rounded-full" style={{ width: "90%" }}></div>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="font-medium">Your portfolio: <span className="text-tr-green">7.2%</span></span>
+                        <span className="text-gray-400">MSCI: 5.9%</span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </CarouselItem>
-            </CarouselContent>
-            
-            {/* Navigation buttons positioned below content with fixed spacing */}
-            <div className="flex items-center justify-center gap-4 py-4 mt-2">
-              <CarouselPrevious />
-              <CarouselNext />
-            </div>
-          </Carousel>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+        
+        {/* Navigation controls */}
+        <div className="absolute inset-0 flex">
+          <div 
+            className="w-1/3 h-full cursor-pointer z-10" 
+            onClick={goToPrevSlide}
+          />
+          <div className="w-1/3 h-full" />
+          <div 
+            className="w-1/3 h-full cursor-pointer z-10" 
+            onClick={goToNextSlide}
+          />
         </div>
       </DialogContent>
     </Dialog>
