@@ -25,8 +25,10 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
         </div>
         
         {/* Actual content */}
-        <div className="h-full overflow-y-auto">
-          {children}
+        <div className="h-full overflow-y-auto relative" style={{ maxWidth: '362px' }}>
+          <div className="phone-frame-content">
+            {children}
+          </div>
         </div>
         
         {/* Home bar indicator */}
