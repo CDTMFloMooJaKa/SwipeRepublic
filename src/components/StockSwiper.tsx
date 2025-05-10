@@ -150,6 +150,7 @@ interface StockSwiperProps {
 const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
   const [currentStockIndex, setCurrentStockIndex] = useState(0);
   const [swipedStocks, setSwipedStocks] = useState<{id: number, liked: boolean}[]>([]);
+  const controls = useAnimation();
   
   const handleSwipe = (direction: 'left' | 'right') => {
     setSwipedStocks(prev => [...prev, {id: stocks[currentStockIndex].id, liked: direction === 'right'}]);
@@ -168,7 +169,14 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
   };
   
   const handleManualSwipe = (direction: 'left' | 'right') => {
-    handleSwipe(direction);
+    // Apply animation based on direction
+    if (direction === 'right') {
+      controls.start({ x: 500, opacity: 0, transition: { duration: 0.3 } })
+        .then(() => handleSwipe(direction));
+    } else {
+      controls.start({ x: -500, opacity: 0, transition: { duration: 0.3 } })
+        .then(() => handleSwipe(direction));
+    }
   };
   
   return (
@@ -183,10 +191,18 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
           <div className="relative w-full max-w-md h-[500px] mx-auto">
             {/* Show current stock if available */}
             {currentStockIndex < stocks.length ? (
-              <StockCard 
-                stock={stocks[currentStockIndex]} 
-                onSwipe={handleSwipe} 
-              />
+              <motion.div
+                key={stocks[currentStockIndex].id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                className="w-full"
+              >
+                <StockCard 
+                  stock={stocks[currentStockIndex]} 
+                  onSwipe={handleSwipe} 
+                />
+              </motion.div>
             ) : (
               <div className="flex items-center justify-center h-full">
                 <p className="text-gray-500">No more stocks to show</p>
