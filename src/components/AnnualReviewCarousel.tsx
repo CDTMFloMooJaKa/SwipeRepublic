@@ -110,7 +110,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
         </DialogHeader>
         
         <div className="p-6 pt-2">
-          <Carousel className="w-full">
+          <Carousel className="w-full" opts={{ loop: true }}>
             <CarouselContent>
               {/* Slide 1: Your Investment Focus */}
               <CarouselItem>
@@ -222,8 +222,8 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
               </CarouselItem>
             </CarouselContent>
             <div className="flex items-center justify-center gap-4 py-4">
-              <CarouselPrevious className="position-static relative inset-0 left-0 right-0 translate-y-0" />
-              <CarouselNext className="position-static relative inset-0 left-0 right-0 translate-y-0" />
+              <CarouselPrevious />
+              <CarouselNext />
             </div>
           </Carousel>
         </div>
