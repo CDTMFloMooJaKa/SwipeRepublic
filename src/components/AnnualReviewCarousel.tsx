@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { 
   Dialog,
   DialogContent,
+  DialogClose,
 } from "@/components/ui/dialog";
 import BubbleChart, { Category } from './BubbleChart';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, X } from 'lucide-react';
 import { Button } from './ui/button';
 import StoryProgressIndicator from './StoryProgressIndicator';
 import { Progress } from './ui/progress';
@@ -152,7 +153,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
   
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-black text-white shadow-2xl"
+      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white text-black shadow-2xl h-[85vh] max-h-screen"
         onPointerDown={handleTouch}
         onPointerUp={handleTouchEnd}>
         
@@ -165,9 +166,14 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
             onSlideClick={goToSlide}
           />
         </div>
+
+        {/* Close Button - Positioned absolutely to prevent navigation issues */}
+        <DialogClose className="absolute top-2 right-2 z-50 rounded-full p-2 hover:bg-gray-100">
+          <X className="h-5 w-5" />
+        </DialogClose>
         
         {/* Slide content */}
-        <div className="p-6 h-[500px] relative">
+        <div className="p-6 h-full relative">
           <AnimatePresence mode="wait">
             <motion.div 
               key={activeSlide}
@@ -185,7 +191,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                     {activeCategory !== null && (
                       <button 
                         onClick={handleBackToCategories}
-                        className="text-sm text-gray-300 hover:text-white mb-4 inline-flex items-center"
+                        className="text-sm text-gray-600 hover:text-black mb-4 inline-flex items-center"
                       >
                         <ArrowLeft className="h-4 w-4 mr-1" /> Back to all categories
                       </button>
@@ -207,26 +213,26 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                   <h2 className="text-2xl font-bold mb-4">Your Spending</h2>
                   <div className="flex-grow">
                     <div className="text-xl mb-2">You spent <span className="font-bold">3.750€</span></div>
-                    <p className="text-gray-300 mb-6">These are your top categories:</p>
+                    <p className="text-gray-600 mb-6">These are your top categories:</p>
                     <div className="space-y-5">
                       {spendingCategories.map((category, index) => (
                         <div key={index} className="mb-4">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center">
-                              <span className="text-gray-300 mr-2">{index + 1}.</span>
+                              <span className="text-gray-600 mr-2">{index + 1}.</span>
                               <span className="font-medium">{category.name}</span>
                             </div>
                             <div className="text-right">
                               <div className="font-bold">{category.amount}</div>
                             </div>
                           </div>
-                          <div className="w-full h-3 bg-gray-800 rounded-full overflow-hidden">
+                          <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
                             <div 
                               className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500" 
                               style={{ width: category.percentage }}
                             ></div>
                           </div>
-                          <div className="text-xs text-gray-400 mt-1">
+                          <div className="text-xs text-gray-500 mt-1">
                             {category.status} · {category.percentage}
                           </div>
                         </div>
@@ -241,21 +247,21 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 <div className="h-full flex flex-col">
                   <h2 className="text-2xl font-bold mb-4">Saveback</h2>
                   <div className="flex-grow flex flex-col justify-center items-center text-center">
-                    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-200 mb-3">285€</div>
+                    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 mb-3">285€</div>
                     <p className="text-xl mb-6">collected with Saveback</p>
                     <div className="mb-10 w-full">
                       <div className="w-full flex items-center justify-between mb-2">
-                        <span className="text-gray-400 text-sm">Current</span>
-                        <span className="text-gray-400 text-sm">When you retire</span>
+                        <span className="text-gray-500 text-sm">Current</span>
+                        <span className="text-gray-500 text-sm">When you retire</span>
                       </div>
-                      <Progress value={22} className="h-3 bg-gray-800" />
+                      <Progress value={22} className="h-3 bg-gray-100" />
                       <div className="w-full flex items-center justify-between mt-2">
                         <span className="text-lg font-medium">285€</span>
                         <span className="text-lg font-medium text-tr-green">1,240€</span>
                       </div>
                     </div>
                     <Button 
-                      className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                      className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
                     >
                       Invest more to close the pension gap
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -269,21 +275,21 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 <div className="h-full flex flex-col">
                   <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
                   <div className="flex-grow flex flex-col justify-center items-center text-center">
-                    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400 mb-3">124€</div>
+                    <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-3">124€</div>
                     <p className="text-xl mb-6">collected with RoundUp</p>
                     <div className="mb-10 w-full">
                       <div className="w-full flex items-center justify-between mb-2">
-                        <span className="text-gray-400 text-sm">Current</span>
-                        <span className="text-gray-400 text-sm">When you retire</span>
+                        <span className="text-gray-500 text-sm">Current</span>
+                        <span className="text-gray-500 text-sm">When you retire</span>
                       </div>
-                      <Progress value={18} className="h-3 bg-gray-800" />
+                      <Progress value={18} className="h-3 bg-gray-100" />
                       <div className="w-full flex items-center justify-between mt-2">
                         <span className="text-lg font-medium">124€</span>
                         <span className="text-lg font-medium text-tr-green">540€</span>
                       </div>
                     </div>
                     <Button 
-                      className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600"
+                      className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white"
                     >
                       Invest more to close the pension gap
                       <ArrowRight className="ml-2 h-4 w-4" />
@@ -304,19 +310,19 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                     </p>
                     
                     <div className="w-full">
-                      <div className="flex justify-between text-xs text-gray-400 mb-1">
+                      <div className="flex justify-between text-xs text-gray-500 mb-1">
                         <span>0%</span>
                         <span>8%</span>
                       </div>
-                      <div className="w-full bg-gray-800 h-6 rounded-full overflow-hidden mb-1 relative">
+                      <div className="w-full bg-gray-100 h-6 rounded-full overflow-hidden mb-1 relative">
                         {/* MSCI Marker */}
-                        <div className="absolute h-full bg-gray-600 w-[1px] left-[73.75%]"></div>
+                        <div className="absolute h-full bg-gray-300 w-[1px] left-[73.75%]"></div>
                         {/* Your Portfolio */}
                         <div className="h-full bg-gradient-to-r from-green-500 to-tr-green rounded-full" style={{ width: "90%" }}></div>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="font-medium">Your portfolio: <span className="text-tr-green">7.2%</span></span>
-                        <span className="text-gray-400">MSCI: 5.9%</span>
+                        <span className="text-gray-500">MSCI: 5.9%</span>
                       </div>
                     </div>
                   </div>
@@ -326,16 +332,18 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
           </AnimatePresence>
         </div>
         
-        {/* Navigation controls */}
-        <div className="absolute inset-0 flex">
+        {/* Navigation controls - moved from absolute positioning to fixed areas */}
+        <div className="absolute inset-0 flex" style={{ pointerEvents: 'none' }}>
           <div 
             className="w-1/3 h-full cursor-pointer z-10" 
             onClick={goToPrevSlide}
+            style={{ pointerEvents: 'auto' }}
           />
           <div className="w-1/3 h-full" />
           <div 
             className="w-1/3 h-full cursor-pointer z-10" 
             onClick={goToNextSlide}
+            style={{ pointerEvents: 'auto' }}
           />
         </div>
       </DialogContent>
