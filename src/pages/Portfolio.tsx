@@ -93,7 +93,7 @@ const Portfolio: React.FC = () => {
         {/* Scrollable Cards Section */}
         <div className="mt-6 mb-6 overflow-x-auto scrollbar-none">
           <div className="flex gap-3" style={{ paddingBottom: '8px' }}>
-            {/* Markets Today Card - Now with new image */}
+            {/* Markets Today Card - Now with updated text positioning */}
             <Card 
               className="p-4 flex flex-col justify-between border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0 cursor-pointer"
               style={{
@@ -115,11 +115,11 @@ const Portfolio: React.FC = () => {
               {/* Overlay to ensure text visibility */}
               <div className="absolute inset-0 bg-black/30 z-10" />
               
-              {/* Content with z-index to appear above the background */}
-              <div className="relative z-20 h-full flex flex-col justify-between">
+              {/* Content with z-index to appear above the background, now aligned to bottom */}
+              <div className="relative z-20 h-full flex flex-col justify-end">
                 <div>
-                  <h2 className="text-xl font-bold text-left text-white">Markets Today</h2>
-                  <p className="text-gray-100 text-left text-xs mt-1">See what people buy</p>
+                  <p className="text-gray-100 text-xs mb-1">See what people buy</p>
+                  <h2 className="text-xl font-bold text-white">Markets Today</h2>
                 </div>
                 <div className="flex items-center justify-end mt-1">
                   <ArrowRight className="h-5 w-5 text-white" />
@@ -127,7 +127,7 @@ const Portfolio: React.FC = () => {
               </div>
             </Card>
             
-            {/* Annual Review Card - Now second */}
+            {/* Annual Review Card - Now with updated text positioning */}
             <Button 
               variant="outline" 
               className="p-4 h-auto flex flex-col items-start border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0"
@@ -147,11 +147,11 @@ const Portfolio: React.FC = () => {
               {/* Overlay to ensure text visibility */}
               <div className="absolute inset-0 bg-black/30 z-10" />
               
-              {/* Content with z-index to appear above the background */}
-              <div className="relative z-20 h-full flex flex-col justify-between w-full">
+              {/* Content with z-index to appear above the background, now aligned to bottom */}
+              <div className="relative z-20 h-full flex flex-col justify-end w-full">
                 <div>
-                  <h2 className="text-xl font-bold text-left text-white">2025 in Numbers</h2>
-                  <p className="text-gray-100 text-left text-xs mt-1">Discover your financial highlights</p>
+                  <p className="text-gray-100 text-xs mb-1">Discover your financial highlights</p>
+                  <h2 className="text-xl font-bold text-white">2025 in Numbers</h2>
                 </div>
                 <div className="flex items-center justify-end mt-1">
                   <ArrowRight className="h-5 w-5 text-white" />
