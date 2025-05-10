@@ -4,6 +4,7 @@ import BubbleChart, { Category } from './BubbleChart';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
 import StoryCarousel from './StoryCarousel';
+import { BarChart, Bar, XAxis, Cell, ResponsiveContainer, LabelList } from 'recharts';
 
 // Investment focus data
 const investmentCategories: Category[] = [
@@ -79,6 +80,20 @@ const getStatusFromPercentage = (percentage: number): string => {
 const calculateFutureValue = (presentValue: number, interestRate: number, years: number): number => {
   return Math.round(presentValue * Math.pow(1 + interestRate, years));
 };
+
+// Performance comparison data for the bar chart
+const performanceData = [
+  {
+    name: 'Your portfolio',
+    value: 7.2,
+    color: 'url(#portfolioGradient)'
+  },
+  {
+    name: 'MSCI World',
+    value: 5.9,
+    color: '#8E9196'
+  }
+];
 
 interface AnnualReviewCarouselProps {
   isOpen: boolean;
@@ -219,7 +234,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 5: Investment Performance
+    // Slide 5: Investment Performance - Updated with bar chart
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Investment Performance</h2>
       <div className="flex-grow flex flex-col justify-center items-center">
@@ -230,17 +245,48 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
         </p>
         
         <div className="w-full">
-          <div className="flex justify-between text-xs text-gray-500 mb-1">
-            <span>0%</span>
-            <span>8%</span>
-          </div>
-          <div className="w-full bg-gray-200 h-6 rounded-full overflow-hidden mb-1 relative">
-            <div className="absolute h-full bg-gray-400 w-[1px] left-[73.75%]"></div>
-            <div className="h-full bg-gradient-to-r from-green-400 to-tr-green rounded-full" style={{ width: "90%" }}></div>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="font-medium">Your portfolio: <span className="text-tr-green">7.2%</span></span>
-            <span className="text-gray-500">MSCI: 5.9%</span>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                width={500}
+                height={200}
+                data={performanceData}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+                barSize={40}
+              >
+                <XAxis 
+                  dataKey="name" 
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{fontSize: 14, fontWeight: 500}}
+                />
+                <defs>
+                  <linearGradient id="portfolioGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10B981" />
+                    <stop offset="100%" stopColor="#34D399" />
+                  </linearGradient>
+                </defs>
+                <Bar 
+                  dataKey="value" 
+                  radius={[4, 4, 0, 0]}
+                >
+                  {performanceData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                  <LabelList 
+                    dataKey="value" 
+                    position="top" 
+                    formatter={(value: number) => `${value}%`}
+                    style={{ fontWeight: 'bold' }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
