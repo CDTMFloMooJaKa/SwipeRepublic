@@ -146,5 +146,31 @@
     left: 8px !important;
     right: 8px !important;
   }
+  
+  /* Fix for full-screen components like StoryCarousel */
+  .phone-frame-content .fixed.inset-0 {
+    width: 362px !important;
+    height: 750px !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 32px !important;
+    overflow: hidden !important;
+  }
+  
+  /* Ensure overlays stay within the phone frame */
+  .phone-frame-overlay {
+    width: 362px !important;
+    height: 750px !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 32px !important;
+    overflow: hidden !important;
+    position: absolute !important;
+  }
 }
-

@@ -20,19 +20,19 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="relative w-[390px] h-[844px] bg-white rounded-[60px] shadow-2xl overflow-hidden border-[14px] border-black">
         {/* Notch */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[180px] h-[30px] bg-black rounded-b-[20px] z-10 flex items-center justify-center">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[180px] h-[30px] bg-black rounded-b-[20px] z-50 flex items-center justify-center">
           <div className="w-[10px] h-[10px] bg-gray-500 rounded-full mr-2"></div>
         </div>
         
         {/* Actual content */}
-        <div className="h-full overflow-y-auto relative" style={{ maxWidth: '362px' }}>
-          <div className="phone-frame-content">
+        <div className="h-full overflow-hidden relative" style={{ maxWidth: '362px' }}>
+          <div className="phone-frame-content h-full overflow-y-auto overflow-x-hidden">
             {children}
           </div>
         </div>
         
         {/* Home bar indicator */}
-        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[134px] h-[5px] bg-gray-400 rounded-full"></div>
+        <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-[134px] h-[5px] bg-gray-400 rounded-full z-50"></div>
         
         {/* Phone model indicator */}
         <div className="absolute bottom-[-50px] left-1/2 transform -translate-x-1/2 text-gray-400 text-xs flex items-center">

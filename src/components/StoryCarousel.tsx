@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StoryProgressIndicator from './StoryProgressIndicator';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export interface StoryCarouselProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   onPauseChange
 }) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [activeSlide, setActiveSlide] = useState(0);
   const [progress, setProgress] = useState(0);
   const [internalIsPaused, setInternalIsPaused] = useState(false);
@@ -143,9 +145,13 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   if (!isOpen) return null;
   
+  const containerClasses = isMobile 
+    ? "fixed inset-0 z-50 flex flex-col bg-white"
+    : "fixed inset-0 z-50 flex flex-col bg-white phone-frame-content";
+    
   return (
     <div 
-      className="fixed inset-0 z-50 flex flex-col bg-white"
+      className={containerClasses}
       onPointerDown={handleTouch}
       onPointerUp={handleTouchEnd}
     >

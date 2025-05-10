@@ -71,7 +71,7 @@ const SheetContent = React.forwardRef<
         ref={ref}
         className={cn(
           sheetVariants({ side }), 
-          isMobile ? "" : "phone-frame-content-modal", 
+          isMobile ? "" : "phone-frame-content", 
           className
         )}
         {...props}
