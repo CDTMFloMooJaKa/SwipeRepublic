@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search, ArrowRight, Swipe } from 'lucide-react';
+import { Search, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import StockSwiper from './StockSwiper';
 import { useState } from 'react';
@@ -21,7 +21,10 @@ const BottomNav: React.FC = () => {
           onClick={() => setShowSwiper(true)}
           className="bg-purple-600 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg"
         >
-          <Swipe className="w-6 h-6" />
+          <div className="flex">
+            <ArrowLeft className="w-5 h-5 -mr-1" />
+            <ArrowRight className="w-5 h-5 -ml-1" />
+          </div>
         </button>
         
         <button className="bg-black text-white rounded-full py-3 px-6 flex items-center justify-center w-[40%]">
