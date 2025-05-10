@@ -221,7 +221,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 </div>
               </CarouselItem>
             </CarouselContent>
-            <div className="flex items-center justify-center gap-4 py-4">
+            <div className="flex items-center justify-center gap-4 py-4 mt-2">
               <CarouselPrevious />
               <CarouselNext />
             </div>
