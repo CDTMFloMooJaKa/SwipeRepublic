@@ -10,10 +10,10 @@ export default defineConfig(({ mode }) => ({
     port: 3000,
     proxy: {
       '/load_top_investments': {
-        target: 'https://cdtmbackend.onrender.com', // Replace with your backend API
-        changeOrigin: true,  // Ensure the origin is changed
-        secure: true,       // If you're using HTTP, set to false; true for HTTPS
-        rewrite: (path) => path.replace(/^\/load_top_investments/, ''),
+        target: 'https://cdtmbackend.onrender.com',  // Your backend API
+        changeOrigin: true,  // Ensures the origin of the request is changed to the target's origin
+        secure: true,       // Should be true for HTTPS. If using HTTP, set to false.
+        rewrite: (path) => path.replace(/^\/load_top_investments/, ''),  // Rewriting path as needed
       },
     },
   },
