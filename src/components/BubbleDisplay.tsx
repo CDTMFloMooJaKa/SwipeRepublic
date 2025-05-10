@@ -25,7 +25,7 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
             percentage={bubble.percentage}
             color={bubble.color}
             size={bubble.size}
-            onClick={() => onCategoryClick?.(index)}
+            onClick={activeCategory === null ? () => onCategoryClick?.(index) : undefined}
             position={bubble.position}
             isChild={activeCategory !== null}
           />

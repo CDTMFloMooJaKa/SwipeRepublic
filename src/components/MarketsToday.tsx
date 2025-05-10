@@ -61,18 +61,10 @@ interface MarketsProps {
 
 const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const [activeBubbleCategory, setActiveBubbleCategory] = useState<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
   
   // Handle clicking a bubble category
   const handleCategoryClick = (index: number) => {
     setActiveBubbleCategory(activeBubbleCategory === index ? null : index);
-    setIsPaused(true); // Pause autoplay when interacting with bubbles
-  };
-
-  // Handle going back to main categories
-  const handleBackToCategories = () => {
-    setActiveBubbleCategory(null);
-    setIsPaused(false); // Resume autoplay when going back
   };
   
   // Define the slide contents
@@ -104,15 +96,6 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     <div className="h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Bought Today</h3>
       <div className="flex-1 relative">
-        {activeBubbleCategory !== null && (
-          <button 
-            onClick={handleBackToCategories}
-            className="text-sm text-gray-500 hover:text-gray-700 mb-4"
-          >
-            ← Back to all categories
-          </button>
-        )}
-        
         <BubbleChart 
           categories={boughtToday} 
           activeCategory={activeBubbleCategory}
@@ -125,15 +108,6 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     <div className="h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Sold Today</h3>
       <div className="flex-1 relative">
-        {activeBubbleCategory !== null && (
-          <button 
-            onClick={handleBackToCategories}
-            className="text-sm text-gray-500 hover:text-gray-700 mb-4"
-          >
-            ← Back to all categories
-          </button>
-        )}
-        
         <BubbleChart 
           categories={soldToday} 
           activeCategory={activeBubbleCategory}
@@ -180,8 +154,6 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       slides={slides}
       title="Markets Today"
       autoAdvanceDuration={8000}
-      isPaused={isPaused}
-      onPauseChange={setIsPaused}
     />
   );
 };
