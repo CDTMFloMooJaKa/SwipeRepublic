@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Dialog,
@@ -66,14 +65,21 @@ const investmentCategories: Category[] = [
   }
 ];
 
-// Spending categories data
+// Spending categories data - updated to store only amount and percentage
 const spendingCategories = [
-  { name: "Shopping", amount: "1.500€", status: "Highest", percentage: "40%" },
-  { name: "Errands", amount: "800€", status: "Highest", percentage: "10%" },
-  { name: "Restaurants", amount: "650€", status: "Average", percentage: "5%" },
-  { name: "Entertainment", amount: "450€", status: "Lowest", percentage: "30%" },
-  { name: "Transport", amount: "350€", status: "Average", percentage: "15%" }
+  { name: "Shopping", amount: "1.500€", percentage: 40 },
+  { name: "Errands", amount: "800€", percentage: 10 },
+  { name: "Restaurants", amount: "650€", percentage: 5 },
+  { name: "Entertainment", amount: "450€", percentage: 30 },
+  { name: "Transport", amount: "350€", percentage: 15 }
 ];
+
+// Helper function to determine status based on percentage
+const getStatusFromPercentage = (percentage: number): string => {
+  if (percentage >= 30) return `Highest ${percentage}%`;
+  if (percentage <= 10) return `Lowest ${percentage}%`;
+  return `Average ${percentage}%`;
+};
 
 interface AnnualReviewCarouselProps {
   isOpen: boolean;
@@ -205,7 +211,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 </div>
               )}
               
-              {/* Slide 2: Your Spending */}
+              {/* Slide 2: Your Spending (Updated) */}
               {activeSlide === 1 && (
                 <div className="h-full flex flex-col">
                   <h2 className="text-2xl font-bold mb-4">Your Spending</h2>
@@ -213,28 +219,36 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                     <div className="text-xl mb-2">You spent <span className="font-bold">3.750€</span></div>
                     <p className="text-gray-600 mb-6">These are your top categories:</p>
                     <div className="space-y-5">
-                      {spendingCategories.map((category, index) => (
-                        <div key={index} className="mb-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center">
-                              <span className="text-gray-500 mr-2">{index + 1}.</span>
-                              <span className="font-medium">{category.name}</span>
+                      {spendingCategories.map((category, index) => {
+                        // Calculate width based on amount (remove € symbol and convert to number)
+                        const amountNumber = parseFloat(category.amount.replace('€', '').replace('.', '').replace(',', '.'));
+                        const totalAmount = 3750; // Sum of all amounts
+                        const widthPercentage = (amountNumber / totalAmount) * 100;
+                        const status = getStatusFromPercentage(category.percentage);
+                        
+                        return (
+                          <div key={index} className="mb-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="flex items-center">
+                                <span className="text-gray-500 mr-2">{index + 1}.</span>
+                                <span className="font-medium">{category.name}</span>
+                              </div>
+                              <div className="text-right">
+                                <div className="font-bold">{category.amount}</div>
+                              </div>
                             </div>
-                            <div className="text-right">
-                              <div className="font-bold">{category.amount}</div>
+                            <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500" 
+                                style={{ width: `${widthPercentage}%` }}
+                              ></div>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {status} · {category.percentage}%
                             </div>
                           </div>
-                          <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full rounded-full bg-gradient-to-r from-purple-500 to-pink-500" 
-                              style={{ width: category.percentage }}
-                            ></div>
-                          </div>
-                          <div className="text-xs text-gray-500 mt-1">
-                            {category.status} · {category.percentage}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
