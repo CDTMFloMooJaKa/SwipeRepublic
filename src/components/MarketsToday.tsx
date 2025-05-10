@@ -4,6 +4,7 @@ import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import StoryCarousel from './StoryCarousel';
+import { Bot } from 'lucide-react';
 
 // Mock data for news articles
 const newsArticles = [
@@ -41,12 +42,16 @@ const soldToday: Category[] = [
   { name: "Industrials", percentage: "9%", color: "hsl(var(--tr-green))", subcategories: [] },
 ];
 
-// Mock data for top assets
+// Expanded mock data for top assets - now with 4 assets each
 const topAssets = [
   { name: "Global Tech ETF", change: 3.42, positive: true },
   { name: "Healthcare Innovation", change: 2.87, positive: true },
+  { name: "Sustainable Energy", change: 2.53, positive: true },
+  { name: "AI & Robotics Fund", change: 2.24, positive: true },
   { name: "European Dividend", change: -1.95, positive: false },
   { name: "Emerging Markets", change: -2.31, positive: false },
+  { name: "Commodities Index", change: -2.68, positive: false },
+  { name: "Small Cap Value", change: -3.05, positive: false },
 ];
 
 interface MarketsProps {
@@ -66,7 +71,13 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const slides = [
     // Slide 1: News Today
     <div className="h-full flex flex-col">
-      <h3 className="text-2xl font-bold mb-6">News Today</h3>
+      <div className="mb-6">
+        <h3 className="text-2xl font-bold">News Today</h3>
+        <div className="flex items-center text-gray-500 mt-1">
+          <Bot className="h-4 w-4 mr-1.5" />
+          <span className="text-sm">Selected for you</span>
+        </div>
+      </div>
       <div className="space-y-4 flex-1">
         {newsArticles.map((article, index) => (
           <Card key={index} className="p-4">

@@ -93,7 +93,7 @@ const Portfolio: React.FC = () => {
         {/* Scrollable Cards Section */}
         <div className="mt-6 mb-6 overflow-x-auto scrollbar-none">
           <div className="flex gap-3" style={{ paddingBottom: '8px' }}>
-            {/* Markets Today Card - Now first */}
+            {/* Markets Today Card - Now with new image */}
             <Card 
               className="p-4 flex flex-col justify-between border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0 cursor-pointer"
               style={{
@@ -107,7 +107,7 @@ const Portfolio: React.FC = () => {
               <div 
                 className="absolute inset-0 z-0 bg-cover bg-center" 
                 style={{
-                  backgroundImage: `url('/lovable-uploads/8abae172-83fe-4ef8-aadd-fb27c22ba5a7.png')`,
+                  backgroundImage: `url('/lovable-uploads/62d7a477-be26-455b-a75e-a9c614db04ac.png')`,
                   opacity: 0.85
                 }} 
               />
