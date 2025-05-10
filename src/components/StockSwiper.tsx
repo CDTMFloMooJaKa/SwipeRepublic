@@ -1,7 +1,6 @@
-
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
-import { Check, X, ArrowUp, ArrowDown, Circle, Info, DollarSign } from 'lucide-react';
+import { Check, X, ArrowUp, ArrowDown, Circle, Info, DollarSign, ArrowLeft } from 'lucide-react';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
 import { WatchlistContext } from '../contexts/WatchlistContext';
 import { Badge } from './ui/badge';
@@ -199,7 +198,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
         
         <div className="p-4">
           {/* Header with logo and company info side by side */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center">
               <Avatar className="h-8 w-8 mr-2">
                 <AvatarImage src={stock.image} alt={`${stock.name} logo`} />
@@ -214,12 +213,12 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
             </span>
           </div>
           
-          <div className="mb-3">
+          <div className="mb-2">
             <p className="text-sm text-gray-600 line-clamp-2">{stock.description}</p>
           </div>
 
           {/* AI Signal Section */}
-          <div className="mt-2 border-t border-gray-100 pt-2">
+          <div className="mt-1 border-t border-gray-100 pt-1">
             <div className="flex items-center mb-1">
               <h4 className="font-semibold text-gray-800 text-sm">AI Signal</h4>
             </div>
@@ -239,7 +238,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
             </div>
           </div>
           
-          <div className="mt-2">
+          <div className="mt-1">
             <span className="bg-gray-100 text-gray-800 py-1 px-2 rounded-full text-xs">
               {stock.industry}
             </span>
@@ -261,9 +260,13 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
   const controls = useAnimation();
   const { addToWatchlist } = useContext(WatchlistContext);
   const [buyDialogOpen, setBuyDialogOpen] = useState(false);
-  const [quantity, setQuantity] = useState("1");
-  const [priceType, setPriceType] = useState("market");
+  const [confirmationStep, setConfirmationStep] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState("");
+  const [customAmount, setCustomAmount] = useState("");
   const { toast } = useToast();
+  const availableFunds = 344.53; // Example available funds
+  const predefinedAmounts = ["50", "75", "100", "250"];
+  const fee = 1.00;
   
   const handleSwipe = (direction: 'left' | 'right') => {
     const currentStock = stocks[currentStockIndex];
@@ -302,15 +305,65 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
 
   const handleBuyClick = () => {
     setBuyDialogOpen(true);
+    setConfirmationStep(false);
+    setSelectedAmount("");
+    setCustomAmount("");
+  };
+  
+  const handleAmountSelection = (amount: string) => {
+    setSelectedAmount(amount);
+  };
+  
+  const handleProceedToConfirmation = () => {
+    const amountToUse = selectedAmount === "custom" ? customAmount : selectedAmount;
+    if (!amountToUse || parseFloat(amountToUse) <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please select or enter a valid amount",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSelectedAmount(amountToUse);
+    setConfirmationStep(true);
   };
 
   const handlePurchase = () => {
     const currentStock = stocks[currentStockIndex];
+    const amount = parseFloat(selectedAmount === "custom" ? customAmount : selectedAmount);
+    
     toast({
-      title: "Stock Purchased!",
-      description: `Successfully bought ${quantity} shares of ${currentStock.ticker} at ${currentStock.price}`,
+      title: "Order Placed!",
+      description: `Successfully invested ${amount.toFixed(2)} € in ${currentStock.ticker}`,
     });
     setBuyDialogOpen(false);
+    setConfirmationStep(false);
+  };
+
+  const handleCloseDialog = () => {
+    setBuyDialogOpen(false);
+    setConfirmationStep(false);
+  };
+  
+  const getCurrentStock = () => {
+    return currentStockIndex < stocks.length ? stocks[currentStockIndex] : null;
+  };
+  
+  const calculateShares = () => {
+    const currentStock = getCurrentStock();
+    if (!currentStock) return 0;
+    
+    const amount = parseFloat(selectedAmount === "custom" ? customAmount : selectedAmount);
+    const price = parseFloat(currentStock.price.replace('$', ''));
+    
+    if (isNaN(amount) || isNaN(price) || price === 0) return 0;
+    
+    return amount / price;
+  };
+  
+  const calculateTotal = () => {
+    const amount = parseFloat(selectedAmount === "custom" ? customAmount : selectedAmount);
+    return isNaN(amount) ? 0 : amount + fee;
   };
   
   return (
@@ -323,7 +376,7 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
           </DrawerHeader>
           
           <div className="p-4 flex-1 flex flex-col items-center overflow-hidden">
-            <div className="relative w-full max-w-md h-[450px] mx-auto">
+            <div className="relative w-full max-w-md h-[400px] mx-auto">
               {/* Show current stock if available */}
               {currentStockIndex < stocks.length ? (
                 <motion.div
@@ -378,83 +431,153 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
       </Drawer>
 
       {/* Buy Dialog */}
-      <Dialog open={buyDialogOpen} onOpenChange={setBuyDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Buy {currentStockIndex < stocks.length ? stocks[currentStockIndex].ticker : ''}</DialogTitle>
-            <DialogDescription>
-              Configure your purchase details below
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="quantity" className="text-right">
-                Quantity
-              </Label>
-              <Input
-                id="quantity"
-                type="number"
-                min="1"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                className="col-span-3"
-              />
-            </div>
-            
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="price" className="text-right">
-                Price
-              </Label>
-              <div className="col-span-3">
-                <div className="flex gap-2">
-                  <Button
-                    variant={priceType === "market" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setPriceType("market")}
-                  >
-                    Market Price
-                  </Button>
-                  <Button
-                    variant={priceType === "limit" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setPriceType("limit")}
-                  >
-                    Limit Order
-                  </Button>
+      <Dialog open={buyDialogOpen} onOpenChange={handleCloseDialog}>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+          {!confirmationStep ? (
+            /* First Step: Amount Selection */
+            <div className="flex flex-col">
+              <div className="p-6">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-bold">Investieren</DialogTitle>
+                  <DialogDescription className="text-base font-medium">
+                    {availableFunds.toFixed(2)} € verfügbar
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                  {predefinedAmounts.map((amount) => (
+                    <button
+                      key={amount}
+                      onClick={() => handleAmountSelection(amount)}
+                      className={`p-4 rounded-md text-xl font-bold border ${
+                        selectedAmount === amount 
+                          ? 'border-black bg-gray-100' 
+                          : 'border-gray-300'
+                      }`}
+                    >
+                      {amount} €
+                    </button>
+                  ))}
                 </div>
                 
-                {priceType === "limit" && (
+                <div className="mt-6">
+                  <Label htmlFor="customAmount" className="text-lg font-semibold">
+                    Betrag
+                  </Label>
                   <Input
-                    className="mt-2"
+                    id="customAmount"
                     type="number"
-                    placeholder="Enter limit price"
+                    min="1"
+                    placeholder="Enter custom amount"
+                    value={customAmount}
+                    onChange={(e) => {
+                      setCustomAmount(e.target.value);
+                      setSelectedAmount("custom");
+                    }}
+                    className="mt-2 text-lg"
                   />
-                )}
+                </div>
+              </div>
+              
+              <div className="mt-auto p-6 pt-0">
+                <Button 
+                  onClick={handleProceedToConfirmation}
+                  className="w-full bg-gray-300 hover:bg-gray-400 text-black text-lg font-medium py-6 rounded-md flex items-center justify-between"
+                >
+                  <span>Weiter</span>
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
               </div>
             </div>
-            
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">
-                Total
-              </Label>
-              <div className="col-span-3 font-semibold">
-                {currentStockIndex < stocks.length 
-                  ? `$${(parseFloat(stocks[currentStockIndex].price.replace('$', '')) * parseInt(quantity || "0")).toFixed(2)}`
-                  : '$0.00'
-                }
+          ) : (
+            /* Second Step: Order Confirmation */
+            <div className="flex flex-col h-full">
+              <div className="p-6 pb-0">
+                <button 
+                  onClick={() => setConfirmationStep(false)}
+                  className="mb-4 flex items-center text-gray-600"
+                >
+                  <ArrowLeft className="mr-1 w-5 h-5" />
+                  <span>Zurück</span>
+                </button>
+                
+                <DialogHeader>
+                  <div className="flex items-center">
+                    {getCurrentStock()?.image && (
+                      <Avatar className="h-10 w-10 mr-3">
+                        <AvatarImage src={getCurrentStock()?.image} />
+                      </Avatar>
+                    )}
+                    <DialogTitle className="text-2xl font-bold">
+                      {parseFloat(selectedAmount).toFixed(2)} € investieren
+                    </DialogTitle>
+                  </div>
+                </DialogHeader>
+              </div>
+              
+              <div className="p-6 flex-1">
+                <div className="space-y-4 text-lg">
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Zahlung</span>
+                    <span className="font-medium">Cash</span>
+                  </div>
+                  
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Ordertyp</span>
+                    <span className="font-medium">Kauf</span>
+                  </div>
+                  
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Asset</span>
+                    <span className="font-medium">{getCurrentStock()?.ticker}</span>
+                  </div>
+                  
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Anteile</span>
+                    <span className="font-medium">{calculateShares().toFixed(6)}</span>
+                  </div>
+                  
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Asset-Kurs</span>
+                    <span className="font-medium">{getCurrentStock()?.price}</span>
+                  </div>
+                  
+                  <div className="flex justify-between py-2">
+                    <span className="text-gray-500">Gebühr</span>
+                    <span className="font-medium">{fee.toFixed(2)} €</span>
+                  </div>
+                  
+                  <div className="flex justify-between py-2 border-t border-gray-200 mt-4 pt-4">
+                    <span className="font-bold">Gesamt</span>
+                    <span className="font-bold">{calculateTotal().toFixed(2)} €</span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 text-sm text-gray-500">
+                  <span>Hier findest du das </span>
+                  <button className="text-black font-medium">Kosteninformation</button>
+                </div>
+              </div>
+              
+              <div className="p-6 pt-0 mt-auto flex space-x-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => setConfirmationStep(false)}
+                  className="w-1/4"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+                
+                <Button 
+                  onClick={handlePurchase}
+                  className="w-3/4 bg-black hover:bg-gray-800 text-white text-lg"
+                >
+                  Kaufen
+                  <Check className="ml-2 w-5 h-5" />
+                </Button>
               </div>
             </div>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setBuyDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handlePurchase}>
-              Buy Now
-            </Button>
-          </DialogFooter>
+          )}
         </DialogContent>
       </Dialog>
     </>
