@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Search, ArrowRight, X, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import StockSwiper from './StockSwiper';
 import { useState } from 'react';
