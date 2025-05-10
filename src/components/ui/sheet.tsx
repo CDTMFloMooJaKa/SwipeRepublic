@@ -71,9 +71,13 @@ const SheetContent = React.forwardRef<
         ref={ref}
         className={cn(
           sheetVariants({ side }), 
-          isMobile ? "" : "phone-frame-content max-h-[750px]", 
           className
         )}
+        style={!isMobile ? {
+          maxHeight: '750px',
+          height: side === 'left' || side === 'right' ? '750px' : 'auto',
+          overflowY: 'auto'
+        } : undefined}
         {...props}
       >
         {children}

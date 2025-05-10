@@ -145,13 +145,12 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   if (!isOpen) return null;
   
-  const containerClasses = isMobile 
-    ? "fixed inset-0 z-50 flex flex-col bg-white"
-    : "fixed inset-0 z-50 flex flex-col bg-white phone-frame-content max-h-[750px]";
-    
   return (
     <div 
-      className={containerClasses}
+      className={isMobile 
+        ? "fixed inset-0 z-50 flex flex-col bg-white" 
+        : "fixed z-50 flex flex-col bg-white phone-frame-overlay"}
+      style={!isMobile ? { height: '750px', maxHeight: '750px' } : undefined}
       onPointerDown={handleTouch}
       onPointerUp={handleTouchEnd}
     >
@@ -182,6 +181,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
       <div 
         className="flex-1 w-full overflow-hidden" 
         onClick={handleContainerClick}
+        style={!isMobile ? { maxHeight: 'calc(750px - 120px)' } : undefined}
       >
         <AnimatePresence mode="wait">
           <motion.div 

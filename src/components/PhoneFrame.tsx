@@ -25,8 +25,8 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
         </div>
         
         {/* Actual content */}
-        <div className="h-full overflow-hidden relative" style={{ maxWidth: '362px' }}>
-          <div className="phone-frame-content h-full overflow-y-auto overflow-x-hidden">
+        <div className="h-full overflow-hidden" style={{ maxWidth: '362px', maxHeight: '750px' }}>
+          <div className="phone-frame-content h-full overflow-y-auto overflow-x-hidden" style={{ maxHeight: '750px' }}>
             {children}
           </div>
         </div>

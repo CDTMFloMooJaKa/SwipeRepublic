@@ -148,31 +148,31 @@
   }
   
   /* Fix for full-screen components like StoryCarousel */
-  .phone-frame-content .fixed.inset-0 {
-    width: 362px !important;
-    height: 750px !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: auto !important; /* Prevent it from stretching to bottom */
-    margin-left: auto !important;
-    margin-right: auto !important;
-    border-radius: 32px !important;
-    overflow: hidden !important;
-    max-height: 750px !important; /* Ensure it doesn't grow taller than the frame */
-  }
-  
-  /* Ensure overlays stay within the phone frame */
+  .phone-frame-content .fixed.inset-0,
   .phone-frame-overlay {
     width: 362px !important;
     height: 750px !important;
+    max-height: 750px !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
+    bottom: auto !important; 
     margin-left: auto !important;
     margin-right: auto !important;
     border-radius: 32px !important;
     overflow: hidden !important;
-    position: absolute !important;
+    position: fixed !important;
+  }
+  
+  /* Ensure carousels have proper height */
+  .phone-frame-content [role="region"][aria-roledescription="carousel"] {
+    max-height: 750px !important;
+    height: auto !important;
+  }
+  
+  /* Additional constraint for any fixed positioned elements */
+  .phone-frame-content .fixed {
+    max-height: 750px !important;
+    max-width: 362px !important;
   }
 }
