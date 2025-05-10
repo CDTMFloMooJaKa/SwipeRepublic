@@ -1,10 +1,10 @@
-
-import React, { useState } from 'react';
-import BubbleChart, { Category } from './BubbleChart';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import React from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import StoryCarousel from './StoryCarousel';
+import BubbleChartView from './BubbleChartView';
 import { BarChart, Bar, XAxis, Cell, ResponsiveContainer, LabelList } from 'recharts';
+import { Category } from '@/components/BubbleChart';
 
 // Investment focus data
 const investmentCategories: Category[] = [
@@ -104,41 +104,15 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   isOpen, 
   onOpenChange 
 }) => {
-  const [activeCategory, setActiveCategory] = useState<number | null>(null);
-  
-  // Handle category click
-  const handleCategoryClick = (index: number) => {
-    setActiveCategory(index);
-  };
-
-  // Handle back to main categories
-  const handleBackToCategories = () => {
-    setActiveCategory(null);
-  };
-  
   // Define the slide contents
   const slides = [
     // Slide 1: Your Investment Focus
-    <div className="h-full flex flex-col">
-      <h2 className="text-2xl font-bold mb-4">Your Investment Focus</h2>
-      <div className="flex-grow relative">
-        {activeCategory !== null && (
-          <button 
-            onClick={handleBackToCategories}
-            className="text-sm text-gray-600 hover:text-gray-900 mb-4 inline-flex items-center"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" /> Back to all categories
-          </button>
-        )}
-        <div className="h-full">
-          <BubbleChart
-            categories={investmentCategories}
-            activeCategory={activeCategory}
-            onCategoryClick={handleCategoryClick}
-          />
-        </div>
-      </div>
-    </div>,
+    <BubbleChartView 
+      key="investment-focus"
+      categories={investmentCategories}
+      title="Your Investment Focus"
+      isOpen={isOpen}
+    />,
     
     // Slide 2: Your Spending
     <div className="h-full flex flex-col">
@@ -180,7 +154,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 3: Saveback - Updated format
+    // Slide 3: Saveback
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Saveback</h2>
       <div className="flex-grow flex flex-col justify-center items-center text-center">
@@ -207,7 +181,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 4: RoundUp - Updated format
+    // Slide 4: RoundUp
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
       <div className="flex-grow flex flex-col justify-center items-center text-center">
@@ -234,7 +208,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 5: Investment Performance - Updated with bar chart
+    // Slide 5: Investment Performance
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Investment Performance</h2>
       <div className="flex-grow flex flex-col justify-center items-center">

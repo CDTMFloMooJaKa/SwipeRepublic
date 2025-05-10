@@ -1,13 +1,12 @@
-
-import React, { useState, useContext } from 'react';
-import BubbleChart, { Category } from './BubbleChart';
+import React, { useContext } from 'react';
+import BubbleChartView from './BubbleChartView';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import StoryCarousel from './StoryCarousel';
 import { Bot, Bookmark } from 'lucide-react';
 import { WatchlistContext } from '../contexts/WatchlistContext';
-import { Stock, stocks } from './StockSwiper';
 import { ScrollArea } from './ui/scroll-area';
+import { Category } from './BubbleChart';
 
 // Sample news articles for each stock
 const stockNewsMap = {
@@ -163,25 +162,7 @@ interface MarketsProps {
 }
 
 const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
-  const [activeBubbleCategory, setActiveBubbleCategory] = useState<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
   const { watchlist } = useContext(WatchlistContext);
-  
-  // Handle clicking a bubble category
-  const handleCategoryClick = (index: number, e: React.MouseEvent) => {
-    // Stop event propagation to prevent slide change
-    e.stopPropagation();
-    
-    setActiveBubbleCategory(activeBubbleCategory === index ? null : index);
-    setIsPaused(true); // Pause autoplay when interacting with bubbles
-  };
-
-  // Handle going back to main categories
-  const handleBackToCategories = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveBubbleCategory(null);
-    setIsPaused(false); // Resume autoplay when going back
-  };
   
   // Generate news articles based on watchlist
   const getNewsArticles = () => {
@@ -262,46 +243,20 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     </div>,
     
     // Slide 2: Bought Today
-    <div className="h-full">
-      <h3 className="text-2xl font-bold mb-6">Bought Today</h3>
-      <div className="h-[calc(100%-3rem)]">
-        {activeBubbleCategory !== null && (
-          <button 
-            onClick={handleBackToCategories}
-            className="text-sm text-gray-500 hover:text-gray-700 mb-4"
-          >
-            ← Back to all categories
-          </button>
-        )}
-        
-        <BubbleChart 
-          categories={boughtToday} 
-          activeCategory={activeBubbleCategory}
-          onCategoryClick={handleCategoryClick} 
-        />
-      </div>
-    </div>,
+    <BubbleChartView
+      key="bought-today"
+      categories={boughtToday}
+      title="Bought Today"
+      isOpen={isOpen}
+    />,
     
     // Slide 3: Sold Today
-    <div className="h-full">
-      <h3 className="text-2xl font-bold mb-6">Sold Today</h3>
-      <div className="h-[calc(100%-3rem)]">
-        {activeBubbleCategory !== null && (
-          <button 
-            onClick={handleBackToCategories}
-            className="text-sm text-gray-500 hover:text-gray-700 mb-4"
-          >
-            ← Back to all categories
-          </button>
-        )}
-        
-        <BubbleChart 
-          categories={soldToday} 
-          activeCategory={activeBubbleCategory}
-          onCategoryClick={handleCategoryClick} 
-        />
-      </div>
-    </div>,
+    <BubbleChartView
+      key="sold-today"
+      categories={soldToday}
+      title="Sold Today"
+      isOpen={isOpen}
+    />,
     
     // Slide 4: Your Assets
     <div className="h-full">
@@ -341,8 +296,6 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       slides={slides}
       title="Your Insights"
       autoAdvanceDuration={8000}
-      isPaused={isPaused}
-      onPauseChange={setIsPaused}
     />
   );
 };

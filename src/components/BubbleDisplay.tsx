@@ -17,10 +17,10 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
 }) => {
   return (
     <div className="relative h-full w-full">
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {bubbles.map((bubble, index) => (
           <Bubble
-            key={`${bubble.name}-${index}`}
+            key={`${bubble.name}-${index}-${activeCategory !== null ? 'child' : 'parent'}`}
             name={bubble.name}
             percentage={bubble.percentage}
             color={bubble.color}

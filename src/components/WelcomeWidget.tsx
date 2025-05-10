@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,6 +8,7 @@ import {
   DrawerClose,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { useBubbleChart } from '@/hooks/useBubbleChart';
 import BubbleChart, { Category } from './BubbleChart';
 
 // Mock data for investments with categories and subcategories
@@ -78,22 +78,16 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
 }) => {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  const { 
+    activeCategory, 
+    handleCategoryClick, 
+    handleBackToCategories 
+  } = useBubbleChart(investmentCategories, isOpen);
   
   // If device status is still determining or definitely not mobile, don't render
   if (isMobile === undefined || isMobile === false) {
     return null;
   }
-
-  // Handle category click
-  const handleCategoryClick = (index: number) => {
-    setActiveCategory(index);
-  };
-
-  // Handle back to main categories
-  const handleBackToCategories = () => {
-    setActiveCategory(null);
-  };
 
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
