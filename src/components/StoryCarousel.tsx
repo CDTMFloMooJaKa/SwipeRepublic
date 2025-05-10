@@ -44,6 +44,8 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     setProgress(0);
     
     intervalRef.current = window.setInterval(() => {
+      if (isPaused) return; // Don't advance if paused
+      
       setProgress(prev => {
         const newProgress = prev + (100 / STEPS);
         
@@ -64,7 +66,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   // Effect to handle timer
   useEffect(() => {
-    if (isOpen && !isPaused) {
+    if (isOpen) {
       startTimer();
     } else {
       resetTimer();
@@ -79,7 +81,9 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   const handleSlideChange = (index: number) => {
     setActiveSlide(index);
     resetTimer();
-    startTimer();
+    if (!isPaused) {
+      startTimer();
+    }
   };
 
   // Handle navigation with left/right clicks

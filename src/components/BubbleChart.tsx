@@ -43,10 +43,13 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     setBubbles(positionedBubbles);
   }, [categories, activeCategory]);
 
+  // Pass the click handler only if we're showing main categories
+  const handleCategoryClick = activeCategory === null ? onCategoryClick : undefined;
+
   return (
     <BubbleDisplay 
       bubbles={bubbles} 
-      onCategoryClick={onCategoryClick} 
+      onCategoryClick={handleCategoryClick}
       activeCategory={activeCategory}
     />
   );
