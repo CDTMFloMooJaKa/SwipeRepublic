@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import WelcomeWidget from "@/components/WelcomeWidget";
 import { useIsMobile } from "@/hooks/use-mobile";
+import BottomNav from "@/components/BottomNav";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const Index = () => {
         isOpen={showWelcome}
         onOpenChange={setShowWelcome}
       />
+      <BottomNav />
     </div>
   );
 };
