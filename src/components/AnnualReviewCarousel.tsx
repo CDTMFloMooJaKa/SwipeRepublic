@@ -153,27 +153,26 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
   
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white text-black shadow-2xl h-[85vh] max-h-screen"
-        onPointerDown={handleTouch}
-        onPointerUp={handleTouchEnd}>
-        
-        {/* Story indicators */}
-        <div className="px-2 pt-2">
-          <StoryProgressIndicator 
-            totalSlides={totalSlides} 
-            activeSlide={activeSlide} 
-            progress={progress} 
-            onSlideClick={goToSlide}
-          />
-        </div>
+      <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden bg-white text-black shadow-2xl h-[100vh] max-h-[100vh]">
+        {/* Story progress indicators */}
+        <StoryProgressIndicator 
+          totalSlides={totalSlides} 
+          activeSlide={activeSlide} 
+          progress={progress} 
+          onSlideClick={goToSlide}
+        />
 
-        {/* Close Button - Positioned absolutely to prevent navigation issues */}
-        <DialogClose className="absolute top-2 right-2 z-50 rounded-full p-2 hover:bg-gray-100">
+        {/* Close Button - Using pointer-events-auto to ensure it's clickable */}
+        <DialogClose className="absolute top-2 right-2 z-50 rounded-full p-2 hover:bg-gray-100 pointer-events-auto">
           <X className="h-5 w-5" />
         </DialogClose>
         
         {/* Slide content */}
-        <div className="p-6 h-full relative">
+        <div 
+          className="h-[calc(100vh-36px)] relative"
+          onPointerDown={handleTouch}
+          onPointerUp={handleTouchEnd}
+        >
           <AnimatePresence mode="wait">
             <motion.div 
               key={activeSlide}
@@ -181,13 +180,13 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
-              className="h-full"
+              className="h-full p-6 flex flex-col"
             >
               {/* Slide 1: Your Investment Focus */}
               {activeSlide === 0 && (
                 <div className="h-full flex flex-col">
                   <h2 className="text-2xl font-bold mb-4">Your Investment Focus</h2>
-                  <div className="flex-grow relative">
+                  <div className="flex-grow">
                     {activeCategory !== null && (
                       <button 
                         onClick={handleBackToCategories}
@@ -196,7 +195,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                         <ArrowLeft className="h-4 w-4 mr-1" /> Back to all categories
                       </button>
                     )}
-                    <div className="h-full">
+                    <div className="h-[90%]">
                       <BubbleChart
                         categories={investmentCategories}
                         activeCategory={activeCategory}
@@ -332,19 +331,19 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
           </AnimatePresence>
         </div>
         
-        {/* Navigation controls - moved from absolute positioning to fixed areas */}
-        <div className="absolute inset-0 flex" style={{ pointerEvents: 'none' }}>
-          <div 
-            className="w-1/3 h-full cursor-pointer z-10" 
-            onClick={goToPrevSlide}
-            style={{ pointerEvents: 'auto' }}
-          />
-          <div className="w-1/3 h-full" />
-          <div 
-            className="w-1/3 h-full cursor-pointer z-10" 
-            onClick={goToNextSlide}
-            style={{ pointerEvents: 'auto' }}
-          />
+        {/* Navigation controls with improved positioning and event handling */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="h-full w-full flex">
+            <div 
+              className="w-1/3 h-full cursor-pointer z-10 pointer-events-auto" 
+              onClick={goToPrevSlide}
+            />
+            <div className="w-1/3 h-full" />
+            <div 
+              className="w-1/3 h-full cursor-pointer z-10 pointer-events-auto" 
+              onClick={goToNextSlide}
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
