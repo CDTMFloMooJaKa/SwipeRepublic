@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import BubbleChartView from './BubbleChartView';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import StoryCarousel from './StoryCarousel';
-import { Bot, Bookmark } from 'lucide-react';
+import { Bot, Bookmark, Loader2 } from 'lucide-react';
 import { WatchlistContext } from '../contexts/WatchlistContext';
 import { ScrollArea } from './ui/scroll-area';
 import { Category } from './BubbleChart';
@@ -12,7 +12,7 @@ import { Category } from './BubbleChart';
 const stockNewsMap = {
   1: { // Tesla
     title: "Tesla Unveils Next-Gen Battery Technology",
-    description: "The new battery promises 30% more range and faster charging capabilities.",
+    description: "The new battery promises 30% more rajknge and faster charging capabilities.",
     source: "Bloomberg"
   },
   2: { // Amazon
@@ -37,7 +37,7 @@ const stockNewsMap = {
   }
 };
 
-// Mock data for bubble charts
+// Mock data for bubble charts - kept as fallback
 const boughtToday: Category[] = [
   { 
     name: "Technology", 
@@ -163,6 +163,58 @@ interface MarketsProps {
 
 const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const { watchlist } = useContext(WatchlistContext);
+  const [boughtData, setBoughtData] = useState<Category[]>(boughtToday);
+  const [soldData, setSoldData] = useState<Category[]>(soldToday);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Define available colors to assign
+  const categoryColors = [
+    "hsl(var(--tr-blue))",
+    "hsl(var(--tr-green))",
+    "hsl(var(--tr-purple))",
+    "#F97316",
+    "#D946EF",
+    "#34D399", // Emerald Green
+    "#60A5FA", // Sky Blue
+    "#FBBF24", // Amber
+    "#F87171", // Red
+    "#A78BFA"  // Violet
+  ];
+  
+  // Add colors to categories
+  const addColorsToCategories = (categories: any[]): Category[] => {
+    return categories.map((category, index) => ({
+      ...category,
+      color: categoryColors[index % categoryColors.length] // Cycle through colors
+    }));
+  };
+  
+  // Fetch data from the endpoint
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('http://localhost:8080/load_top_investments');
+        const data = await response.json();
+        
+        // Add colors to the fetched data
+        const boughtWithColors = addColorsToCategories(data.bought);
+        const soldWithColors = addColorsToCategories(data.sold);
+        
+        setBoughtData(boughtWithColors);
+        setSoldData(soldWithColors);
+      } catch (error) {
+        console.error('Error fetching investment data:', error);
+        // Fallback to mock data if fetch fails
+        setBoughtData(boughtToday);
+        setSoldData(soldToday);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
   
   // Generate news articles based on watchlist
   const getNewsArticles = () => {
@@ -206,6 +258,14 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     return [generalNews, ...watchlistNews].slice(0, 3);
   };
   
+  // Loading indicator component
+  const LoadingIndicator = () => (
+    <div className="flex items-center justify-center h-full">
+      <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+      <span className="ml-2 text-gray-500">Loading data...</span>
+    </div>
+  );
+  
   // Define the slide contents
   const slides = [
     // Slide 1: News Today
@@ -242,33 +302,41 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       </ScrollArea>
     </div>,
     
-    // Slide 2: Bought Today - Updated with subtext
+    // Slide 2: Bought Today - Updated with dynamic data
     <div className="h-full">
       <div className="mb-4">
         <h3 className="text-2xl font-bold">Bought Today</h3>
         <p className="text-gray-500 mt-1">People today have bought...</p>
       </div>
       <div className="flex-grow relative">
-        <BubbleChartView
-          categories={boughtToday}
-          title=""
-          isOpen={isOpen}
-        />
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : (
+          <BubbleChartView
+            categories={boughtData}
+            title=""
+            isOpen={isOpen}
+          />
+        )}
       </div>
     </div>,
     
-    // Slide 3: Sold Today - Updated with subtext
+    // Slide 3: Sold Today - Updated with dynamic data
     <div className="h-full">
       <div className="mb-4">
         <h3 className="text-2xl font-bold">Sold Today</h3>
         <p className="text-gray-500 mt-1">People today have sold...</p>
       </div>
       <div className="flex-grow relative">
-        <BubbleChartView
-          categories={soldToday}
-          title=""
-          isOpen={isOpen}
-        />
+        {isLoading ? (
+          <LoadingIndicator />
+        ) : (
+          <BubbleChartView
+            categories={soldData}
+            title=""
+            isOpen={isOpen}
+          />
+        )}
       </div>
     </div>,
     
