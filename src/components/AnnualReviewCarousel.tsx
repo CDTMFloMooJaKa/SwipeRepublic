@@ -117,7 +117,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 <div className="p-1">
                   <div className="rounded-lg p-4">
                     <h3 className="text-xl font-semibold mb-4">Your Investment Focus</h3>
-                    <div className="h-[350px]">
+                    <div className="h-[300px]">
                       {activeCategory !== null && (
                         <button 
                           onClick={handleBackToCategories}
@@ -221,6 +221,8 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 </div>
               </CarouselItem>
             </CarouselContent>
+            
+            {/* Navigation buttons positioned below content with fixed spacing */}
             <div className="flex items-center justify-center gap-4 py-4 mt-2">
               <CarouselPrevious />
               <CarouselNext />
