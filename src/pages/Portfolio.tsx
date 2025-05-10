@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
@@ -113,9 +114,6 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
         
-        {/* Watchlist Section */}
-        <Watchlist />
-        
         <div className="mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Investments</h2>
@@ -126,6 +124,9 @@ const Portfolio: React.FC = () => {
             {investments.map(item => <InvestmentItem key={item.name} name={item.name} price={item.price} change={item.change} changePercent={item.changePercent} />)}
           </div>
         </div>
+        
+        {/* Watchlist moved below Investments */}
+        <Watchlist />
       </div>
       
       <AnnualReviewCarousel 
