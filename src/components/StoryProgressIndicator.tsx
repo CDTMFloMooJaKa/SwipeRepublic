@@ -20,7 +20,11 @@ const StoryProgressIndicator: React.FC<StoryProgressIndicatorProps> = ({
         <div 
           key={index}
           className="h-1 bg-gray-200 rounded-full flex-1 overflow-hidden cursor-pointer"
-          onClick={() => onSlideClick?.(index)}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onSlideClick?.(index);
+          }}
         >
           <div 
             className="h-full bg-gray-700 rounded-full"
