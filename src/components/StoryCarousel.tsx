@@ -38,6 +38,14 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   const PROGRESS_INTERVAL = 30; // Update every 30ms
   const STEPS = autoAdvanceDuration / PROGRESS_INTERVAL;
   
+  // Reset active slide when opening the carousel
+  useEffect(() => {
+    if (isOpen) {
+      setActiveSlide(0);
+      setProgress(0);
+    }
+  }, [isOpen]);
+  
   // Reset timer when slide changes
   const resetTimer = () => {
     if (intervalRef.current) {
@@ -164,7 +172,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         />
       </div>
       
-      {/* Content */}
+      {/* Content - No automatic overflow */}
       <div 
         className="flex-1 w-full overflow-hidden" 
         onClick={handleContainerClick}
@@ -176,7 +184,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="h-full p-4"
+            className="h-full p-4 overflow-auto"
           >
             {slides[activeSlide]}
           </motion.div>
