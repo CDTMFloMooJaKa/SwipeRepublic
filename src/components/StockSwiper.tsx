@@ -1,15 +1,16 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
+import { WatchlistContext } from '../contexts/WatchlistContext';
 
 interface StockCardProps {
   stock: Stock;
   onSwipe: (direction: 'left' | 'right') => void;
 }
 
-interface Stock {
+export interface Stock {
   id: number;
   name: string;
   ticker: string;
@@ -21,7 +22,7 @@ interface Stock {
 }
 
 // Sample stock data
-const stocks: Stock[] = [
+export const stocks: Stock[] = [
   {
     id: 1,
     name: "Apple Inc.",
@@ -77,9 +78,28 @@ const stocks: Stock[] = [
 const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
+  const [swipeDirection, setSwipeDirection] = useState<null | 'left' | 'right'>(null);
+  const [swipeProgress, setSwipeProgress] = useState(0); // 0 to 1
+  
+  const handleDrag = (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+    const threshold = 100;
+    const maxDrag = 250; // Maximum drag distance for 100% opacity
+    const progress = Math.min(Math.abs(info.offset.x) / maxDrag, 1);
+    setSwipeProgress(progress);
+    
+    if (info.offset.x > 0) {
+      setSwipeDirection('right');
+    } else if (info.offset.x < 0) {
+      setSwipeDirection('left');
+    } else {
+      setSwipeDirection(null);
+    }
+  };
   
   const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 100;
+    setSwipeProgress(0);
+    setSwipeDirection(null);
     
     if (info.offset.x > threshold) {
       // Swiped right
@@ -100,13 +120,29 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
       ref={cardRef}
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
+      onDrag={handleDrag}
       onDragEnd={handleDragEnd}
       animate={controls}
       className="absolute w-full cursor-grab active:cursor-grabbing"
       whileTap={{ scale: 1.05 }}
       style={{ touchAction: 'none' }}
     >
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden w-full border border-gray-200">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden w-full border border-gray-200 relative">
+        {/* Visual indicators for swipe direction */}
+        {swipeDirection === 'left' && (
+          <div className="absolute top-4 left-4 z-10 bg-red-500 rounded-full p-2" 
+               style={{ opacity: swipeProgress }}>
+            <X className="text-white" size={24} />
+          </div>
+        )}
+        
+        {swipeDirection === 'right' && (
+          <div className="absolute top-4 right-4 z-10 bg-tr-green rounded-full p-2"
+               style={{ opacity: swipeProgress }}>
+            <Check className="text-white" size={24} />
+          </div>
+        )}
+        
         <div className="relative h-48 bg-gray-100">
           <div 
             className="absolute inset-0 bg-cover bg-center" 
@@ -151,9 +187,18 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
   const [currentStockIndex, setCurrentStockIndex] = useState(0);
   const [swipedStocks, setSwipedStocks] = useState<{id: number, liked: boolean}[]>([]);
   const controls = useAnimation();
+  const { addToWatchlist } = useContext(WatchlistContext);
   
   const handleSwipe = (direction: 'left' | 'right') => {
-    setSwipedStocks(prev => [...prev, {id: stocks[currentStockIndex].id, liked: direction === 'right'}]);
+    const currentStock = stocks[currentStockIndex];
+    const liked = direction === 'right';
+    
+    setSwipedStocks(prev => [...prev, {id: currentStock.id, liked}]);
+    
+    // Add to watchlist if swiped right (liked)
+    if (liked) {
+      addToWatchlist(currentStock);
+    }
     
     if (currentStockIndex < stocks.length - 1) {
       setTimeout(() => {
@@ -215,13 +260,13 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
               onClick={() => handleManualSwipe('left')} 
               className="bg-red-100 text-red-500 h-16 w-16 rounded-full flex items-center justify-center shadow-md hover:bg-red-200 transition-colors"
             >
-              <ChevronLeft className="w-8 h-8" />
+              <X className="w-8 h-8" />
             </button>
             <button 
               onClick={() => handleManualSwipe('right')} 
               className="bg-tr-green/20 text-tr-green h-16 w-16 rounded-full flex items-center justify-center shadow-md hover:bg-tr-green/30 transition-colors"
             >
-              <ChevronRight className="w-8 h-8" />
+              <Check className="w-8 h-8" />
             </button>
           </div>
           

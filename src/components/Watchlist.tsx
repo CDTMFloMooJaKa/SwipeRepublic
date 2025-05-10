@@ -1,0 +1,60 @@
+
+import React, { useContext } from 'react';
+import { WatchlistContext } from '../contexts/WatchlistContext';
+import { Card, CardContent } from './ui/card';
+import { X } from 'lucide-react';
+
+const Watchlist: React.FC = () => {
+  const { watchlist, removeFromWatchlist } = useContext(WatchlistContext);
+
+  if (watchlist.length === 0) {
+    return (
+      <div className="mt-6">
+        <h2 className="text-xl font-bold mb-3">Watchlist</h2>
+        <p className="text-gray-500 text-sm">No stocks in your watchlist yet. Swipe right on stocks you like to add them here.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-6">
+      <h2 className="text-xl font-bold mb-3">Watchlist</h2>
+      <div className="space-y-3">
+        {watchlist.map(stock => (
+          <Card key={stock.id} className="relative overflow-hidden">
+            <button 
+              onClick={() => removeFromWatchlist(stock.id)}
+              className="absolute top-2 right-2 p-1 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              <X size={16} />
+            </button>
+            <CardContent className="p-3">
+              <div className="flex items-center">
+                <div 
+                  className="h-10 w-10 rounded bg-center bg-cover mr-3" 
+                  style={{ backgroundImage: `url(${stock.image})` }}
+                />
+                <div className="flex-1">
+                  <div className="flex justify-between">
+                    <div>
+                      <p className="font-medium">{stock.name}</p>
+                      <p className="text-xs text-gray-500">{stock.ticker}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{stock.price}</p>
+                      <p className={`text-xs ${stock.change >= 0 ? 'text-tr-green' : 'text-red-500'}`}>
+                        {stock.change >= 0 ? '+' : ''}{stock.change}%
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Watchlist;

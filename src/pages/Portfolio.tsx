@@ -6,6 +6,7 @@ import InvestmentItem from '@/components/InvestmentItem';
 import AnnualReviewCarousel from '@/components/AnnualReviewCarousel';
 import MarketsToday from '@/components/MarketsToday';
 import StoryCard from '@/components/StoryCard';
+import Watchlist from '@/components/Watchlist';
 
 // Mock data for the chart
 const generateChartData = () => {
@@ -56,7 +57,8 @@ const Portfolio: React.FC = () => {
   const chartData = generateChartData();
   const totalValue = "11.286,45 €";
   const change = "▲ 752,18 €";
-  return <div className="max-w-md mx-auto pb-24">
+  return (
+    <div className="max-w-md mx-auto pb-24">
       <Header activeTab="portfolio" />
       
       <div className="p-4">
@@ -111,7 +113,10 @@ const Portfolio: React.FC = () => {
           </div>
         </div>
         
-        <div className="mt-4">
+        {/* Watchlist Section */}
+        <Watchlist />
+        
+        <div className="mt-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Investments</h2>
             <button className="text-gray-400">Tagestrend ▼</button>
@@ -134,6 +139,8 @@ const Portfolio: React.FC = () => {
       />
       
       <BottomNav />
-    </div>;
+    </div>
+  );
 };
+
 export default Portfolio;

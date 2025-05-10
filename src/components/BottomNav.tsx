@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Search, Check, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import StockSwiper from './StockSwiper';
 import { useState } from 'react';
@@ -22,14 +22,14 @@ const BottomNav: React.FC = () => {
           className="bg-purple-600 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg"
         >
           <div className="flex">
-            <ArrowLeft className="w-5 h-5 -mr-1" />
-            <ArrowRight className="w-5 h-5 -ml-1" />
+            <X className="w-5 h-5 -mr-1" />
+            <Check className="w-5 h-5 -ml-1" />
           </div>
         </button>
         
         <button className="bg-black text-white rounded-full py-3 px-6 flex items-center justify-center w-[40%]">
           <span>Überweisen</span>
-          <ArrowRight className="ml-2" size={20} />
+          <Search className="ml-2" size={20} />
         </button>
       </div>
       
