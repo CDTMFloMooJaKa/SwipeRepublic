@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Share } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from './ui/button';
 import StoryCarousel from './StoryCarousel';
 import BubbleChartView from './BubbleChartView';
@@ -95,34 +95,6 @@ const performanceData = [
   }
 ];
 
-// Awards data
-const awards = [
-  {
-    title: "Long-Term Vision",
-    description: "You stayed invested despite market turbulences",
-    icon: "🏆",
-    color: "bg-gradient-to-tr from-amber-400/80 to-yellow-500/80"
-  },
-  {
-    title: "Consistent Saver",
-    description: "You saved money every month this year",
-    icon: "🌟",
-    color: "bg-gradient-to-tr from-blue-500/80 to-cyan-400/80"
-  },
-  {
-    title: "Diversification Expert",
-    description: "Your portfolio spans multiple asset classes",
-    icon: "🎯",
-    color: "bg-gradient-to-tr from-purple-500/80 to-pink-400/80"
-  },
-  {
-    title: "Smart Investor",
-    description: "Your returns beat the market average",
-    icon: "🧠",
-    color: "bg-gradient-to-tr from-green-500/80 to-emerald-400/80"
-  }
-];
-
 interface AnnualReviewCarouselProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -132,24 +104,6 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   isOpen, 
   onOpenChange 
 }) => {
-  // Share handler function
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'My 2025 Investment Awards',
-        text: 'Check out my investment achievements from 2025!',
-        url: window.location.href,
-      })
-      .catch((error) => console.log('Error sharing:', error));
-    } else {
-      console.log('Web Share API not supported');
-      // Fallback to copy to clipboard
-      navigator.clipboard.writeText('Check out my investment achievements from 2025: ' + window.location.href)
-        .then(() => alert('Link copied to clipboard!'))
-        .catch(err => console.error('Failed to copy: ', err));
-    }
-  };
-
   // Define the slide contents
   const slides = [
     // Slide 1: Your Investment Focus
@@ -230,7 +184,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
     // Slide 4: RoundUp
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
-      <div className="flex-grow flex-col justify-center items-center text-center">
+      <div className="flex-grow flex flex-col justify-center items-center text-center">
         {/* Current value section */}
         <div className="text-5xl font-bold mb-1">324€</div>
         <p className="text-xl mb-8">collected with RoundUp</p>
@@ -308,40 +262,6 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
               </BarChart>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
-    </div>,
-    
-    // Updated Slide 6: Your Investment Awards
-    <div className="h-full flex flex-col">
-      <h2 className="text-2xl font-bold mb-6">Your Investment Awards</h2>
-      <div className="flex-grow">
-        <div className="space-y-4">
-          {awards.map((award, index) => (
-            <div 
-              key={index} 
-              className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center hover:shadow-md transition-shadow duration-200"
-            >
-              <div className={`flex items-center justify-center w-12 h-12 rounded-full ${award.color} mr-4 shrink-0 shadow-sm`}>
-                <span className="text-2xl">{award.icon}</span>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg text-gray-800">{award.title}</h3>
-                <p className="text-sm text-gray-600">{award.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="mt-8 flex justify-center">
-          <Button 
-            onClick={handleShare}
-            className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2.5 rounded-lg hover:from-blue-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all duration-200"
-            size="lg"
-          >
-            Share your achievements
-            <Share className="ml-2 h-4 w-4" />
-          </Button>
         </div>
       </div>
     </div>
