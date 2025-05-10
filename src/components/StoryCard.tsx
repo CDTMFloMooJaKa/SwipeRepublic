@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -48,7 +47,6 @@ const StoryCard: React.FC<StoryCardProps> = ({
         </div>
         <div className="flex items-center justify-between w-full">
           <h2 className="text-xl font-bold text-white">{title}</h2>
-          <ArrowRight className="h-5 w-5 text-white" />
         </div>
       </div>
     </>
