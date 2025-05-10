@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Dialog,
@@ -244,7 +245,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                               ></div>
                             </div>
                             <div className="text-xs text-gray-500 mt-1">
-                              {status} · {category.percentage}%
+                              {status}
                             </div>
                           </div>
                         );
@@ -271,6 +272,9 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                         <span className="text-lg font-medium">285€</span>
                         <span className="text-lg font-medium text-tr-green">1,240€</span>
                       </div>
+                      <p className="text-xs text-gray-500 mt-2 text-center">
+                        Calculations based on a Retirement Age of 65 with an annual return of 7%. Taxes not included.
+                      </p>
                     </div>
                     <Button 
                       className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
@@ -299,6 +303,9 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                         <span className="text-lg font-medium">124€</span>
                         <span className="text-lg font-medium text-tr-green">540€</span>
                       </div>
+                      <p className="text-xs text-gray-500 mt-2 text-center">
+                        Calculations based on a Retirement Age of 65 with an annual return of 7%. Taxes not included.
+                      </p>
                     </div>
                     <Button 
                       className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white"
