@@ -102,8 +102,8 @@ const Portfolio: React.FC = () => {
             {/* Content with z-index to appear above the background */}
             <div className="relative z-20 w-full">
               <h2 className="text-xl font-bold text-left text-white">2025 in Numbers</h2>
-              <p className="text-gray-100 text-left text-sm mt-1 w-full">Discover how your investments performed this
- year</p>
+              <p className="text-gray-100 text-left text-sm mt-1 w-full">Discover how your investments performed this  
+year</p>
               <div className="flex items-center w-full justify-end mt-1">
                 <ArrowRight className="h-5 w-5 text-white" />
               </div>
