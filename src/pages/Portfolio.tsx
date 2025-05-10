@@ -91,41 +91,12 @@ const Portfolio: React.FC = () => {
         {/* Scrollable Cards Section */}
         <div className="mt-6 mb-6 overflow-x-auto scrollbar-none">
           <div className="flex gap-3" style={{ paddingBottom: '8px' }}>
-            {/* Annual Review Card - 70% width */}
-            <Button 
-              variant="outline" 
-              className="p-4 h-auto flex flex-col items-start border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0"
-              onClick={() => setShowAnnualReview(true)} 
-              style={{
-                minHeight: "120px",
-                width: "70%",
-                minWidth: "240px"
-              }}
-            >
-              {/* Background image div */}
-              <div className="absolute inset-0 z-0 bg-cover bg-center" style={{
-                backgroundImage: `url('/lovable-uploads/42dec5de-4be6-487c-902e-1c251e61c932.png')`,
-                opacity: 0.8
-              }} />
-              
-              {/* Overlay to ensure text visibility */}
-              <div className="absolute inset-0 bg-black/30 z-10" />
-              
-              {/* Content with z-index to appear above the background */}
-              <div className="relative z-20 w-full">
-                <h2 className="text-xl font-bold text-left text-white">2025 in Numbers</h2>
-                <p className="text-gray-100 text-left text-sm mt-1 w-full">Discover your financial highlights</p>
-                <div className="flex items-center w-full justify-end mt-1">
-                  <ArrowRight className="h-5 w-5 text-white" />
-                </div>
-              </div>
-            </Button>
-            
-            {/* Markets Today Card */}
+            {/* Markets Today Card - Now first */}
             <Card 
               className="p-4 flex flex-col justify-between border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0 cursor-pointer"
               style={{
                 minHeight: "120px",
+                width: "50%", // Equal width
                 minWidth: "170px"
               }}
               onClick={() => console.log("Markets Today clicked")}
@@ -147,6 +118,36 @@ const Portfolio: React.FC = () => {
                 </div>
               </div>
             </Card>
+            
+            {/* Annual Review Card - Now second */}
+            <Button 
+              variant="outline" 
+              className="p-4 h-auto flex flex-col items-start border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0"
+              onClick={() => setShowAnnualReview(true)} 
+              style={{
+                minHeight: "120px",
+                width: "50%", // Equal width
+                minWidth: "170px"
+              }}
+            >
+              {/* Background image div */}
+              <div className="absolute inset-0 z-0 bg-cover bg-center" style={{
+                backgroundImage: `url('/lovable-uploads/42dec5de-4be6-487c-902e-1c251e61c932.png')`,
+                opacity: 0.8
+              }} />
+              
+              {/* Overlay to ensure text visibility */}
+              <div className="absolute inset-0 bg-black/30 z-10" />
+              
+              {/* Content with z-index to appear above the background */}
+              <div className="relative z-20 w-full">
+                <h2 className="text-xl font-bold text-left text-white">2025 in Numbers</h2>
+                <p className="text-gray-100 text-left text-sm mt-1 w-full">Discover your financial highlights</p>
+                <div className="flex items-center w-full justify-end mt-1">
+                  <ArrowRight className="h-5 w-5 text-white" />
+                </div>
+              </div>
+            </Button>
           </div>
         </div>
         
