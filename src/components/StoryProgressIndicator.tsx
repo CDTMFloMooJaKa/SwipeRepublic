@@ -25,7 +25,8 @@ const StoryProgressIndicator: React.FC<StoryProgressIndicatorProps> = ({
           <div
             className="h-full bg-gray-600 rounded-full"
             style={{
-              width: index === activeSlide ? `${progress}%` : index < activeSlide ? '100%' : '0%'
+              width: index === activeSlide ? `${progress}%` : index < activeSlide ? '100%' : '0%',
+              transition: 'width 0.3s ease'
             }}
           />
         </div>
