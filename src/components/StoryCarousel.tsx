@@ -10,7 +10,7 @@ export interface StoryCarouselProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   slides: React.ReactNode[];
-  title: string;
+  title: React.ReactNode;
   autoAdvanceDuration?: number;
   isPaused?: boolean;
   onPauseChange?: (paused: boolean) => void;
