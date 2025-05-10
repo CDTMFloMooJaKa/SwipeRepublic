@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
-import { Progress } from './ui/progress';
 import StoryCarousel from './StoryCarousel';
 
 // Investment focus data
@@ -74,6 +73,11 @@ const getStatusFromPercentage = (percentage: number): string => {
   if (percentage >= 30) return `Highest ${percentage}%`;
   if (percentage <= 10) return `Lowest ${percentage}%`;
   return `Average ${percentage}%`;
+};
+
+// Helper function to calculate future value based on present value, interest rate, and years
+const calculateFutureValue = (presentValue: number, interestRate: number, years: number): number => {
+  return Math.round(presentValue * Math.pow(1 + interestRate, years));
 };
 
 interface AnnualReviewCarouselProps {
@@ -161,26 +165,24 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 3: Saveback
+    // Slide 3: Saveback - Updated format
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Saveback</h2>
       <div className="flex-grow flex flex-col justify-center items-center text-center">
-        <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 mb-3">285€</div>
-        <p className="text-xl mb-6">collected with Saveback</p>
-        <div className="mb-10 w-full">
-          <div className="w-full flex items-center justify-between mb-2">
-            <span className="text-gray-500 text-sm">Current</span>
-            <span className="text-gray-500 text-sm">When you retire</span>
-          </div>
-          <Progress value={22} className="h-3 bg-gray-200" />
-          <div className="w-full flex items-center justify-between mt-2">
-            <span className="text-lg font-medium">285€</span>
-            <span className="text-lg font-medium text-tr-green">1,240€</span>
-          </div>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            Calculations based on a Retirement Age of 65 with an annual return of 7%. Taxes not included.
-          </p>
+        {/* Current value section */}
+        <div className="text-5xl font-bold mb-1">285€</div>
+        <p className="text-xl mb-8">collected with Saveback</p>
+        
+        {/* Future value section */}
+        <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 mb-1">
+          {calculateFutureValue(285, 0.07, 40)}€
         </div>
+        <p className="text-xl mb-8">when you retire</p>
+        
+        <p className="text-xs text-gray-500 mb-8 text-center max-w-xs">
+          Calculations based on a retirement age of 65 with an annual return of 7%. Taxes not included.
+        </p>
+        
         <Button 
           className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
         >
@@ -190,26 +192,24 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 4: RoundUp
+    // Slide 4: RoundUp - Updated format
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
       <div className="flex-grow flex flex-col justify-center items-center text-center">
-        <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-3">124€</div>
-        <p className="text-xl mb-6">collected with RoundUp</p>
-        <div className="mb-10 w-full">
-          <div className="w-full flex items-center justify-between mb-2">
-            <span className="text-gray-500 text-sm">Current</span>
-            <span className="text-gray-500 text-sm">When you retire</span>
-          </div>
-          <Progress value={18} className="h-3 bg-gray-200" />
-          <div className="w-full flex items-center justify-between mt-2">
-            <span className="text-lg font-medium">124€</span>
-            <span className="text-lg font-medium text-tr-green">540€</span>
-          </div>
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            Calculations based on a Retirement Age of 65 with an annual return of 7%. Taxes not included.
-          </p>
+        {/* Current value section */}
+        <div className="text-5xl font-bold mb-1">124€</div>
+        <p className="text-xl mb-8">collected with RoundUp</p>
+        
+        {/* Future value section */}
+        <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-1">
+          {calculateFutureValue(124, 0.07, 40)}€
         </div>
+        <p className="text-xl mb-8">when you retire</p>
+        
+        <p className="text-xs text-gray-500 mb-8 text-center max-w-xs">
+          Calculations based on a retirement age of 65 with an annual return of 7%. Taxes not included.
+        </p>
+        
         <Button 
           className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white"
         >
