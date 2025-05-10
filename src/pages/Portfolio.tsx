@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
@@ -49,6 +50,7 @@ const investments = [{
   change: 1.27,
   changePercent: 3.56
 }];
+
 const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'1T' | '1W' | '1M' | '1J' | 'Max'>('Max');
   const [showAnnualReview, setShowAnnualReview] = useState(false);
@@ -56,6 +58,7 @@ const Portfolio: React.FC = () => {
   const chartData = generateChartData();
   const totalValue = "11.286,45 €";
   const change = "▲ 752,18 €";
+
   return <div className="max-w-md mx-auto pb-24">
       <Header activeTab="portfolio" />
       
@@ -104,7 +107,7 @@ const Portfolio: React.FC = () => {
             <StoryCard
               title="2025 in Numbers"
               subtitle="Your financial highlights"
-              backgroundImage="/lovable-uploads/42dec5de-4be6-487c-902e-1c251e61c932.png"
+              backgroundImage="/lovable-uploads/c03f64f7-647b-4a44-b56e-94babc14c668.png"
               onClick={() => setShowAnnualReview(true)}
               variant="button"
             />
@@ -136,4 +139,5 @@ const Portfolio: React.FC = () => {
       <BottomNav />
     </div>;
 };
+
 export default Portfolio;

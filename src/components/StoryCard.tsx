@@ -41,13 +41,11 @@ const StoryCard: React.FC<StoryCardProps> = ({
       <div className="absolute inset-0 bg-black/30 z-10" />
       
       {/* Content with z-index to appear above the background */}
-      <div className="relative z-20 h-full flex flex-col justify-end">
+      <div className="relative z-20 h-full flex flex-col justify-between">
         <div>
           <p className="text-gray-100 text-xs mb-1">{subtitle}</p>
         </div>
-        <div className="flex items-center justify-between w-full">
-          <h2 className="text-xl font-bold text-white">{title}</h2>
-        </div>
+        <h2 className="text-xl font-bold text-white">{title}</h2>
       </div>
     </>
   );
