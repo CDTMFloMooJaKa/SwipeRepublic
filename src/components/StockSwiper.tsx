@@ -1,8 +1,8 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
-import { X, Check } from 'lucide-react';
-import { motion, PanInfo, useAnimation, useMotionValue, useTransform } from 'framer-motion';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, PanInfo, useAnimation } from 'framer-motion';
 
 interface StockCardProps {
   stock: Stock;
@@ -77,12 +77,6 @@ const stocks: Stock[] = [
 const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const controls = useAnimation();
-  const x = useMotionValue(0);
-  
-  // Transform x movement to rotation and opacity for visual indicators
-  const rotate = useTransform(x, [-200, 0, 200], [-10, 0, 10]);
-  const leftIndicatorOpacity = useTransform(x, [-100, -20, 0], [1, 0.5, 0]);
-  const rightIndicatorOpacity = useTransform(x, [0, 20, 100], [0, 0.5, 1]);
   
   const handleDragEnd = (e: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
     const threshold = 100;
@@ -97,7 +91,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
         .then(() => onSwipe('left'));
     } else {
       // Return to center
-      controls.start({ x: 0, opacity: 1, rotate: 0, transition: { duration: 0.3 } });
+      controls.start({ x: 0, opacity: 1, transition: { duration: 0.3 } });
     }
   };
   
@@ -108,25 +102,10 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
       dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={handleDragEnd}
       animate={controls}
-      style={{ x, rotate, touchAction: 'none' }}
       className="absolute w-full cursor-grab active:cursor-grabbing"
       whileTap={{ scale: 1.05 }}
+      style={{ touchAction: 'none' }}
     >
-      {/* Swipe indicators */}
-      <motion.div 
-        className="absolute left-4 top-4 bg-red-500 p-3 rounded-full z-10"
-        style={{ opacity: leftIndicatorOpacity }}
-      >
-        <X className="text-white" size={30} />
-      </motion.div>
-      
-      <motion.div 
-        className="absolute right-4 top-4 bg-tr-green p-3 rounded-full z-10"
-        style={{ opacity: rightIndicatorOpacity }}
-      >
-        <Check className="text-white" size={30} />
-      </motion.div>
-      
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden w-full border border-gray-200">
         <div className="relative h-48 bg-gray-100">
           <div 
@@ -236,13 +215,13 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
               onClick={() => handleManualSwipe('left')} 
               className="bg-red-100 text-red-500 h-16 w-16 rounded-full flex items-center justify-center shadow-md hover:bg-red-200 transition-colors"
             >
-              <X className="w-8 h-8" />
+              <ChevronLeft className="w-8 h-8" />
             </button>
             <button 
               onClick={() => handleManualSwipe('right')} 
               className="bg-tr-green/20 text-tr-green h-16 w-16 rounded-full flex items-center justify-center shadow-md hover:bg-tr-green/30 transition-colors"
             >
-              <Check className="w-8 h-8" />
+              <ChevronRight className="w-8 h-8" />
             </button>
           </div>
           
