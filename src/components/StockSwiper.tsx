@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
 import { Check, X, ArrowUp, ArrowDown, Circle, Info } from 'lucide-react';
@@ -346,4 +345,3 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
 };
 
 export default StockSwiper;
-
