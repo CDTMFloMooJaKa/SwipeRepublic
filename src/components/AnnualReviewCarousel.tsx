@@ -60,13 +60,13 @@ const investmentCategories: Category[] = [
   }
 ];
 
-// Spending categories data
+// Spending categories data - Values increased by a factor of 4
 const spendingCategories = [
-  { name: "Shopping", amount: "1.500€", percentage: 40 },
-  { name: "Errands", amount: "800€", percentage: 10 },
-  { name: "Restaurants", amount: "650€", percentage: 5 },
-  { name: "Entertainment", amount: "450€", percentage: 30 },
-  { name: "Transport", amount: "350€", percentage: 15 }
+  { name: "Shopping", amount: "6.000€", percentage: 40 },
+  { name: "Errands", amount: "3.200€", percentage: 10 },
+  { name: "Restaurants", amount: "2.600€", percentage: 5 },
+  { name: "Entertainment", amount: "1.800€", percentage: 30 },
+  { name: "Transport", amount: "1.400€", percentage: 15 }
 ];
 
 // Helper function to determine status based on percentage
@@ -148,24 +148,29 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
 
   // Define the slide contents
   const slides = [
-    // Slide 1: Your Investment Focus
-    <BubbleChartView 
-      key="investment-focus"
-      categories={investmentCategories}
-      title="Your Investment Focus"
-      isOpen={isOpen}
-    />,
+    // Slide 1: Your Investment Focus - Updated with subheading
+    <div className="h-full flex flex-col">
+      <h2 className="text-2xl font-bold mb-1">Your Investment Focus</h2>
+      <p className="text-gray-500 mb-4">Your portfolio consists of...</p>
+      <div className="flex-grow">
+        <BubbleChartView 
+          categories={investmentCategories}
+          title=""
+          isOpen={isOpen}
+        />
+      </div>
+    </div>,
     
-    // Slide 2: Your Spending
+    // Slide 2: Your Spending - Values increased by a factor of 4
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Your Spending</h2>
       <div className="flex-grow">
-        <div className="text-xl mb-2">You spent <span className="font-bold">3.750€</span></div>
+        <div className="text-xl mb-2">You spent <span className="font-bold">15.000€</span></div>
         <p className="text-gray-600 mb-6">These are your top categories:</p>
         <div className="space-y-5">
           {spendingCategories.map((category, index) => {
             const amountNumber = parseFloat(category.amount.replace('€', '').replace('.', '').replace(',', '.'));
-            const totalAmount = 3750;
+            const totalAmount = 15000;
             const widthPercentage = (amountNumber / totalAmount) * 100;
             const status = getStatusFromPercentage(category.percentage);
             
@@ -196,17 +201,17 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 3: Saveback
+    // Slide 3: Saveback - Reduced to 140€
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">Saveback</h2>
       <div className="flex-grow flex flex-col justify-center items-center text-center">
-        {/* Current value section */}
-        <div className="text-5xl font-bold mb-1">285€</div>
+        {/* Current value section - Updated to 140€ */}
+        <div className="text-5xl font-bold mb-1">140€</div>
         <p className="text-xl mb-8">collected with Saveback</p>
         
-        {/* Future value section */}
+        {/* Future value section - Recalculated */}
         <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-500 mb-1">
-          {calculateFutureValue(285, 0.07, 40)}€
+          {calculateFutureValue(140, 0.07, 40)}€
         </div>
         <p className="text-xl mb-8">when you retire</p>
         
@@ -226,7 +231,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
     // Slide 4: RoundUp
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
-      <div className="flex-grow flex flex-col justify-center items-center text-center">
+      <div className="flex-grow flex-col justify-center items-center text-center">
         {/* Current value section */}
         <div className="text-5xl font-bold mb-1">324€</div>
         <p className="text-xl mb-8">collected with RoundUp</p>
