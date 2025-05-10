@@ -1,9 +1,10 @@
 
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
-import { Check, X } from 'lucide-react';
+import { Check, X, ArrowUp, ArrowDown, Circle, Info } from 'lucide-react';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
 import { WatchlistContext } from '../contexts/WatchlistContext';
+import { Badge } from './ui/badge';
 
 interface StockCardProps {
   stock: Stock;
@@ -19,6 +20,8 @@ export interface Stock {
   description: string;
   industry: string;
   image: string;
+  aiSignal: 'buy' | 'hold' | 'sell';
+  aiReasoning: string;
 }
 
 // Sample stock data
@@ -31,7 +34,9 @@ export const stocks: Stock[] = [
     change: 1.25,
     description: "Electric vehicle and clean energy company that designs and manufactures electric cars, battery energy storage, solar panels and more.",
     industry: "Automotive",
-    image: "/lovable-uploads/87e9327e-9fdd-4acb-8304-e8c06eadf118.png" // Tesla logo
+    image: "/lovable-uploads/87e9327e-9fdd-4acb-8304-e8c06eadf118.png", // Tesla logo
+    aiSignal: "sell",
+    aiReasoning: "Increased competition in EV market alongside production challenges may pressure margins in the near term."
   },
   {
     id: 2,
@@ -41,7 +46,9 @@ export const stocks: Stock[] = [
     change: -0.89,
     description: "E-commerce, cloud computing, digital streaming, and artificial intelligence company.",
     industry: "E-Commerce",
-    image: "/lovable-uploads/edd95656-1015-4ca4-885a-4f5e9e11a355.png" // Amazon logo
+    image: "/lovable-uploads/edd95656-1015-4ca4-885a-4f5e9e11a355.png", // Amazon logo
+    aiSignal: "buy",
+    aiReasoning: "Strong AWS growth and retail expansion present substantial upside potential for long-term investors."
   },
   {
     id: 3,
@@ -51,7 +58,9 @@ export const stocks: Stock[] = [
     change: 2.34,
     description: "Technology company that designs, manufactures, and markets smartphones, personal computers, tablets, wearables and accessories.",
     industry: "Technology",
-    image: "/lovable-uploads/dfb629e1-1416-408e-a2ac-324755938194.png" // Apple logo
+    image: "/lovable-uploads/dfb629e1-1416-408e-a2ac-324755938194.png", // Apple logo
+    aiSignal: "buy",
+    aiReasoning: "Robust ecosystem and services segment growth provide stable revenue streams with upcoming AI features likely to drive upgrades."
   },
   {
     id: 4,
@@ -61,7 +70,9 @@ export const stocks: Stock[] = [
     change: 0.78,
     description: "Technology company that develops, licenses, and supports software, services, devices, and solutions worldwide.",
     industry: "Technology",
-    image: "/lovable-uploads/c7edeaa5-a457-4903-92b0-1545667af436.png" // Microsoft logo
+    image: "/lovable-uploads/c7edeaa5-a457-4903-92b0-1545667af436.png", // Microsoft logo
+    aiSignal: "buy",
+    aiReasoning: "Cloud business momentum and AI integration across product lines position the company for continued growth."
   },
   {
     id: 5,
@@ -71,7 +82,9 @@ export const stocks: Stock[] = [
     change: 3.21,
     description: "Technology company that designs graphics processing units (GPUs) for the gaming and professional markets, as well as system-on-a-chip units for mobile computing and automotive markets.",
     industry: "Semiconductors",
-    image: "/lovable-uploads/e903ee92-f1bc-4b4f-bb9f-869da81fe818.png" // NVIDIA logo
+    image: "/lovable-uploads/e903ee92-f1bc-4b4f-bb9f-869da81fe818.png", // NVIDIA logo
+    aiSignal: "hold",
+    aiReasoning: "While AI demand remains strong, high valuation and potential market saturation suggest waiting for a better entry point."
   }
 ];
 
@@ -115,6 +128,34 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
     }
   };
   
+  // Function to return the signal color and icon based on the AI signal
+  const getSignalInfo = (signal: 'buy' | 'hold' | 'sell') => {
+    switch (signal) {
+      case 'buy':
+        return { 
+          color: 'bg-tr-green/20 text-tr-green border-tr-green', 
+          icon: <ArrowUp className="w-4 h-4 mr-1" />
+        };
+      case 'hold':
+        return { 
+          color: 'bg-yellow-100 text-yellow-700 border-yellow-400', 
+          icon: <Circle className="w-4 h-4 mr-1" />
+        };
+      case 'sell':
+        return { 
+          color: 'bg-red-100 text-red-700 border-red-400', 
+          icon: <ArrowDown className="w-4 h-4 mr-1" />
+        };
+      default:
+        return { 
+          color: 'bg-gray-100 text-gray-700 border-gray-400',
+          icon: null
+        };
+    }
+  };
+
+  const signalInfo = getSignalInfo(stock.aiSignal);
+  
   return (
     <motion.div
       ref={cardRef}
@@ -148,7 +189,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
             <img 
               src={stock.image}
               alt={`${stock.name} logo`}
-              className="h-12 w-auto object-contain"
+              className="h-6 w-auto object-contain"
             />
           </div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/10" />
@@ -167,6 +208,27 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
           
           <div className="mb-3">
             <p className="text-sm text-gray-600">{stock.description}</p>
+          </div>
+
+          {/* AI Signal Section */}
+          <div className="mt-4 border-t border-gray-100 pt-3">
+            <div className="flex items-center mb-2">
+              <h4 className="font-semibold text-gray-800">AI Signal</h4>
+            </div>
+            
+            <div className="flex items-center mb-2">
+              <Badge className={`${signalInfo.color} border flex items-center capitalize`} variant="outline">
+                {signalInfo.icon}
+                {stock.aiSignal}
+              </Badge>
+            </div>
+            
+            <p className="text-sm text-gray-600 mb-2">{stock.aiReasoning}</p>
+            
+            <div className="flex items-center text-xs text-gray-400">
+              <Info className="w-3 h-3 mr-1" />
+              <span>This is not financial advice</span>
+            </div>
           </div>
           
           <div className="mt-4">
@@ -284,3 +346,4 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
 };
 
 export default StockSwiper;
+
