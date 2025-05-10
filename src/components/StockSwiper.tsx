@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
 import { Check, X } from 'lucide-react';
@@ -142,21 +143,23 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
           </div>
         )}
         
-        <div className="relative h-48 bg-gray-100">
-          <div 
-            className="absolute inset-0 bg-cover bg-center" 
-            style={{ backgroundImage: `url(${stock.image})` }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-          <div className="absolute bottom-0 left-0 p-4 text-white">
-            <h3 className="text-xl font-bold">{stock.name}</h3>
-            <p className="text-sm opacity-90">{stock.ticker}</p>
+        <div className="relative h-24 bg-gray-100">
+          <div className="flex justify-center items-center h-full">
+            <img 
+              src={stock.image}
+              alt={`${stock.name} logo`}
+              className="h-12 w-auto object-contain"
+            />
           </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/10" />
         </div>
         
         <div className="p-4">
           <div className="flex justify-between items-center mb-3">
-            <span className="text-lg font-bold">{stock.price}</span>
+            <div>
+              <h3 className="text-lg font-bold">{stock.name}</h3>
+              <p className="text-sm text-gray-500">{stock.ticker}</p>
+            </div>
             <span className={`font-semibold ${stock.change >= 0 ? 'text-tr-green' : 'text-red-500'}`}>
               {stock.change >= 0 ? '+' : ''}{stock.change}%
             </span>
