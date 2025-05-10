@@ -15,14 +15,6 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
   onCategoryClick,
   activeCategory 
 }) => {
-  // Handle bubble click with proper event prevention
-  const handleBubbleClick = (index: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onCategoryClick) {
-      onCategoryClick(index, e);
-    }
-  };
-  
   return (
     <div className="relative h-full w-full">
       <AnimatePresence>
@@ -33,7 +25,7 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
             percentage={bubble.percentage}
             color={bubble.color}
             size={bubble.size}
-            onClick={(e) => handleBubbleClick(index, e)}
+            onClick={(e) => onCategoryClick?.(index, e)}
             position={bubble.position}
             isChild={activeCategory !== null}
           />

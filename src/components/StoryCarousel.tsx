@@ -14,8 +14,6 @@ export interface StoryCarouselProps {
   autoAdvanceDuration?: number;
   isPaused?: boolean;
   onPauseChange?: (paused: boolean) => void;
-  onClose?: () => void; // For custom close handling
-  onSlideChange?: (newSlideIndex: number) => void; // Add new prop to handle slide changes
 }
 
 const StoryCarousel: React.FC<StoryCarouselProps> = ({
@@ -25,9 +23,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   title,
   autoAdvanceDuration = 8000, // Default to 8 seconds per slide
   isPaused: externalIsPaused,
-  onPauseChange,
-  onClose,
-  onSlideChange
+  onPauseChange
 }) => {
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
@@ -41,6 +37,14 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   const totalSlides = slides.length;
   const PROGRESS_INTERVAL = 30; // Update every 30ms
   const STEPS = autoAdvanceDuration / PROGRESS_INTERVAL;
+  
+  // Reset active slide when opening the carousel
+  useEffect(() => {
+    if (isOpen) {
+      setActiveSlide(0);
+      setProgress(0);
+    }
+  }, [isOpen]);
   
   // Reset timer when slide changes
   const resetTimer = () => {
@@ -63,9 +67,9 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         // Move to next slide when progress hits 100%
         if (newProgress >= 100) {
           if (activeSlide < totalSlides - 1) {
-            handleSlideChange(activeSlide + 1);
+            setActiveSlide(prev => prev + 1);
           } else {
-            handleClose(); // Use our close handler
+            onOpenChange(false); // Close carousel on last slide
           }
           return 0;
         }
@@ -88,26 +92,11 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     };
   }, [isOpen, activeSlide, isPaused]);
   
-  // Handle manual slide change with additional callback
+  // Handle manual slide change
   const handleSlideChange = (index: number) => {
-    // Only change slide if it's actually different
-    if (index !== activeSlide) {
-      setActiveSlide(index);
-      resetTimer();
-      
-      // Call the onSlideChange callback if provided
-      if (onSlideChange) {
-        onSlideChange(index);
-      }
-    }
-  };
-
-  // Handle closing the carousel properly
-  const handleClose = () => {
-    if (onClose) {
-      onClose(); // Call the custom close handler if provided
-    }
-    onOpenChange(false);
+    setActiveSlide(index);
+    resetTimer();
+    startTimer();
   };
 
   // Handle navigation with left/right clicks
@@ -119,17 +108,17 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     if (clickX > containerWidth * 0.7) {
       if (activeSlide < totalSlides - 1) {
         // If not on last slide, go to next slide
-        handleSlideChange(activeSlide + 1);
+        setActiveSlide(prev => prev + 1);
       } else {
         // If on last slide, close and navigate to home
-        handleClose();
+        onOpenChange(false);
         navigate("/portfolio");
       }
     } 
     // If click is in the left third of the screen, go to previous slide
     else if (clickX < containerWidth * 0.3) {
       if (activeSlide > 0) {
-        handleSlideChange(activeSlide - 1);
+        setActiveSlide(prev => prev - 1);
       }
     }
   };
@@ -151,17 +140,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
       setInternalIsPaused(false);
     }
   };
-
-  // Reset to first slide when opening
-  useEffect(() => {
-    if (isOpen) {
-      setActiveSlide(0);
-      // Call onSlideChange with initial slide 0
-      if (onSlideChange) {
-        onSlideChange(0);
-      }
-    }
-  }, [isOpen, onSlideChange]);
   
   if (!isOpen) return null;
   
@@ -176,7 +154,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={handleClose}
+          onClick={() => onOpenChange(false)}
           className="mr-2"
         >
           <ArrowLeft className="h-6 w-6" />
@@ -194,7 +172,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         />
       </div>
       
-      {/* Content */}
+      {/* Content - No automatic overflow */}
       <div 
         className="flex-1 w-full overflow-hidden" 
         onClick={handleContainerClick}
@@ -206,7 +184,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="h-full p-4"
+            className="h-full p-4 overflow-auto"
           >
             {slides[activeSlide]}
           </motion.div>
