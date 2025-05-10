@@ -95,26 +95,26 @@ const performanceData = [
   }
 ];
 
-// Awards data - Updated for a more minimalistic design
+// Awards data - Updated with black and white emojis and more concrete information
 const awards = [
   {
     title: "Long-Term Vision",
-    description: "You stayed invested despite market turbulences",
-    icon: "🏆",
+    description: "Top 15% in holding period length - averaged 3.2 years per position",
+    icon: "⚓️",
   },
   {
     title: "Consistent Saver",
-    description: "You saved money every month this year",
-    icon: "🌟",
+    description: "Saved money every month in 2025 - Total of €4,800 invested",
+    icon: "⏱️",
   },
   {
     title: "Diversification Expert",
-    description: "Your portfolio spans multiple asset classes",
-    icon: "🎯",
+    description: "Portfolio spans 6 asset classes across 14 countries",
+    icon: "🔀",
   },
   {
     title: "Smart Investor",
-    description: "Your returns beat the market average",
+    description: "Beat market average by 1.3% - Top 20% of all investors",
     icon: "🧠",
   }
 ];
@@ -308,7 +308,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Updated Slide 6: Your Investment Awards - more minimalistic design
+    // Updated Slide 6: Your Investment Awards - black and white emojis and concrete info
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-6">Your Investment Awards</h2>
       <div className="flex-grow">
