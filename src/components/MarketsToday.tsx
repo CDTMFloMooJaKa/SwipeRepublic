@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
@@ -172,7 +171,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     // Stop event propagation to prevent slide change
     e.stopPropagation();
     
-    setActiveBubbleCategory(activeBubbleCategory === index ? null : index);
+    setActiveBubbleCategory(prevCategory => prevCategory === index ? null : index);
     setIsPaused(true); // Pause autoplay when interacting with bubbles
   };
 
@@ -190,9 +189,12 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   };
   
   // Handle slide change to reset bubble categories
-  const handleSlideChange = () => {
-    setActiveBubbleCategory(null);
-    setIsPaused(false);
+  const handleSlideChange = (slideIndex: number) => {
+    // Only reset if moving away from the bubble chart slides (slides 1 & 2)
+    if (slideIndex !== 1 && slideIndex !== 2) {
+      setActiveBubbleCategory(null);
+      setIsPaused(false);
+    }
   };
   
   // Generate news articles based on watchlist

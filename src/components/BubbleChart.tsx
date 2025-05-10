@@ -24,6 +24,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
   onCategoryClick
 }) => {
   const [bubbles, setBubbles] = useState<ProcessedBubble[]>([]);
+  const [isInteracting, setIsInteracting] = useState(false);
   
   useEffect(() => {
     // Determine what data we're working with
@@ -47,11 +48,21 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
   const handleBubbleClick = (index: number, e: React.MouseEvent) => {
     // Make sure the event doesn't propagate to parent elements
     e.stopPropagation();
+    setIsInteracting(true);
     onCategoryClick(index, e);
   }
 
+  // Handle container click to prevent event propagation
+  const handleContainerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Only if we're already interacting, allow the event to continue
+    if (isInteracting) {
+      setIsInteracting(false);
+    }
+  }
+
   return (
-    <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
+    <div className="relative w-full h-full" onClick={handleContainerClick}>
       <BubbleDisplay 
         bubbles={bubbles} 
         onCategoryClick={handleBubbleClick} 
