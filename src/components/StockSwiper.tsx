@@ -1,10 +1,23 @@
+
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
-import { Check, X, ArrowUp, ArrowDown, Circle, Info } from 'lucide-react';
+import { Check, X, ArrowUp, ArrowDown, Circle, Info, DollarSign } from 'lucide-react';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
 import { WatchlistContext } from '../contexts/WatchlistContext';
 import { Badge } from './ui/badge';
 import { Avatar, AvatarImage } from './ui/avatar';
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from './ui/dialog';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { useToast } from "@/hooks/use-toast";
 
 interface StockCardProps {
   stock: Stock;
@@ -247,6 +260,10 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
   const [swipedStocks, setSwipedStocks] = useState<{id: number, liked: boolean}[]>([]);
   const controls = useAnimation();
   const { addToWatchlist } = useContext(WatchlistContext);
+  const [buyDialogOpen, setBuyDialogOpen] = useState(false);
+  const [quantity, setQuantity] = useState("1");
+  const [priceType, setPriceType] = useState("market");
+  const { toast } = useToast();
   
   const handleSwipe = (direction: 'left' | 'right') => {
     const currentStock = stocks[currentStockIndex];
@@ -282,61 +299,165 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
         .then(() => handleSwipe(direction));
     }
   };
+
+  const handleBuyClick = () => {
+    setBuyDialogOpen(true);
+  };
+
+  const handlePurchase = () => {
+    const currentStock = stocks[currentStockIndex];
+    toast({
+      title: "Stock Purchased!",
+      description: `Successfully bought ${quantity} shares of ${currentStock.ticker} at ${currentStock.price}`,
+    });
+    setBuyDialogOpen(false);
+  };
   
   return (
-    <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
-      <DrawerContent className="h-[90svh] max-h-[90svh] bg-white">
-        <DrawerHeader>
-          <DrawerTitle>Discover Stocks</DrawerTitle>
-          <p className="text-sm text-gray-500">Swipe right if interested, left if not</p>
-        </DrawerHeader>
-        
-        <div className="p-4 flex-1 flex flex-col items-center overflow-hidden">
-          <div className="relative w-full max-w-md h-[450px] mx-auto">
-            {/* Show current stock if available */}
-            {currentStockIndex < stocks.length ? (
-              <motion.div
-                key={stocks[currentStockIndex].id}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3 }}
-                className="w-full"
+    <>
+      <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
+        <DrawerContent className="h-[90svh] max-h-[90svh] bg-white">
+          <DrawerHeader>
+            <DrawerTitle>Discover Stocks</DrawerTitle>
+            <p className="text-sm text-gray-500">Swipe right if interested, left if not</p>
+          </DrawerHeader>
+          
+          <div className="p-4 flex-1 flex flex-col items-center overflow-hidden">
+            <div className="relative w-full max-w-md h-[450px] mx-auto">
+              {/* Show current stock if available */}
+              {currentStockIndex < stocks.length ? (
+                <motion.div
+                  key={stocks[currentStockIndex].id}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full"
+                >
+                  <StockCard 
+                    stock={stocks[currentStockIndex]} 
+                    onSwipe={handleSwipe} 
+                  />
+                </motion.div>
+              ) : (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-gray-500">No more stocks to show</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex justify-center space-x-6 mt-6">
+              <button 
+                onClick={() => handleManualSwipe('left')} 
+                className="bg-red-100 text-red-500 h-14 w-14 rounded-full flex items-center justify-center shadow-md hover:bg-red-200 transition-colors"
               >
-                <StockCard 
-                  stock={stocks[currentStockIndex]} 
-                  onSwipe={handleSwipe} 
-                />
-              </motion.div>
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <p className="text-gray-500">No more stocks to show</p>
+                <X className="w-7 h-7" />
+              </button>
+              
+              <button 
+                onClick={handleBuyClick} 
+                className="bg-blue-100 text-blue-500 h-12 w-12 rounded-full flex items-center justify-center shadow-md hover:bg-blue-200 transition-colors"
+              >
+                <DollarSign className="w-6 h-6" />
+              </button>
+              
+              <button 
+                onClick={() => handleManualSwipe('right')} 
+                className="bg-tr-green/20 text-tr-green h-14 w-14 rounded-full flex items-center justify-center shadow-md hover:bg-tr-green/30 transition-colors"
+              >
+                <Check className="w-7 h-7" />
+              </button>
+            </div>
+            
+            {swipedStocks.length > 0 && (
+              <div className="mt-6 text-sm text-gray-500">
+                <p>{swipedStocks.filter(s => s.liked).length} stocks liked</p>
               </div>
             )}
           </div>
+        </DrawerContent>
+      </Drawer>
+
+      {/* Buy Dialog */}
+      <Dialog open={buyDialogOpen} onOpenChange={setBuyDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Buy {currentStockIndex < stocks.length ? stocks[currentStockIndex].ticker : ''}</DialogTitle>
+            <DialogDescription>
+              Configure your purchase details below
+            </DialogDescription>
+          </DialogHeader>
           
-          <div className="flex justify-center space-x-12 mt-6">
-            <button 
-              onClick={() => handleManualSwipe('left')} 
-              className="bg-red-100 text-red-500 h-16 w-16 rounded-full flex items-center justify-center shadow-md hover:bg-red-200 transition-colors"
-            >
-              <X className="w-8 h-8" />
-            </button>
-            <button 
-              onClick={() => handleManualSwipe('right')} 
-              className="bg-tr-green/20 text-tr-green h-16 w-16 rounded-full flex items-center justify-center shadow-md hover:bg-tr-green/30 transition-colors"
-            >
-              <Check className="w-8 h-8" />
-            </button>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="quantity" className="text-right">
+                Quantity
+              </Label>
+              <Input
+                id="quantity"
+                type="number"
+                min="1"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+                className="col-span-3"
+              />
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="price" className="text-right">
+                Price
+              </Label>
+              <div className="col-span-3">
+                <div className="flex gap-2">
+                  <Button
+                    variant={priceType === "market" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setPriceType("market")}
+                  >
+                    Market Price
+                  </Button>
+                  <Button
+                    variant={priceType === "limit" ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setPriceType("limit")}
+                  >
+                    Limit Order
+                  </Button>
+                </div>
+                
+                {priceType === "limit" && (
+                  <Input
+                    className="mt-2"
+                    type="number"
+                    placeholder="Enter limit price"
+                  />
+                )}
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right">
+                Total
+              </Label>
+              <div className="col-span-3 font-semibold">
+                {currentStockIndex < stocks.length 
+                  ? `$${(parseFloat(stocks[currentStockIndex].price.replace('$', '')) * parseInt(quantity || "0")).toFixed(2)}`
+                  : '$0.00'
+                }
+              </div>
+            </div>
           </div>
           
-          {swipedStocks.length > 0 && (
-            <div className="mt-6 text-sm text-gray-500">
-              <p>{swipedStocks.filter(s => s.liked).length} stocks liked</p>
-            </div>
-          )}
-        </div>
-      </DrawerContent>
-    </Drawer>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBuyDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handlePurchase}>
+              Buy Now
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
