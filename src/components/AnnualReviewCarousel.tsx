@@ -106,14 +106,12 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
   
   // Handle category click
-  const handleCategoryClick = (index: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Ensure the event doesn't bubble up
-    setActiveCategory(prevCategory => prevCategory === index ? null : index);
+  const handleCategoryClick = (index: number) => {
+    setActiveCategory(index);
   };
 
   // Handle back to main categories
-  const handleBackToCategories = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Ensure the event doesn't bubble up
+  const handleBackToCategories = () => {
     setActiveCategory(null);
   };
   
@@ -123,11 +121,8 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   };
   
   // Handle slide change to reset category view
-  const handleSlideChange = (slideIndex: number) => {
-    // Only reset if moving away from the bubble chart slide (first slide)
-    if (slideIndex !== 0) {
-      setActiveCategory(null);
-    }
+  const handleSlideChange = () => {
+    setActiveCategory(null);
   };
   
   // Define the slide contents

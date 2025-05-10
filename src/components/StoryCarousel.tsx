@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from './ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -32,7 +33,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   const [activeSlide, setActiveSlide] = useState(0);
   const [progress, setProgress] = useState(0);
   const [internalIsPaused, setInternalIsPaused] = useState(false);
-  const [isUserInteracting, setIsUserInteracting] = useState(false);
   const intervalRef = useRef<number | null>(null);
   
   // Determine actual pause state (external prop takes precedence if provided)
@@ -110,14 +110,8 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     onOpenChange(false);
   };
 
-  // Handle navigation with left/right clicks - only if not interacting with bubbles
+  // Handle navigation with left/right clicks
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // If user is currently interacting with internal components like bubbles, don't navigate
-    if (isUserInteracting) {
-      setIsUserInteracting(false);
-      return;
-    }
-    
     const containerWidth = e.currentTarget.clientWidth;
     const clickX = e.nativeEvent.offsetX;
     
@@ -147,7 +141,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     } else {
       setInternalIsPaused(true);
     }
-    setIsUserInteracting(true);
   };
   
   // Resume on touch end
@@ -157,10 +150,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     } else {
       setInternalIsPaused(false);
     }
-    // Keep isUserInteracting true for a short time to prevent accidental navigation
-    setTimeout(() => {
-      setIsUserInteracting(false);
-    }, 300);
   };
 
   // Reset to first slide when opening
