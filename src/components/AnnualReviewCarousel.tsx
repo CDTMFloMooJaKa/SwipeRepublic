@@ -228,10 +228,10 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Slide 4: RoundUp
+    // Slide 4: RoundUp - Fixed to match Saveback layout
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
-      <div className="flex-grow flex-col justify-center items-center text-center">
+      <div className="flex-grow flex flex-col justify-center items-center text-center">
         {/* Current value section */}
         <div className="text-5xl font-bold mb-1">324€</div>
         <p className="text-xl mb-8">collected with RoundUp</p>
