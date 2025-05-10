@@ -194,7 +194,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('http://localhost:8080/load_top_investments');
+        const response = await fetch('https://cdtmbackend.onrender.com/load_top_investments');
         const data = await response.json();
         
         // Add colors to the fetched data
