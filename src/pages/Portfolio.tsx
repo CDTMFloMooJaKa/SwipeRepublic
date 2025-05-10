@@ -96,8 +96,8 @@ const Portfolio: React.FC = () => {
               className="p-4 flex flex-col justify-between border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0 cursor-pointer"
               style={{
                 minHeight: "120px",
-                width: "50%", // Equal width
-                minWidth: "170px"
+                width: "70%", // Changed from 50% to 70%
+                minWidth: "240px"
               }}
               onClick={() => console.log("Markets Today clicked")}
             >
@@ -126,8 +126,8 @@ const Portfolio: React.FC = () => {
               onClick={() => setShowAnnualReview(true)} 
               style={{
                 minHeight: "120px",
-                width: "50%", // Equal width
-                minWidth: "170px"
+                width: "70%", // Changed from 50% to 70%
+                minWidth: "240px"
               }}
             >
               {/* Background image div */}
