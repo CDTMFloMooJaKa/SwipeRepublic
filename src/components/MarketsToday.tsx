@@ -1,6 +1,7 @@
+
 import React, { useState, useContext } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
-import { Button } from './ui/card';
+import { Button } from './ui/button';
 import { Card } from './ui/card';
 import StoryCarousel from './StoryCarousel';
 import { Bot, Bookmark } from 'lucide-react';
