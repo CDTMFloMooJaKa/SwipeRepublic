@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ activeTab }) => {
             activeTab === 'portfolio' ? 'text-black' : 'text-tr-gray'
           )}
         >
-          Portfolio
+          Wealth
         </Link>
         <Link 
           to="/cash" 

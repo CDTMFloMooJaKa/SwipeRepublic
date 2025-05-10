@@ -4,6 +4,7 @@ import { Button } from './ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StoryProgressIndicator from './StoryProgressIndicator';
+import { useNavigate } from 'react-router-dom';
 
 export interface StoryCarouselProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   isPaused: externalIsPaused,
   onPauseChange
 }) => {
+  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
   const [progress, setProgress] = useState(0);
   const [internalIsPaused, setInternalIsPaused] = useState(false);
@@ -94,10 +96,15 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     const containerWidth = e.currentTarget.clientWidth;
     const clickX = e.nativeEvent.offsetX;
     
-    // If click is in the right third of the screen, go to next slide
+    // If click is in the right third of the screen
     if (clickX > containerWidth * 0.7) {
       if (activeSlide < totalSlides - 1) {
+        // If not on last slide, go to next slide
         setActiveSlide(prev => prev + 1);
+      } else {
+        // If on last slide, close and navigate to home
+        onOpenChange(false);
+        navigate("/portfolio");
       }
     } 
     // If click is in the left third of the screen, go to previous slide
