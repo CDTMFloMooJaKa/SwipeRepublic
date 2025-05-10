@@ -4,6 +4,7 @@ import { Check, X, ArrowUp, ArrowDown, Circle, Info } from 'lucide-react';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
 import { WatchlistContext } from '../contexts/WatchlistContext';
 import { Badge } from './ui/badge';
+import { Avatar, AvatarImage } from './ui/avatar';
 
 interface StockCardProps {
   stock: Stock;
@@ -183,22 +184,17 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
           </div>
         )}
         
-        <div className="relative h-24 bg-gray-100">
-          <div className="flex justify-center items-center h-full">
-            <img 
-              src={stock.image}
-              alt={`${stock.name} logo`}
-              className="h-6 w-auto object-contain"
-            />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/10" />
-        </div>
-        
         <div className="p-4">
-          <div className="flex justify-between items-center mb-3">
-            <div>
-              <h3 className="text-lg font-bold">{stock.name}</h3>
-              <p className="text-sm text-gray-500">{stock.ticker}</p>
+          {/* Header with logo and company info side by side */}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <Avatar className="h-8 w-8 mr-2">
+                <AvatarImage src={stock.image} alt={`${stock.name} logo`} />
+              </Avatar>
+              <div>
+                <h3 className="text-lg font-bold">{stock.name}</h3>
+                <p className="text-xs text-gray-500">{stock.ticker}</p>
+              </div>
             </div>
             <span className={`font-semibold ${stock.change >= 0 ? 'text-tr-green' : 'text-red-500'}`}>
               {stock.change >= 0 ? '+' : ''}{stock.change}%
@@ -206,23 +202,23 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
           </div>
           
           <div className="mb-3">
-            <p className="text-sm text-gray-600">{stock.description}</p>
+            <p className="text-sm text-gray-600 line-clamp-2">{stock.description}</p>
           </div>
 
           {/* AI Signal Section */}
-          <div className="mt-4 border-t border-gray-100 pt-3">
-            <div className="flex items-center mb-2">
-              <h4 className="font-semibold text-gray-800">AI Signal</h4>
+          <div className="mt-2 border-t border-gray-100 pt-2">
+            <div className="flex items-center mb-1">
+              <h4 className="font-semibold text-gray-800 text-sm">AI Signal</h4>
             </div>
             
-            <div className="flex items-center mb-2">
+            <div className="flex items-center mb-1">
               <Badge className={`${signalInfo.color} border flex items-center capitalize`} variant="outline">
                 {signalInfo.icon}
                 {stock.aiSignal}
               </Badge>
             </div>
             
-            <p className="text-sm text-gray-600 mb-2">{stock.aiReasoning}</p>
+            <p className="text-xs text-gray-600 mb-1">{stock.aiReasoning}</p>
             
             <div className="flex items-center text-xs text-gray-400">
               <Info className="w-3 h-3 mr-1" />
@@ -230,8 +226,8 @@ const StockCard: React.FC<StockCardProps> = ({ stock, onSwipe }) => {
             </div>
           </div>
           
-          <div className="mt-4">
-            <span className="bg-gray-100 text-gray-800 py-1 px-3 rounded-full text-xs">
+          <div className="mt-2">
+            <span className="bg-gray-100 text-gray-800 py-1 px-2 rounded-full text-xs">
               {stock.industry}
             </span>
           </div>
@@ -296,7 +292,7 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
         </DrawerHeader>
         
         <div className="p-4 flex-1 flex flex-col items-center overflow-hidden">
-          <div className="relative w-full max-w-md h-[500px] mx-auto">
+          <div className="relative w-full max-w-md h-[450px] mx-auto">
             {/* Show current stock if available */}
             {currentStockIndex < stocks.length ? (
               <motion.div
