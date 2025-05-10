@@ -176,16 +176,24 @@
     max-width: 362px !important;
   }
   
-  /* Prevent scrolling the page when interacting with the phone frame content */
+  /* Enhanced scroll behavior */
   .phone-frame-content, 
   .phone-frame-overlay {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+    position: relative;
   }
   
-  /* Ensure content inside carousel scrolls properly */
-  .phone-frame-overlay .overflow-y-auto {
+  /* Improved scroll behavior for content inside carousel */
+  .phone-frame-overlay .overflow-y-auto,
+  .phone-frame-content .overflow-y-auto {
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent scroll events from bubbling up from phone frame content */
+  body:has(.phone-frame-overlay) {
+    overflow: hidden;
+    height: 100vh;
   }
 }
