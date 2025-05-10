@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from './ui/button';
@@ -105,6 +104,13 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   onOpenChange 
 }) => {
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  
+  // Reset activeCategory when carousel closes
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveCategory(null);
+    }
+  }, [isOpen]);
   
   // Handle category click
   const handleCategoryClick = (index: number) => {

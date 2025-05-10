@@ -1,5 +1,4 @@
-
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -166,6 +165,14 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const [activeBubbleCategory, setActiveBubbleCategory] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const { watchlist } = useContext(WatchlistContext);
+  
+  // Reset bubble state when carousel closes
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveBubbleCategory(null);
+      setIsPaused(false);
+    }
+  }, [isOpen]);
   
   // Handle clicking a bubble category
   const handleCategoryClick = (index: number, e: React.MouseEvent) => {

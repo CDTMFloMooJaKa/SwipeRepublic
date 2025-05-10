@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -79,6 +79,13 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
   const navigate = useNavigate();
   const isMobile = useIsMobile();
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
+  
+  // Reset activeCategory when drawer closes
+  useEffect(() => {
+    if (!isOpen) {
+      setActiveCategory(null);
+    }
+  }, [isOpen]);
   
   // If device status is still determining or definitely not mobile, don't render
   if (isMobile === undefined || isMobile === false) {
