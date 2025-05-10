@@ -3,7 +3,7 @@ import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import StoryCarousel from './StoryCarousel';
-import { Bot, Sparkles } from 'lucide-react';
+import { Bot } from 'lucide-react';
 
 // Mock data for news articles
 const newsArticles = [
@@ -173,10 +173,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     // Slide 1: News Today
     <div className="h-full flex flex-col">
       <div className="mb-6">
-        <div className="flex items-center gap-2">
-          <h3 className="text-2xl font-bold">News Today</h3>
-          <Sparkles className="h-5 w-5" />
-        </div>
+        <h3 className="text-2xl font-bold">News Today</h3>
         <div className="flex items-center text-gray-500 mt-1">
           <Bot className="h-4 w-4 mr-1.5" />
           <span className="text-sm">Selected for you</span>
@@ -274,12 +271,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       slides={slides}
-      title={
-        <div className="flex items-center gap-2">
-          <span>Your Insights</span>
-          <Sparkles className="h-5 w-5" />
-        </div>
-      }
+      title="Your Insights"
       autoAdvanceDuration={8000}
       isPaused={isPaused}
       onPauseChange={setIsPaused}

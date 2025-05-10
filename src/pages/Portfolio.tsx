@@ -91,16 +91,16 @@ const Portfolio: React.FC = () => {
         {/* Scrollable Cards Section */}
         <div className="mt-6 mb-6 overflow-x-auto scrollbar-none">
           <div className="flex gap-3" style={{ paddingBottom: '8px' }}>
-            {/* Markets Today Card - now using the StoryCard component with updated title */}
+            {/* Your Insights Card */}
             <StoryCard
               title="Your Insights"
-              subtitle="See what people buy"
+              subtitle="Stay up to date"
               backgroundImage="/lovable-uploads/62d7a477-be26-455b-a75e-a9c614db04ac.png"
               onClick={() => setShowMarketsToday(true)}
               variant="card"
             />
             
-            {/* Annual Review Card - now using the StoryCard component */}
+            {/* Annual Review Card */}
             <StoryCard
               title="2025 in Numbers"
               subtitle="Discover your financial highlights"

@@ -2,7 +2,6 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Sparkles } from 'lucide-react';
 
 interface StoryCardProps {
   title: string;
@@ -47,15 +46,7 @@ const StoryCard: React.FC<StoryCardProps> = ({
           <p className="text-gray-100 text-xs mb-1">{subtitle}</p>
         </div>
         <div className="flex items-center justify-between w-full">
-          {title === "Your Insights" && (
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-white">{title}</h2>
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-          )}
-          {title !== "Your Insights" && (
-            <h2 className="text-xl font-bold text-white">{title}</h2>
-          )}
+          <h2 className="text-xl font-bold text-white">{title}</h2>
         </div>
       </div>
     </>
