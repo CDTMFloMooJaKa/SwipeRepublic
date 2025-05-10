@@ -103,7 +103,7 @@ const Portfolio: React.FC = () => {
             {/* Annual Review Card */}
             <StoryCard
               title="2025 in Numbers"
-              subtitle="Discover your financial highlights"
+              subtitle="Your financial highlights"
               backgroundImage="/lovable-uploads/42dec5de-4be6-487c-902e-1c251e61c932.png"
               onClick={() => setShowAnnualReview(true)}
               variant="button"
