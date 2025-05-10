@@ -6,7 +6,7 @@ import { ProcessedBubble } from '@/utils/bubblePositioning';
 
 interface BubbleDisplayProps {
   bubbles: ProcessedBubble[];
-  onCategoryClick?: (index: number) => void;
+  onCategoryClick?: (index: number, e: React.MouseEvent) => void;
   activeCategory: number | null;
 }
 
@@ -25,7 +25,7 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
             percentage={bubble.percentage}
             color={bubble.color}
             size={bubble.size}
-            onClick={() => onCategoryClick?.(index)}
+            onClick={(e) => onCategoryClick?.(index, e)}
             position={bubble.position}
             isChild={activeCategory !== null}
           />

@@ -7,7 +7,7 @@ export interface BubbleProps {
   percentage: string;
   color: string;
   size: number;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent) => void;
   position?: {x: number, y: number};
   isChild?: boolean;
 }

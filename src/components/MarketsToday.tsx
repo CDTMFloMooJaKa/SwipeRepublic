@@ -27,19 +27,109 @@ const newsArticles = [
 
 // Mock data for bubble charts
 const boughtToday: Category[] = [
-  { name: "Technology", percentage: "38%", color: "hsl(var(--tr-blue))", subcategories: [] },
-  { name: "Healthcare", percentage: "24%", color: "hsl(var(--tr-green))", subcategories: [] },
-  { name: "Finance", percentage: "18%", color: "hsl(var(--tr-purple))", subcategories: [] },
-  { name: "Consumer Goods", percentage: "12%", color: "#F97316", subcategories: [] },
-  { name: "Energy", percentage: "8%", color: "#D946EF", subcategories: [] },
+  { 
+    name: "Technology", 
+    percentage: "38%", 
+    color: "hsl(var(--tr-blue))", 
+    subcategories: [
+      { name: "Software", percentage: "50%" },
+      { name: "Hardware", percentage: "30%" },
+      { name: "Cloud Services", percentage: "20%" }
+    ]
+  },
+  { 
+    name: "Healthcare", 
+    percentage: "24%", 
+    color: "hsl(var(--tr-green))", 
+    subcategories: [
+      { name: "Pharmaceuticals", percentage: "40%" },
+      { name: "Medical Devices", percentage: "35%" },
+      { name: "Healthcare Services", percentage: "25%" }
+    ]
+  },
+  { 
+    name: "Finance", 
+    percentage: "18%", 
+    color: "hsl(var(--tr-purple))", 
+    subcategories: [
+      { name: "Banking", percentage: "45%" },
+      { name: "Investment", percentage: "35%" },
+      { name: "Insurance", percentage: "20%" }
+    ]
+  },
+  { 
+    name: "Consumer Goods", 
+    percentage: "12%", 
+    color: "#F97316", 
+    subcategories: [
+      { name: "Food & Beverage", percentage: "50%" },
+      { name: "Clothing", percentage: "30%" },
+      { name: "Electronics", percentage: "20%" }
+    ]
+  },
+  { 
+    name: "Energy", 
+    percentage: "8%", 
+    color: "#D946EF", 
+    subcategories: [
+      { name: "Renewables", percentage: "40%" },
+      { name: "Oil & Gas", percentage: "35%" },
+      { name: "Utilities", percentage: "25%" }
+    ]
+  },
 ];
 
 const soldToday: Category[] = [
-  { name: "Real Estate", percentage: "32%", color: "#F97316", subcategories: [] },
-  { name: "Utilities", percentage: "25%", color: "hsl(var(--tr-purple))", subcategories: [] },
-  { name: "Materials", percentage: "23%", color: "#D946EF", subcategories: [] },
-  { name: "Communications", percentage: "11%", color: "hsl(var(--tr-blue))", subcategories: [] },
-  { name: "Industrials", percentage: "9%", color: "hsl(var(--tr-green))", subcategories: [] },
+  { 
+    name: "Real Estate", 
+    percentage: "32%", 
+    color: "#F97316", 
+    subcategories: [
+      { name: "Residential", percentage: "45%" },
+      { name: "Commercial", percentage: "35%" },
+      { name: "REITs", percentage: "20%" }
+    ]
+  },
+  { 
+    name: "Utilities", 
+    percentage: "25%", 
+    color: "hsl(var(--tr-purple))", 
+    subcategories: [
+      { name: "Electricity", percentage: "40%" },
+      { name: "Water", percentage: "35%" },
+      { name: "Gas", percentage: "25%" }
+    ]
+  },
+  { 
+    name: "Materials", 
+    percentage: "23%", 
+    color: "#D946EF", 
+    subcategories: [
+      { name: "Chemicals", percentage: "50%" },
+      { name: "Mining", percentage: "30%" },
+      { name: "Construction", percentage: "20%" }
+    ]
+  },
+  { 
+    name: "Communications", 
+    percentage: "11%", 
+    color: "hsl(var(--tr-blue))", 
+    subcategories: [
+      { name: "Telecom", percentage: "45%" },
+      { name: "Media", percentage: "35%" },
+      { name: "Internet", percentage: "20%" }
+    ]
+  },
+  { 
+    name: "Industrials", 
+    percentage: "9%", 
+    color: "hsl(var(--tr-green))", 
+    subcategories: [
+      { name: "Manufacturing", percentage: "40%" },
+      { name: "Transportation", percentage: "35%" },
+      { name: "Aerospace", percentage: "25%" }
+    ]
+  },
 ];
 
 // Expanded mock data for top assets - now with 4 assets each
@@ -64,13 +154,17 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const [isPaused, setIsPaused] = useState(false);
   
   // Handle clicking a bubble category
-  const handleCategoryClick = (index: number) => {
+  const handleCategoryClick = (index: number, e: React.MouseEvent) => {
+    // Stop event propagation to prevent slide change
+    e.stopPropagation();
+    
     setActiveBubbleCategory(activeBubbleCategory === index ? null : index);
     setIsPaused(true); // Pause autoplay when interacting with bubbles
   };
 
   // Handle going back to main categories
-  const handleBackToCategories = () => {
+  const handleBackToCategories = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setActiveBubbleCategory(null);
     setIsPaused(false); // Resume autoplay when going back
   };
