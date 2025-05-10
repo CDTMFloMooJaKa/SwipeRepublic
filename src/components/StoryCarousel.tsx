@@ -32,7 +32,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   const [progress, setProgress] = useState(0);
   const [internalIsPaused, setInternalIsPaused] = useState(false);
   const intervalRef = useRef<number | null>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   
   // Determine actual pause state (external prop takes precedence if provided)
   const isPaused = externalIsPaused !== undefined ? externalIsPaused : internalIsPaused;
@@ -127,41 +126,20 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   };
   
   // Pause on touch
-  const handleTouch = (e: React.PointerEvent) => {
+  const handleTouch = () => {
     if (onPauseChange) {
       onPauseChange(true);
     } else {
       setInternalIsPaused(true);
     }
-    
-    // Prevent event from bubbling up to prevent unwanted scrolling
-    e.stopPropagation();
   };
   
   // Resume on touch end
-  const handleTouchEnd = (e: React.PointerEvent) => {
+  const handleTouchEnd = () => {
     if (onPauseChange) {
       onPauseChange(false);
     } else {
       setInternalIsPaused(false);
-    }
-    
-    // Prevent event from bubbling up
-    e.stopPropagation();
-  };
-  
-  // Stop wheel events from propagating outside the carousel
-  const handleWheel = (e: React.WheelEvent) => {
-    // Only stop propagation if the content is at the top and trying to scroll up,
-    // or at the bottom and trying to scroll down
-    if (contentRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-      const isAtTop = scrollTop <= 0;
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
-
-      if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-        e.stopPropagation();
-      }
     }
   };
   
@@ -207,7 +185,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
       <div 
         className="flex-1 w-full overflow-hidden" 
         style={!isMobile ? { maxHeight: 'calc(750px - 120px)' } : undefined}
-        onWheel={handleWheel}
       >
         <AnimatePresence mode="wait">
           <motion.div 
@@ -218,7 +195,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
             transition={{ duration: 0.3 }}
             className="h-full overflow-y-auto"
             onClick={handleContainerClick}
-            ref={contentRef}
           >
             <div className="p-4">
               {slides[activeSlide]}
