@@ -228,7 +228,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   // Define the slide contents
   const slides = [
     // Slide 1: News Today
-    <div className="h-full">
+    <div className="h-full flex flex-col">
       <div className="mb-6">
         <h3 className="text-2xl font-bold">News Today</h3>
         <div className="flex items-center text-gray-500 mt-1">
@@ -237,8 +237,8 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
         </div>
       </div>
       
-      <ScrollArea className="h-[calc(100%-6rem)]">
-        <div className="space-y-4 pr-4 pb-4">
+      <ScrollArea className="flex-1 pr-4">
+        <div className="space-y-4 pb-4">
           {getNewsArticles().map((article, index) => (
             <Card key={index} className="p-4">
               <div className="flex justify-between mb-1">
@@ -262,9 +262,9 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     </div>,
     
     // Slide 2: Bought Today
-    <div className="h-full">
+    <div className="h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Bought Today</h3>
-      <div className="h-[calc(100%-3rem)]">
+      <div className="flex-1 relative">
         {activeBubbleCategory !== null && (
           <button 
             onClick={handleBackToCategories}
@@ -283,9 +283,9 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     </div>,
     
     // Slide 3: Sold Today
-    <div className="h-full">
+    <div className="h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Sold Today</h3>
-      <div className="h-[calc(100%-3rem)]">
+      <div className="flex-1 relative">
         {activeBubbleCategory !== null && (
           <button 
             onClick={handleBackToCategories}
@@ -304,9 +304,9 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     </div>,
     
     // Slide 4: Your Assets
-    <div className="h-full">
+    <div className="h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Your Assets</h3>
-      <div className="space-y-4">
+      <div className="space-y-4 flex-1">
         <div>
           <h4 className="text-lg font-semibold text-tr-green mb-2">Top Performers</h4>
           {topAssets.filter(asset => asset.positive).map((asset, index) => (
