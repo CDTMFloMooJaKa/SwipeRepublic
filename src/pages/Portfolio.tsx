@@ -6,7 +6,6 @@ import InvestmentItem from '@/components/InvestmentItem';
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'lucide-react';
 import AnnualReviewCarousel from '@/components/AnnualReviewCarousel';
-import MarketsToday from '@/components/MarketsToday';
 import { Card } from '@/components/ui/card';
 
 // Mock data for the chart
@@ -54,7 +53,6 @@ const investments = [{
 const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'1T' | '1W' | '1M' | '1J' | 'Max'>('Max');
   const [showAnnualReview, setShowAnnualReview] = useState(false);
-  const [showMarketsToday, setShowMarketsToday] = useState(false);
   const chartData = generateChartData();
   const totalValue = "11.286,45 €";
   const change = "▲ 752,18 €";
@@ -101,7 +99,7 @@ const Portfolio: React.FC = () => {
                 width: "70%", 
                 minWidth: "240px"
               }}
-              onClick={() => setShowMarketsToday(true)}
+              onClick={() => console.log("Markets Today clicked")}
             >
               {/* Background image - now using newly provided image */}
               <div 
@@ -176,11 +174,6 @@ const Portfolio: React.FC = () => {
       <AnnualReviewCarousel 
         isOpen={showAnnualReview} 
         onOpenChange={setShowAnnualReview} 
-      />
-      
-      <MarketsToday
-        isOpen={showMarketsToday}
-        onOpenChange={setShowMarketsToday}
       />
       
       <BottomNav />
