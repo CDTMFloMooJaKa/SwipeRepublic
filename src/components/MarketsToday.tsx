@@ -23,11 +23,6 @@ const newsArticles = [
     title: "Energy Sector Under Pressure",
     description: "Renewable energy investments overtake traditional fossil fuels.",
     source: "Reuters"
-  },
-  {
-    title: "Banking Regulations Tightened",
-    description: "New framework announced for global financial institutions.",
-    source: "Wall Street Journal"
   }
 ];
 
@@ -134,6 +129,25 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const handleCategoryClick = (index: number) => {
     setActiveBubbleCategory(activeBubbleCategory === index ? null : index);
   };
+
+  // Handle navigation with left/right clicks
+  const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const containerWidth = e.currentTarget.clientWidth;
+    const clickX = e.nativeEvent.offsetX;
+    
+    // If click is in the right third of the screen, go to next slide
+    if (clickX > containerWidth * 0.7) {
+      if (activeSlide < TOTAL_SLIDES - 1) {
+        setActiveSlide(prev => prev + 1);
+      }
+    } 
+    // If click is in the left third of the screen, go to previous slide
+    else if (clickX < containerWidth * 0.3) {
+      if (activeSlide > 0) {
+        setActiveSlide(prev => prev - 1);
+      }
+    }
+  };
   
   if (!isOpen) return null;
   
@@ -164,7 +178,10 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       
       {/* Carousel Content */}
       <Carousel className="flex-1 w-full overflow-hidden" ref={carouselRef}>
-        <CarouselContent className="h-full">
+        <CarouselContent 
+          className="h-full" 
+          onClick={handleContainerClick}
+        >
           {/* Slide 1: News Today */}
           <CarouselItem className="h-full" style={{ transform: `translateX(-${activeSlide * 100}%)` }}>
             <div className="p-4 h-full flex flex-col">
