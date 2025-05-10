@@ -1,28 +1,41 @@
-import React, { useState } from 'react';
+
+import React, { useState, useContext } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import StoryCarousel from './StoryCarousel';
-import { Bot } from 'lucide-react';
+import { Bot, Bookmark } from 'lucide-react';
+import { WatchlistContext } from '../contexts/WatchlistContext';
+import { Stock, stocks } from './StockSwiper';
 
-// Mock data for news articles
-const newsArticles = [
-  {
-    title: "Markets Reach All-Time High",
-    description: "Global markets continue their rally as inflation concerns ease.",
-    source: "Financial Times"
-  },
-  {
-    title: "Tech Stocks Lead Recovery",
-    description: "Technology sector outperforms broader market for third consecutive month.",
+// Sample news articles for each stock
+const stockNewsMap = {
+  1: { // Tesla
+    title: "Tesla Unveils Next-Gen Battery Technology",
+    description: "The new battery promises 30% more range and faster charging capabilities.",
     source: "Bloomberg"
   },
-  {
-    title: "Energy Sector Under Pressure",
-    description: "Renewable energy investments overtake traditional fossil fuels.",
+  2: { // Amazon
+    title: "Amazon Expands Same-Day Delivery to Rural Areas",
+    description: "The e-commerce giant continues to grow its logistics network with innovative delivery solutions.",
     source: "Reuters"
+  },
+  3: { // Apple
+    title: "Apple Announces Major AI Features for Next iOS",
+    description: "The upcoming iOS update will integrate advanced AI capabilities across all native apps.",
+    source: "Financial Times"
+  },
+  4: { // Microsoft
+    title: "Microsoft Cloud Revenue Exceeds Expectations",
+    description: "Azure's market share grows as more enterprises shift to cloud computing solutions.",
+    source: "Wall Street Journal"
+  },
+  5: { // NVIDIA
+    title: "NVIDIA Reveals New AI Chip Architecture",
+    description: "The next-generation GPU promises 2x performance for machine learning workloads.",
+    source: "TechCrunch"
   }
-];
+};
 
 // Mock data for bubble charts
 const boughtToday: Category[] = [
@@ -151,6 +164,7 @@ interface MarketsProps {
 const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const [activeBubbleCategory, setActiveBubbleCategory] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const { watchlist } = useContext(WatchlistContext);
   
   // Handle clicking a bubble category
   const handleCategoryClick = (index: number, e: React.MouseEvent) => {
@@ -168,6 +182,48 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     setIsPaused(false); // Resume autoplay when going back
   };
   
+  // Generate news articles based on watchlist
+  const getNewsArticles = () => {
+    // Start with general market news that's always shown
+    const generalNews = {
+      title: "Markets Reach All-Time High",
+      description: "Global markets continue their rally as inflation concerns ease.",
+      source: "Financial Times",
+      isWatchlistItem: false
+    };
+    
+    // Add news for watchlist items
+    const watchlistNews = watchlist.map(stock => ({
+      title: stockNewsMap[stock.id]?.title || `${stock.name} News Update`,
+      description: stockNewsMap[stock.id]?.description || `Latest updates about ${stock.name} performance.`,
+      source: stockNewsMap[stock.id]?.source || "Market Daily",
+      isWatchlistItem: true,
+      stockName: stock.name
+    }));
+    
+    // If watchlist is empty, show default news
+    if (watchlistNews.length === 0) {
+      return [
+        generalNews,
+        {
+          title: "Tech Stocks Lead Recovery",
+          description: "Technology sector outperforms broader market for third consecutive month.",
+          source: "Bloomberg",
+          isWatchlistItem: false
+        },
+        {
+          title: "Energy Sector Under Pressure",
+          description: "Renewable energy investments overtake traditional fossil fuels.",
+          source: "Reuters",
+          isWatchlistItem: false
+        }
+      ];
+    }
+    
+    // Combine general news with watchlist news, limit to 3 articles total
+    return [generalNews, ...watchlistNews].slice(0, 3);
+  };
+  
   // Define the slide contents
   const slides = [
     // Slide 1: News Today
@@ -180,9 +236,17 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
         </div>
       </div>
       <div className="space-y-4 flex-1">
-        {newsArticles.map((article, index) => (
+        {getNewsArticles().map((article, index) => (
           <Card key={index} className="p-4">
-            <h4 className="text-xl font-bold">{article.title}</h4>
+            <div className="flex justify-between mb-1">
+              <h4 className="text-xl font-bold">{article.title}</h4>
+              {article.isWatchlistItem && (
+                <div className="flex items-center text-blue-500">
+                  <Bookmark className="h-4 w-4 mr-1.5" />
+                  <span className="text-sm">Watchlist</span>
+                </div>
+              )}
+            </div>
             <p className="text-gray-600 my-2">{article.description}</p>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-500">{article.source}</span>

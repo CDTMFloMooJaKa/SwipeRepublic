@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
@@ -8,6 +7,7 @@ import AnnualReviewCarousel from '@/components/AnnualReviewCarousel';
 import MarketsToday from '@/components/MarketsToday';
 import StoryCard from '@/components/StoryCard';
 import Watchlist from '@/components/Watchlist';
+import StockSwiper from '@/components/StockSwiper';
 
 // Mock data for the chart
 const generateChartData = () => {
@@ -55,6 +55,8 @@ const Portfolio: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'1T' | '1W' | '1M' | '1J' | 'Max'>('Max');
   const [showAnnualReview, setShowAnnualReview] = useState(false);
   const [showMarketsToday, setShowMarketsToday] = useState(false);
+  const [showStockSwiper, setShowStockSwiper] = useState(false);
+  
   const chartData = generateChartData();
   const totalValue = "11.286,45 €";
   const change = "▲ 752,18 €";
@@ -111,6 +113,15 @@ const Portfolio: React.FC = () => {
               onClick={() => setShowAnnualReview(true)}
               variant="button"
             />
+            
+            {/* Discover Stocks Card */}
+            <StoryCard
+              title="Discover Stocks"
+              subtitle="Find your next investment"
+              backgroundImage="/lovable-uploads/88d6a29b-923a-4da2-b04e-81ca9bf9874c.png"
+              onClick={() => setShowStockSwiper(true)}
+              variant="button"
+            />
           </div>
         </div>
         
@@ -137,6 +148,11 @@ const Portfolio: React.FC = () => {
       <MarketsToday 
         isOpen={showMarketsToday}
         onOpenChange={setShowMarketsToday}
+      />
+      
+      <StockSwiper
+        isOpen={showStockSwiper}
+        onOpenChange={setShowStockSwiper}
       />
       
       <BottomNav />
