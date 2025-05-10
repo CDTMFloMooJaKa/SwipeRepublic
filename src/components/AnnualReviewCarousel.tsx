@@ -184,7 +184,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
         </p>
         
         <Button 
-          className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white"
+          className="w-full mt-4 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-500 hover:to-yellow-600 text-white"
         >
           Invest more to close the pension gap
           <ArrowRight className="ml-2 h-4 w-4" />
@@ -197,12 +197,12 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       <h2 className="text-2xl font-bold mb-4">RoundUp</h2>
       <div className="flex-grow flex flex-col justify-center items-center text-center">
         {/* Current value section */}
-        <div className="text-5xl font-bold mb-1">124€</div>
+        <div className="text-5xl font-bold mb-1">324€</div>
         <p className="text-xl mb-8">collected with RoundUp</p>
         
         {/* Future value section */}
         <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-1">
-          {calculateFutureValue(124, 0.07, 40)}€
+          {calculateFutureValue(324, 0.07, 40)}€
         </div>
         <p className="text-xl mb-8">when you retire</p>
         
