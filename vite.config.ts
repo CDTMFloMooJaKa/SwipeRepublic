@@ -13,7 +13,8 @@ export default defineConfig(({ mode }) => ({
         target: 'https://cdtmbackend.onrender.com',  // Your backend API
         changeOrigin: true,  // Ensures the origin of the request is changed to the target's origin
         secure: true,       // Should be true for HTTPS. If using HTTP, set to false.
-        rewrite: (path) => path.replace(/^\/load_top_investments/, ''),  // Rewriting path as needed
+        // Don't rewrite the path if your endpoint is actually called /load_top_investments
+        // If your backend endpoint is different, use appropriate rewrite
       },
     },
   },
