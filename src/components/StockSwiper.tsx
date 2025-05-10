@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
 import { Check, X } from 'lucide-react';
@@ -225,8 +224,8 @@ const StockSwiper: React.FC<StockSwiperProps> = ({ isOpen, onOpenChange }) => {
   };
   
   return (
-    <Drawer open={isOpen} onOpenChange={onOpenChange}>
-      <DrawerContent className="h-[90svh] max-h-[90svh]">
+    <Drawer open={isOpen} onOpenChange={onOpenChange} shouldScaleBackground={false}>
+      <DrawerContent className="h-[90svh] max-h-[90svh] bg-white">
         <DrawerHeader>
           <DrawerTitle>Discover Stocks</DrawerTitle>
           <p className="text-sm text-gray-500">Swipe right if interested, left if not</p>
