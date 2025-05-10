@@ -130,6 +130,7 @@ const WelcomeWidget: React.FC<WelcomeWidgetProps> = ({
               categories={investmentCategories}
               activeCategory={activeCategory}
               onCategoryClick={handleCategoryClick}
+              key={`welcome-bubbles-${isOpen}`} // Add key to force re-render when opened
             />
           </div>
         </div>

@@ -165,14 +165,15 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const [activeBubbleCategory, setActiveBubbleCategory] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const { watchlist } = useContext(WatchlistContext);
+  const [currentSlide, setCurrentSlide] = useState(0);
   
-  // Reset bubble state when carousel closes
+  // Reset bubble state when carousel closes or navigating away from bubble slides
   useEffect(() => {
-    if (!isOpen) {
+    if (!isOpen || (currentSlide !== 1 && currentSlide !== 2)) {
       setActiveBubbleCategory(null);
       setIsPaused(false);
     }
-  }, [isOpen]);
+  }, [isOpen, currentSlide]);
   
   // Handle clicking a bubble category
   const handleCategoryClick = (index: number, e: React.MouseEvent) => {
@@ -188,6 +189,11 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     e.stopPropagation();
     setActiveBubbleCategory(null);
     setIsPaused(false); // Resume autoplay when going back
+  };
+  
+  // Handle slide change
+  const handleSlideChange = (index: number) => {
+    setCurrentSlide(index);
   };
   
   // Generate news articles based on watchlist
@@ -350,6 +356,8 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       autoAdvanceDuration={8000}
       isPaused={isPaused}
       onPauseChange={setIsPaused}
+      onSlideChange={handleSlideChange}
+      key={`markets-today-${isOpen}`} // Add key to force re-render when opened
     />
   );
 };

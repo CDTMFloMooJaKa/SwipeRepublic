@@ -24,6 +24,12 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
   onCategoryClick
 }) => {
   const [bubbles, setBubbles] = useState<ProcessedBubble[]>([]);
+  const [key, setKey] = useState(Date.now());
+  
+  // When activeCategory changes, reset the key to force re-rendering with new positions
+  useEffect(() => {
+    setKey(Date.now());
+  }, [activeCategory]);
   
   useEffect(() => {
     // Determine what data we're working with
@@ -41,14 +47,17 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     
     // Update state with placed bubbles
     setBubbles(positionedBubbles);
-  }, [categories, activeCategory]);
+  }, [categories, activeCategory, key]);
 
   return (
-    <BubbleDisplay 
-      bubbles={bubbles} 
-      onCategoryClick={onCategoryClick} 
-      activeCategory={activeCategory}
-    />
+    <div className="h-full relative" onClick={(e) => e.stopPropagation()}>
+      <BubbleDisplay 
+        bubbles={bubbles} 
+        onCategoryClick={onCategoryClick} 
+        activeCategory={activeCategory}
+        key={key} // Force re-render of bubbles when category changes
+      />
+    </div>
   );
 };
 
