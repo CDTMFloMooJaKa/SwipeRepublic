@@ -191,6 +191,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   
   // Handle slide change to reset category view
   const handleSlideChange = () => {
+    // Always reset bubble category state when changing slides
     setActiveBubbleCategory(null);
     setIsPaused(false);
   };

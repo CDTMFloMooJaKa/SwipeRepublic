@@ -25,6 +25,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
 }) => {
   const [bubbles, setBubbles] = useState<ProcessedBubble[]>([]);
   
+  // Re-process bubbles whenever categories or activeCategory changes
   useEffect(() => {
     // Determine what data we're working with
     const itemsToProcess = activeCategory === null 
@@ -43,10 +44,16 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     setBubbles(positionedBubbles);
   }, [categories, activeCategory]);
 
+  // Handle click on a bubble - stop event from reaching the container
+  const handleBubbleClick = (index: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    onCategoryClick(index, e);
+  };
+
   return (
     <BubbleDisplay 
       bubbles={bubbles} 
-      onCategoryClick={onCategoryClick} 
+      onCategoryClick={handleBubbleClick}
       activeCategory={activeCategory}
     />
   );

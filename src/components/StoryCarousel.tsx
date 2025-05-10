@@ -90,13 +90,15 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   // Handle manual slide change with additional callback
   const handleSlideChange = (index: number) => {
-    setActiveSlide(index);
-    resetTimer();
-    startTimer();
-    
-    // Call the onSlideChange callback if provided
-    if (onSlideChange) {
-      onSlideChange(index);
+    // Only change slide if it's actually different
+    if (index !== activeSlide) {
+      setActiveSlide(index);
+      resetTimer();
+      
+      // Call the onSlideChange callback if provided
+      if (onSlideChange) {
+        onSlideChange(index);
+      }
     }
   };
 

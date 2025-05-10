@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -122,6 +123,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   
   // Handle slide change to reset category view
   const handleSlideChange = () => {
+    // Always reset category view when slides change
     setActiveCategory(null);
   };
   
