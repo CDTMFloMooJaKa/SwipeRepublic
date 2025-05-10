@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription
 } from "@/components/ui/dialog";
 import {
   Carousel,
@@ -103,6 +104,9 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
       <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-0">
           <DialogTitle className="text-2xl font-bold">2025 in Numbers</DialogTitle>
+          <DialogDescription className="text-sm text-gray-500">
+            Your annual financial review
+          </DialogDescription>
         </DialogHeader>
         
         <div className="p-6 pt-2">
@@ -113,7 +117,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 <div className="p-1">
                   <div className="rounded-lg p-4">
                     <h3 className="text-xl font-semibold mb-4">Your Investment Focus</h3>
-                    <div className="h-[400px]">
+                    <div className="h-[350px]">
                       {activeCategory !== null && (
                         <button 
                           onClick={handleBackToCategories}
@@ -217,9 +221,9 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({ isOpen, onO
                 </div>
               </CarouselItem>
             </CarouselContent>
-            <div className="flex items-center justify-center gap-2 mt-6">
-              <CarouselPrevious className="relative inset-auto left-auto right-auto translate-y-0" />
-              <CarouselNext className="relative inset-auto left-auto right-auto translate-y-0" />
+            <div className="flex items-center justify-center gap-4 py-4">
+              <CarouselPrevious className="position-static relative inset-0 left-0 right-0 translate-y-0" />
+              <CarouselNext className="position-static relative inset-0 left-0 right-0 translate-y-0" />
             </div>
           </Carousel>
         </div>
