@@ -19,11 +19,11 @@ const StoryProgressIndicator: React.FC<StoryProgressIndicatorProps> = ({
       {Array.from({ length: totalSlides }).map((_, index) => (
         <div 
           key={index}
-          className="h-1 bg-gray-700 rounded-full flex-1 overflow-hidden cursor-pointer"
+          className="h-1 bg-gray-200 rounded-full flex-1 overflow-hidden cursor-pointer"
           onClick={() => onSlideClick?.(index)}
         >
           <div 
-            className="h-full bg-white rounded-full"
+            className="h-full bg-gray-700 rounded-full"
             style={{ 
               width: index < activeSlide ? '100%' : 
                      index === activeSlide ? `${progress}%` : '0%',
