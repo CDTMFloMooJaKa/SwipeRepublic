@@ -16,7 +16,7 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
   activeCategory 
 }) => {
   return (
-    <div className="relative w-full h-full overflow-hidden">
+    <div className="relative h-full w-full">
       <AnimatePresence>
         {bubbles.map((bubble, index) => (
           <Bubble
