@@ -7,6 +7,7 @@ import StoryCarousel from './StoryCarousel';
 import { Bot, Bookmark } from 'lucide-react';
 import { WatchlistContext } from '../contexts/WatchlistContext';
 import { Stock, stocks } from './StockSwiper';
+import { ScrollArea } from './ui/scroll-area';
 
 // Sample news articles for each stock
 const stockNewsMap = {
@@ -235,26 +236,29 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
           <span className="text-sm">Selected for you</span>
         </div>
       </div>
-      <div className="space-y-4 flex-1">
-        {getNewsArticles().map((article, index) => (
-          <Card key={index} className="p-4">
-            <div className="flex justify-between mb-1">
-              <h4 className="text-xl font-bold">{article.title}</h4>
-              {article.isWatchlistItem && (
-                <div className="flex items-center text-blue-500">
-                  <Bookmark className="h-4 w-4 mr-1.5" />
-                  <span className="text-sm">Watchlist</span>
-                </div>
-              )}
-            </div>
-            <p className="text-gray-600 my-2">{article.description}</p>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">{article.source}</span>
-              <Button size="sm" variant="outline">Read More</Button>
-            </div>
-          </Card>
-        ))}
-      </div>
+      
+      <ScrollArea className="flex-1 pr-4">
+        <div className="space-y-4 pb-4">
+          {getNewsArticles().map((article, index) => (
+            <Card key={index} className="p-4">
+              <div className="flex justify-between mb-1">
+                <h4 className="text-xl font-bold">{article.title}</h4>
+                {article.isWatchlistItem && (
+                  <div className="flex items-center text-blue-500">
+                    <Bookmark className="h-4 w-4 mr-1.5" />
+                    <span className="text-sm">Watchlist</span>
+                  </div>
+                )}
+              </div>
+              <p className="text-gray-600 my-2">{article.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-500">{article.source}</span>
+                <Button size="sm" variant="outline">Read More</Button>
+              </div>
+            </Card>
+          ))}
+        </div>
+      </ScrollArea>
     </div>,
     
     // Slide 2: Bought Today
