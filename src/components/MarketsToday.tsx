@@ -1,3 +1,4 @@
+
 import React, { useState, useContext } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
@@ -188,6 +189,12 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     setIsPaused(false);
   };
   
+  // Handle slide change to reset category view
+  const handleSlideChange = () => {
+    setActiveBubbleCategory(null);
+    setIsPaused(false);
+  };
+  
   // Generate news articles based on watchlist
   const getNewsArticles = () => {
     // Start with general market news that's always shown
@@ -349,6 +356,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       isPaused={isPaused}
       onPauseChange={setIsPaused}
       onClose={handleClose}
+      onSlideChange={handleSlideChange}
     />
   );
 };

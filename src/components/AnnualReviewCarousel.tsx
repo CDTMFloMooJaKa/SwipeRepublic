@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
@@ -118,6 +117,11 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
   
   // Reset category selection when closing the carousel
   const handleClose = () => {
+    setActiveCategory(null);
+  };
+  
+  // Handle slide change to reset category view
+  const handleSlideChange = () => {
     setActiveCategory(null);
   };
   
@@ -306,6 +310,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       title="2025 in Numbers"
       autoAdvanceDuration={10000} // 10 seconds per slide for this carousel
       onClose={handleClose}
+      onSlideChange={handleSlideChange}
     />
   );
 };
