@@ -93,7 +93,7 @@ const Portfolio: React.FC = () => {
           <PerformanceChart data={chartData} color="hsl(var(--tr-green))" height={240} />
         </div>
         
-        {/* Scrollable Cards Section */}
+        {/* Scrollable Cards Section - Removed "Discover Stocks" card */}
         <div className="mt-6 mb-6 overflow-x-auto scrollbar-none">
           <div className="flex gap-3" style={{ paddingBottom: '8px' }}>
             {/* Your Insights Card */}
@@ -111,15 +111,6 @@ const Portfolio: React.FC = () => {
               subtitle="Discover your financial highlights"
               backgroundImage="/lovable-uploads/42dec5de-4be6-487c-902e-1c251e61c932.png"
               onClick={() => setShowAnnualReview(true)}
-              variant="button"
-            />
-            
-            {/* Discover Stocks Card */}
-            <StoryCard
-              title="Discover Stocks"
-              subtitle="Find your next investment"
-              backgroundImage="/lovable-uploads/88d6a29b-923a-4da2-b04e-81ca9bf9874c.png"
-              onClick={() => setShowStockSwiper(true)}
               variant="button"
             />
           </div>
