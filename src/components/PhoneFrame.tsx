@@ -17,7 +17,7 @@ const PhoneFrame: React.FC<PhoneFrameProps> = ({ children }) => {
   
   // On desktop, render the phone frame
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4 overflow-hidden">
       <div className="relative w-[390px] h-[844px] bg-white rounded-[60px] shadow-2xl overflow-hidden border-[14px] border-black">
         {/* Notch */}
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-[180px] h-[30px] bg-black rounded-b-[20px] z-50 flex items-center justify-center">

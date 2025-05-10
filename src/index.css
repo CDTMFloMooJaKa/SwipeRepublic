@@ -175,4 +175,17 @@
     max-height: 750px !important;
     max-width: 362px !important;
   }
+  
+  /* Prevent scrolling the page when interacting with the phone frame content */
+  .phone-frame-content, 
+  .phone-frame-overlay {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Ensure content inside carousel scrolls properly */
+  .phone-frame-overlay .overflow-y-auto {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
 }

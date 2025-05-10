@@ -150,11 +150,15 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
       className={isMobile 
         ? "fixed inset-0 z-50 flex flex-col bg-white" 
         : "fixed z-50 flex flex-col bg-white phone-frame-overlay"}
-      style={!isMobile ? { height: '750px', maxHeight: '750px' } : undefined}
+      style={!isMobile ? { 
+        height: '750px', 
+        maxHeight: '750px',
+        overflow: 'hidden' 
+      } : undefined}
       onPointerDown={handleTouch}
       onPointerUp={handleTouchEnd}
     >
-      {/* Header */}
+      {/* Header - Fixed at the top */}
       <div className="px-4 py-3 flex items-center border-b">
         <Button 
           variant="ghost" 
@@ -167,7 +171,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         <h2 className="text-xl font-bold">{title}</h2>
       </div>
       
-      {/* Progress Indicator */}
+      {/* Progress Indicator - Fixed below header */}
       <div className="px-4 py-2">
         <StoryProgressIndicator 
           totalSlides={totalSlides} 
@@ -177,10 +181,9 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         />
       </div>
       
-      {/* Content - Improved scroll handling */}
+      {/* Scrollable Content Area */}
       <div 
         className="flex-1 w-full overflow-hidden" 
-        onClick={handleContainerClick}
         style={!isMobile ? { maxHeight: 'calc(750px - 120px)' } : undefined}
       >
         <AnimatePresence mode="wait">
@@ -190,9 +193,12 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
-            className="h-full p-4 overflow-auto"
+            className="h-full overflow-y-auto"
+            onClick={handleContainerClick}
           >
-            {slides[activeSlide]}
+            <div className="p-4">
+              {slides[activeSlide]}
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
