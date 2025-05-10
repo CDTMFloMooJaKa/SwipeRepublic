@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Share } from 'lucide-react';
+import { ArrowRight, Share, Award, Clock, BarChart3, Trophy } from 'lucide-react';
 import { Button } from './ui/button';
 import StoryCarousel from './StoryCarousel';
 import BubbleChartView from './BubbleChartView';
@@ -95,27 +95,27 @@ const performanceData = [
   }
 ];
 
-// Awards data - Updated with black and white emojis and more concrete information
+// Awards data - Updated with Lucide icons and concrete information
 const awards = [
   {
     title: "Long-Term Vision",
     description: "Top 15% in holding period length - averaged 3.2 years per position",
-    icon: "⚓️",
+    icon: <Trophy className="stroke-gray-800" />,
   },
   {
     title: "Consistent Saver",
     description: "Saved money every month in 2025 - Total of €4,800 invested",
-    icon: "⏱️",
+    icon: <Clock className="stroke-gray-800" />,
   },
   {
     title: "Diversification Expert",
     description: "Portfolio spans 6 asset classes across 14 countries",
-    icon: "🔀",
+    icon: <BarChart3 className="stroke-gray-800" />,
   },
   {
     title: "Smart Investor",
     description: "Beat market average by 1.3% - Top 20% of all investors",
-    icon: "🧠",
+    icon: <Award className="stroke-gray-800" />,
   }
 ];
 
@@ -308,14 +308,14 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       </div>
     </div>,
     
-    // Updated Slide 6: Your Investment Awards - black and white emojis and concrete info
+    // Updated Slide 6: Your Investment Awards - with Lucide icons and concrete info
     <div className="h-full flex flex-col">
       <h2 className="text-2xl font-bold mb-6">Your Investment Awards</h2>
       <div className="flex-grow">
         <div className="space-y-5">
           {awards.map((award, index) => (
             <div key={index} className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex items-center">
-              <div className="text-2xl w-10 h-10 flex items-center justify-center shrink-0 mr-4">
+              <div className="w-10 h-10 flex items-center justify-center shrink-0 mr-4">
                 {award.icon}
               </div>
               <div>
