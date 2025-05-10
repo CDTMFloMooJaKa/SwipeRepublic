@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
@@ -183,6 +182,12 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     setIsPaused(false); // Resume autoplay when going back
   };
   
+  // Reset category selection when closing the carousel
+  const handleClose = () => {
+    setActiveBubbleCategory(null);
+    setIsPaused(false);
+  };
+  
   // Generate news articles based on watchlist
   const getNewsArticles = () => {
     // Start with general market news that's always shown
@@ -343,6 +348,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       autoAdvanceDuration={8000}
       isPaused={isPaused}
       onPauseChange={setIsPaused}
+      onClose={handleClose}
     />
   );
 };

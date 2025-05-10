@@ -116,6 +116,11 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
     setActiveCategory(null);
   };
   
+  // Reset category selection when closing the carousel
+  const handleClose = () => {
+    setActiveCategory(null);
+  };
+  
   // Define the slide contents
   const slides = [
     // Slide 1: Your Investment Focus
@@ -300,6 +305,7 @@ const AnnualReviewCarousel: React.FC<AnnualReviewCarouselProps> = ({
       slides={slides}
       title="2025 in Numbers"
       autoAdvanceDuration={10000} // 10 seconds per slide for this carousel
+      onClose={handleClose}
     />
   );
 };

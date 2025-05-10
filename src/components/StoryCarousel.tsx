@@ -14,6 +14,7 @@ export interface StoryCarouselProps {
   autoAdvanceDuration?: number;
   isPaused?: boolean;
   onPauseChange?: (paused: boolean) => void;
+  onClose?: () => void; // Add a new prop for custom close handling
 }
 
 const StoryCarousel: React.FC<StoryCarouselProps> = ({
@@ -23,7 +24,8 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   title,
   autoAdvanceDuration = 8000, // Default to 8 seconds per slide
   isPaused: externalIsPaused,
-  onPauseChange
+  onPauseChange,
+  onClose
 }) => {
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
@@ -61,7 +63,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
           if (activeSlide < totalSlides - 1) {
             setActiveSlide(prev => prev + 1);
           } else {
-            onOpenChange(false); // Close carousel on last slide
+            handleClose(); // Use our new close handler
           }
           return 0;
         }
@@ -91,6 +93,14 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     startTimer();
   };
 
+  // Handle closing the carousel properly
+  const handleClose = () => {
+    if (onClose) {
+      onClose(); // Call the custom close handler if provided
+    }
+    onOpenChange(false);
+  };
+
   // Handle navigation with left/right clicks
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const containerWidth = e.currentTarget.clientWidth;
@@ -103,7 +113,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         setActiveSlide(prev => prev + 1);
       } else {
         // If on last slide, close and navigate to home
-        onOpenChange(false);
+        handleClose();
         navigate("/portfolio");
       }
     } 
@@ -132,6 +142,13 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
       setInternalIsPaused(false);
     }
   };
+
+  // Reset to first slide when opening
+  useEffect(() => {
+    if (isOpen) {
+      setActiveSlide(0);
+    }
+  }, [isOpen]);
   
   if (!isOpen) return null;
   
@@ -146,7 +163,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         <Button 
           variant="ghost" 
           size="icon" 
-          onClick={() => onOpenChange(false)}
+          onClick={handleClose}
           className="mr-2"
         >
           <ArrowLeft className="h-6 w-6" />

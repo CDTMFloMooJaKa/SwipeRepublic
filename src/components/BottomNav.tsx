@@ -20,6 +20,7 @@ const BottomNav: React.FC = () => {
         <button 
           onClick={() => setShowSwiper(true)}
           className="bg-purple-600 text-white rounded-full h-14 w-14 flex items-center justify-center shadow-lg"
+          style={{ opacity: 1 }} // Set opacity to 100%
         >
           <div className="flex">
             <X className="w-5 h-5 -mr-1" />
