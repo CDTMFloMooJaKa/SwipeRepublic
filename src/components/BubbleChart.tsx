@@ -15,7 +15,7 @@ export interface Category {
 interface BubbleChartProps {
   categories: Category[];
   activeCategory: number | null;
-  onCategoryClick: (index: number, event?: React.MouseEvent) => void;
+  onCategoryClick: (index: number) => void;
 }
 
 const BubbleChart: React.FC<BubbleChartProps> = ({ 
@@ -43,13 +43,10 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     setBubbles(positionedBubbles);
   }, [categories, activeCategory]);
 
-  // Pass the click handler only if we're showing main categories
-  const handleCategoryClick = activeCategory === null ? onCategoryClick : undefined;
-
   return (
     <BubbleDisplay 
       bubbles={bubbles} 
-      onCategoryClick={handleCategoryClick}
+      onCategoryClick={onCategoryClick} 
       activeCategory={activeCategory}
     />
   );

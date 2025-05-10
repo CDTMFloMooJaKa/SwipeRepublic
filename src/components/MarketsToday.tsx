@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
@@ -24,111 +25,21 @@ const newsArticles = [
   }
 ];
 
-// Enhanced mock data for bubble charts with subcategories
+// Mock data for bubble charts
 const boughtToday: Category[] = [
-  { 
-    name: "Technology", 
-    percentage: "38%", 
-    color: "hsl(var(--tr-blue))", 
-    subcategories: [
-      { name: "Software", percentage: "50%" },
-      { name: "Hardware", percentage: "30%" },
-      { name: "Cloud Services", percentage: "20%" }
-    ]
-  },
-  { 
-    name: "Healthcare", 
-    percentage: "24%", 
-    color: "hsl(var(--tr-green))", 
-    subcategories: [
-      { name: "Pharmaceuticals", percentage: "40%" },
-      { name: "Medical Devices", percentage: "35%" },
-      { name: "Healthcare Services", percentage: "25%" }
-    ]
-  },
-  { 
-    name: "Finance", 
-    percentage: "18%", 
-    color: "hsl(var(--tr-purple))", 
-    subcategories: [
-      { name: "Banking", percentage: "45%" },
-      { name: "Insurance", percentage: "35%" },
-      { name: "Investments", percentage: "20%" }
-    ]
-  },
-  { 
-    name: "Consumer Goods", 
-    percentage: "12%", 
-    color: "#F97316", 
-    subcategories: [
-      { name: "Food & Beverage", percentage: "50%" },
-      { name: "Clothing", percentage: "25%" },
-      { name: "Electronics", percentage: "25%" }
-    ]
-  },
-  { 
-    name: "Energy", 
-    percentage: "8%", 
-    color: "#D946EF", 
-    subcategories: [
-      { name: "Renewable", percentage: "55%" },
-      { name: "Oil & Gas", percentage: "30%" },
-      { name: "Nuclear", percentage: "15%" }
-    ]
-  },
+  { name: "Technology", percentage: "38%", color: "hsl(var(--tr-blue))", subcategories: [] },
+  { name: "Healthcare", percentage: "24%", color: "hsl(var(--tr-green))", subcategories: [] },
+  { name: "Finance", percentage: "18%", color: "hsl(var(--tr-purple))", subcategories: [] },
+  { name: "Consumer Goods", percentage: "12%", color: "#F97316", subcategories: [] },
+  { name: "Energy", percentage: "8%", color: "#D946EF", subcategories: [] },
 ];
 
 const soldToday: Category[] = [
-  { 
-    name: "Real Estate", 
-    percentage: "32%", 
-    color: "#F97316", 
-    subcategories: [
-      { name: "Residential", percentage: "45%" },
-      { name: "Commercial", percentage: "35%" },
-      { name: "Industrial", percentage: "20%" }
-    ]
-  },
-  { 
-    name: "Utilities", 
-    percentage: "25%", 
-    color: "hsl(var(--tr-purple))", 
-    subcategories: [
-      { name: "Electric", percentage: "50%" },
-      { name: "Water", percentage: "30%" },
-      { name: "Gas", percentage: "20%" }
-    ]
-  },
-  { 
-    name: "Materials", 
-    percentage: "23%", 
-    color: "#D946EF", 
-    subcategories: [
-      { name: "Metals", percentage: "40%" },
-      { name: "Chemicals", percentage: "35%" },
-      { name: "Construction", percentage: "25%" }
-    ]
-  },
-  { 
-    name: "Communications", 
-    percentage: "11%", 
-    color: "hsl(var(--tr-blue))", 
-    subcategories: [
-      { name: "Telecom", percentage: "45%" },
-      { name: "Media", percentage: "35%" },
-      { name: "Internet", percentage: "20%" }
-    ]
-  },
-  { 
-    name: "Industrials", 
-    percentage: "9%", 
-    color: "hsl(var(--tr-green))", 
-    subcategories: [
-      { name: "Manufacturing", percentage: "50%" },
-      { name: "Transportation", percentage: "30%" },
-      { name: "Aerospace", percentage: "20%" }
-    ]
-  },
+  { name: "Real Estate", percentage: "32%", color: "#F97316", subcategories: [] },
+  { name: "Utilities", percentage: "25%", color: "hsl(var(--tr-purple))", subcategories: [] },
+  { name: "Materials", percentage: "23%", color: "#D946EF", subcategories: [] },
+  { name: "Communications", percentage: "11%", color: "hsl(var(--tr-blue))", subcategories: [] },
+  { name: "Industrials", percentage: "9%", color: "hsl(var(--tr-green))", subcategories: [] },
 ];
 
 // Expanded mock data for top assets - now with 4 assets each
@@ -149,36 +60,20 @@ interface MarketsProps {
 }
 
 const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
-  const [activeBoughtCategory, setActiveBoughtCategory] = useState<number | null>(null);
-  const [activeSoldCategory, setActiveSoldCategory] = useState<number | null>(null);
+  const [activeBubbleCategory, setActiveBubbleCategory] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   
-  // Handle clicking a bubble category for "Bought Today"
-  const handleBoughtCategoryClick = (index: number, event?: React.MouseEvent) => {
-    if (event) {
-      event.stopPropagation();
-    }
-    setActiveBoughtCategory(prevActive => prevActive === index ? null : index);
-    setIsPaused(true);
+  // Handle clicking a bubble category
+  const handleCategoryClick = (index: number) => {
+    setActiveBubbleCategory(activeBubbleCategory === index ? null : index);
+    setIsPaused(true); // Pause autoplay when interacting with bubbles
   };
-  
-  // Handle clicking a bubble category for "Sold Today"
-  const handleSoldCategoryClick = (index: number, event?: React.MouseEvent) => {
-    if (event) {
-      event.stopPropagation();
-    }
-    setActiveSoldCategory(prevActive => prevActive === index ? null : index);
-    setIsPaused(true);
+
+  // Handle going back to main categories
+  const handleBackToCategories = () => {
+    setActiveBubbleCategory(null);
+    setIsPaused(false); // Resume autoplay when going back
   };
-  
-  // Reset active categories when closing the carousel
-  React.useEffect(() => {
-    if (!isOpen) {
-      setActiveBoughtCategory(null);
-      setActiveSoldCategory(null);
-      setIsPaused(false);
-    }
-  }, [isOpen]);
   
   // Define the slide contents
   const slides = [
@@ -209,24 +104,20 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     <div className="h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Bought Today</h3>
       <div className="flex-1 relative">
-        <BubbleChart 
-          categories={boughtToday} 
-          activeCategory={activeBoughtCategory}
-          onCategoryClick={handleBoughtCategoryClick} 
-        />
-        
-        {activeBoughtCategory !== null && (
+        {activeBubbleCategory !== null && (
           <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveBoughtCategory(null);
-              setIsPaused(false);
-            }}
-            className="text-sm text-gray-500 hover:text-gray-700 absolute top-0 left-0"
+            onClick={handleBackToCategories}
+            className="text-sm text-gray-500 hover:text-gray-700 mb-4"
           >
             ← Back to all categories
           </button>
         )}
+        
+        <BubbleChart 
+          categories={boughtToday} 
+          activeCategory={activeBubbleCategory}
+          onCategoryClick={handleCategoryClick} 
+        />
       </div>
     </div>,
     
@@ -234,24 +125,20 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     <div className="h-full flex flex-col">
       <h3 className="text-2xl font-bold mb-6">Sold Today</h3>
       <div className="flex-1 relative">
-        <BubbleChart 
-          categories={soldToday} 
-          activeCategory={activeSoldCategory}
-          onCategoryClick={handleSoldCategoryClick} 
-        />
-        
-        {activeSoldCategory !== null && (
+        {activeBubbleCategory !== null && (
           <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              setActiveSoldCategory(null);
-              setIsPaused(false);
-            }}
-            className="text-sm text-gray-500 hover:text-gray-700 absolute top-0 left-0"
+            onClick={handleBackToCategories}
+            className="text-sm text-gray-500 hover:text-gray-700 mb-4"
           >
             ← Back to all categories
           </button>
         )}
+        
+        <BubbleChart 
+          categories={soldToday} 
+          activeCategory={activeBubbleCategory}
+          onCategoryClick={handleCategoryClick} 
+        />
       </div>
     </div>,
     
@@ -294,7 +181,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       title="Markets Today"
       autoAdvanceDuration={8000}
       isPaused={isPaused}
-      setIsPaused={setIsPaused}
+      onPauseChange={setIsPaused}
     />
   );
 };

@@ -12,7 +12,7 @@ export interface StoryCarouselProps {
   title: string;
   autoAdvanceDuration?: number;
   isPaused?: boolean;
-  setIsPaused?: (paused: boolean) => void;
+  onPauseChange?: (paused: boolean) => void;
 }
 
 const StoryCarousel: React.FC<StoryCarouselProps> = ({
@@ -21,20 +21,20 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   slides,
   title,
   autoAdvanceDuration = 8000, // Default to 8 seconds per slide
-  isPaused = false,
-  setIsPaused,
+  isPaused: externalIsPaused,
+  onPauseChange
 }) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [internalPaused, setInternalPaused] = useState(false);
+  const [internalIsPaused, setInternalIsPaused] = useState(false);
   const intervalRef = useRef<number | null>(null);
+  
+  // Determine actual pause state (external prop takes precedence if provided)
+  const isPaused = externalIsPaused !== undefined ? externalIsPaused : internalIsPaused;
   
   const totalSlides = slides.length;
   const PROGRESS_INTERVAL = 30; // Update every 30ms
   const STEPS = autoAdvanceDuration / PROGRESS_INTERVAL;
-  
-  // Use either external or internal pause state
-  const effectivePaused = isPaused || internalPaused;
   
   // Reset timer when slide changes
   const resetTimer = () => {
@@ -51,8 +51,6 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     setProgress(0);
     
     intervalRef.current = window.setInterval(() => {
-      if (effectivePaused) return; // Don't advance if paused
-      
       setProgress(prev => {
         const newProgress = prev + (100 / STEPS);
         
@@ -73,7 +71,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   // Effect to handle timer
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !isPaused) {
       startTimer();
     } else {
       resetTimer();
@@ -82,22 +80,17 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
     return () => {
       resetTimer();
     };
-  }, [isOpen, activeSlide, effectivePaused]);
+  }, [isOpen, activeSlide, isPaused]);
   
   // Handle manual slide change
   const handleSlideChange = (index: number) => {
     setActiveSlide(index);
     resetTimer();
-    if (!effectivePaused) {
-      startTimer();
-    }
+    startTimer();
   };
 
   // Handle navigation with left/right clicks
   const handleContainerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Don't handle container clicks if we're paused due to bubble interaction
-    if (effectivePaused) return;
-    
     const containerWidth = e.currentTarget.clientWidth;
     const clickX = e.nativeEvent.offsetX;
     
@@ -117,20 +110,19 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   // Pause on touch
   const handleTouch = () => {
-    setInternalPaused(true);
-    if (setIsPaused) {
-      setIsPaused(true);
+    if (onPauseChange) {
+      onPauseChange(true);
+    } else {
+      setInternalIsPaused(true);
     }
   };
   
   // Resume on touch end
   const handleTouchEnd = () => {
-    // Only unpause if we're not in the middle of bubble interaction
-    if (!isPaused) {
-      setInternalPaused(false);
-      if (setIsPaused) {
-        setIsPaused(false);
-      }
+    if (onPauseChange) {
+      onPauseChange(false);
+    } else {
+      setInternalIsPaused(false);
     }
   };
   

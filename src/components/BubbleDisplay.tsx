@@ -6,7 +6,7 @@ import { ProcessedBubble } from '@/utils/bubblePositioning';
 
 interface BubbleDisplayProps {
   bubbles: ProcessedBubble[];
-  onCategoryClick?: (index: number, e: React.MouseEvent) => void;
+  onCategoryClick?: (index: number) => void;
   activeCategory: number | null;
 }
 
@@ -15,14 +15,6 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
   onCategoryClick,
   activeCategory 
 }) => {
-  const handleBubbleClick = (index: number, e: React.MouseEvent) => {
-    // Stop propagation to prevent the click from reaching the carousel container
-    e.stopPropagation();
-    if (onCategoryClick) {
-      onCategoryClick(index, e);
-    }
-  };
-
   return (
     <div className="relative h-full w-full">
       <AnimatePresence>
@@ -33,7 +25,7 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
             percentage={bubble.percentage}
             color={bubble.color}
             size={bubble.size}
-            onClick={onCategoryClick ? (e) => handleBubbleClick(index, e) : undefined}
+            onClick={() => onCategoryClick?.(index)}
             position={bubble.position}
             isChild={activeCategory !== null}
           />
