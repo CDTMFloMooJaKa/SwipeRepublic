@@ -154,10 +154,12 @@
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
+    bottom: auto !important; /* Prevent it from stretching to bottom */
     margin-left: auto !important;
     margin-right: auto !important;
     border-radius: 32px !important;
     overflow: hidden !important;
+    max-height: 750px !important; /* Ensure it doesn't grow taller than the frame */
   }
   
   /* Ensure overlays stay within the phone frame */

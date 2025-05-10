@@ -147,7 +147,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   const containerClasses = isMobile 
     ? "fixed inset-0 z-50 flex flex-col bg-white"
-    : "fixed inset-0 z-50 flex flex-col bg-white phone-frame-content";
+    : "fixed inset-0 z-50 flex flex-col bg-white phone-frame-content max-h-[750px]";
     
   return (
     <div 
@@ -178,7 +178,7 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
         />
       </div>
       
-      {/* Content - No automatic overflow */}
+      {/* Content - Improved scroll handling */}
       <div 
         className="flex-1 w-full overflow-hidden" 
         onClick={handleContainerClick}
