@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import BubbleChart, { Category } from './BubbleChart';
 import { Button } from './ui/button';
@@ -152,15 +151,24 @@ interface MarketsProps {
 const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
   const [activeBoughtCategory, setActiveBoughtCategory] = useState<number | null>(null);
   const [activeSoldCategory, setActiveSoldCategory] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
   
   // Handle clicking a bubble category for "Bought Today"
-  const handleBoughtCategoryClick = (index: number) => {
+  const handleBoughtCategoryClick = (index: number, event?: React.MouseEvent) => {
+    if (event) {
+      event.stopPropagation();
+    }
     setActiveBoughtCategory(prevActive => prevActive === index ? null : index);
+    setIsPaused(true);
   };
   
   // Handle clicking a bubble category for "Sold Today"
-  const handleSoldCategoryClick = (index: number) => {
+  const handleSoldCategoryClick = (index: number, event?: React.MouseEvent) => {
+    if (event) {
+      event.stopPropagation();
+    }
     setActiveSoldCategory(prevActive => prevActive === index ? null : index);
+    setIsPaused(true);
   };
   
   // Reset active categories when closing the carousel
@@ -168,6 +176,7 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
     if (!isOpen) {
       setActiveBoughtCategory(null);
       setActiveSoldCategory(null);
+      setIsPaused(false);
     }
   }, [isOpen]);
   
@@ -208,7 +217,11 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
         
         {activeBoughtCategory !== null && (
           <button 
-            onClick={() => setActiveBoughtCategory(null)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveBoughtCategory(null);
+              setIsPaused(false);
+            }}
             className="text-sm text-gray-500 hover:text-gray-700 absolute top-0 left-0"
           >
             ← Back to all categories
@@ -229,7 +242,11 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
         
         {activeSoldCategory !== null && (
           <button 
-            onClick={() => setActiveSoldCategory(null)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveSoldCategory(null);
+              setIsPaused(false);
+            }}
             className="text-sm text-gray-500 hover:text-gray-700 absolute top-0 left-0"
           >
             ← Back to all categories
@@ -276,6 +293,8 @@ const MarketsToday: React.FC<MarketsProps> = ({ isOpen, onOpenChange }) => {
       slides={slides}
       title="Markets Today"
       autoAdvanceDuration={8000}
+      isPaused={isPaused}
+      setIsPaused={setIsPaused}
     />
   );
 };

@@ -15,6 +15,14 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
   onCategoryClick,
   activeCategory 
 }) => {
+  const handleBubbleClick = (index: number, e: React.MouseEvent) => {
+    // Stop propagation to prevent the click from reaching the carousel container
+    e.stopPropagation();
+    if (onCategoryClick) {
+      onCategoryClick(index);
+    }
+  };
+
   return (
     <div className="relative h-full w-full">
       <AnimatePresence>
@@ -25,7 +33,7 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
             percentage={bubble.percentage}
             color={bubble.color}
             size={bubble.size}
-            onClick={onCategoryClick ? () => onCategoryClick(index) : undefined}
+            onClick={onCategoryClick ? (e) => handleBubbleClick(index, e) : undefined}
             position={bubble.position}
             isChild={activeCategory !== null}
           />

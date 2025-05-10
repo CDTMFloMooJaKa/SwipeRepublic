@@ -15,7 +15,7 @@ export interface Category {
 interface BubbleChartProps {
   categories: Category[];
   activeCategory: number | null;
-  onCategoryClick: (index: number) => void;
+  onCategoryClick: (index: number, event?: React.MouseEvent) => void;
 }
 
 const BubbleChart: React.FC<BubbleChartProps> = ({ 
