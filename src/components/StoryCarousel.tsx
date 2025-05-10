@@ -11,6 +11,8 @@ export interface StoryCarouselProps {
   slides: React.ReactNode[];
   title: string;
   autoAdvanceDuration?: number;
+  isPaused?: boolean;
+  onPauseChange?: (paused: boolean) => void;
 }
 
 const StoryCarousel: React.FC<StoryCarouselProps> = ({
@@ -19,11 +21,16 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   slides,
   title,
   autoAdvanceDuration = 8000, // Default to 8 seconds per slide
+  isPaused: externalIsPaused,
+  onPauseChange
 }) => {
   const [activeSlide, setActiveSlide] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [internalIsPaused, setInternalIsPaused] = useState(false);
   const intervalRef = useRef<number | null>(null);
+  
+  // Determine actual pause state (external prop takes precedence if provided)
+  const isPaused = externalIsPaused !== undefined ? externalIsPaused : internalIsPaused;
   
   const totalSlides = slides.length;
   const PROGRESS_INTERVAL = 30; // Update every 30ms
@@ -103,12 +110,20 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({
   
   // Pause on touch
   const handleTouch = () => {
-    setIsPaused(true);
+    if (onPauseChange) {
+      onPauseChange(true);
+    } else {
+      setInternalIsPaused(true);
+    }
   };
   
   // Resume on touch end
   const handleTouchEnd = () => {
-    setIsPaused(false);
+    if (onPauseChange) {
+      onPauseChange(false);
+    } else {
+      setInternalIsPaused(false);
+    }
   };
   
   if (!isOpen) return null;
