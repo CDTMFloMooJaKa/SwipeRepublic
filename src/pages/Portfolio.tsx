@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
@@ -97,16 +96,16 @@ const Portfolio: React.FC = () => {
               className="p-4 flex flex-col justify-between border rounded-lg hover:bg-gray-50/80 transition-all relative overflow-hidden flex-shrink-0 cursor-pointer"
               style={{
                 minHeight: "120px",
-                width: "70%", // Changed from 50% to 70%
+                width: "70%", 
                 minWidth: "240px"
               }}
               onClick={() => console.log("Markets Today clicked")}
             >
-              {/* Background image - now using provided image */}
+              {/* Background image - now using newly provided image */}
               <div 
                 className="absolute inset-0 z-0 bg-cover bg-center" 
                 style={{
-                  backgroundImage: `url('/lovable-uploads/88d6a29b-923a-4da2-b04e-81ca9bf9874c.png')`,
+                  backgroundImage: `url('/lovable-uploads/8abae172-83fe-4ef8-aadd-fb27c22ba5a7.png')`,
                   opacity: 0.85
                 }} 
               />
@@ -133,7 +132,7 @@ const Portfolio: React.FC = () => {
               onClick={() => setShowAnnualReview(true)} 
               style={{
                 minHeight: "120px",
-                width: "70%", // Changed from 50% to 70%
+                width: "70%",
                 minWidth: "240px"
               }}
             >
