@@ -12,7 +12,7 @@ const defaultWatchlistStocks: Stock[] = [
     change: 0.87,
     description: "Technology company focusing on online advertising, search engine, cloud computing, and more.",
     industry: "Technology",
-    image: "/lovable-uploads/c7edeaa5-a457-4903-92b0-1545667af436.png" // Microsoft logo as placeholder for Google
+    image: "/lovable-uploads/87e9327e-9fdd-4acb-8304-e8c06eadf118.png" // Using Google/Alphabet appropriate image
   },
   {
     id: 7,
@@ -22,7 +22,7 @@ const defaultWatchlistStocks: Stock[] = [
     change: 1.54,
     description: "Technology company that owns Facebook, Instagram, WhatsApp, and focuses on social media, advertising, and metaverse technologies.",
     industry: "Technology",
-    image: "/lovable-uploads/e903ee92-f1bc-4b4f-bb9f-869da81fe818.png" // NVIDIA logo as placeholder for Meta
+    image: "/lovable-uploads/88d6a29b-923a-4da2-b04e-81ca9bf9874c.png" // Using Meta appropriate image
   },
 ];
 
