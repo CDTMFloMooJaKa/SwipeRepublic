@@ -64,9 +64,6 @@ const Watchlist: React.FC = () => {
                 </div>
               </CardContent>
             </Card>
-            <div className="absolute right-0 -bottom-10 -top-10 flex items-center justify-center text-sm text-gray-500 pointer-events-none">
-              Swipe to remove
-            </div>
           </motion.div>
         ))}
       </div>
