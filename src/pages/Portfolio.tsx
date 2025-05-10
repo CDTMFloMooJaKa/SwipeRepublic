@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
@@ -101,11 +102,17 @@ const Portfolio: React.FC = () => {
               }}
               onClick={() => console.log("Markets Today clicked")}
             >
-              {/* Background placeholder - will be replaced with provided image later */}
-              <div className="absolute inset-0 z-0 bg-cover bg-center bg-gradient-to-br from-blue-500/70 to-purple-500/70" />
+              {/* Background image - now using provided image */}
+              <div 
+                className="absolute inset-0 z-0 bg-cover bg-center" 
+                style={{
+                  backgroundImage: `url('/lovable-uploads/88d6a29b-923a-4da2-b04e-81ca9bf9874c.png')`,
+                  opacity: 0.85
+                }} 
+              />
               
               {/* Overlay to ensure text visibility */}
-              <div className="absolute inset-0 bg-black/20 z-10" />
+              <div className="absolute inset-0 bg-black/30 z-10" />
               
               {/* Content with z-index to appear above the background */}
               <div className="relative z-20 h-full flex flex-col justify-between">
