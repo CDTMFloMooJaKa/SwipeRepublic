@@ -1,6 +1,7 @@
+
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
-import { Check, X, ArrowUp, ArrowDown, Circle, Info, DollarSign, ArrowLeft } from 'lucide-react';
+import { Check, X, ArrowUp, ArrowDown, Circle, Info, DollarSign, ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion, PanInfo, useAnimation } from 'framer-motion';
 import { WatchlistContext } from '../contexts/WatchlistContext';
 import { Badge } from './ui/badge';
