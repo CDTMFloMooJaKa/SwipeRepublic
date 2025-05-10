@@ -43,12 +43,21 @@ const BubbleChart: React.FC<BubbleChartProps> = ({
     setBubbles(positionedBubbles);
   }, [categories, activeCategory]);
 
+  // Handle bubble click with proper event propagation control
+  const handleBubbleClick = (index: number, e: React.MouseEvent) => {
+    // Make sure the event doesn't propagate to parent elements
+    e.stopPropagation();
+    onCategoryClick(index, e);
+  }
+
   return (
-    <BubbleDisplay 
-      bubbles={bubbles} 
-      onCategoryClick={onCategoryClick} 
-      activeCategory={activeCategory}
-    />
+    <div className="relative w-full h-full" onClick={(e) => e.stopPropagation()}>
+      <BubbleDisplay 
+        bubbles={bubbles} 
+        onCategoryClick={handleBubbleClick} 
+        activeCategory={activeCategory}
+      />
+    </div>
   );
 };
 

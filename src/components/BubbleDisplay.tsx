@@ -25,7 +25,11 @@ const BubbleDisplay: React.FC<BubbleDisplayProps> = ({
             percentage={bubble.percentage}
             color={bubble.color}
             size={bubble.size}
-            onClick={(e) => onCategoryClick?.(index, e)}
+            onClick={(e) => {
+              // Stop propagation to prevent the click from bubbling up to parent containers
+              e.stopPropagation();
+              onCategoryClick?.(index, e);
+            }}
             position={bubble.position}
             isChild={activeCategory !== null}
           />

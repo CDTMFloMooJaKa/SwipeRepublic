@@ -22,6 +22,13 @@ const Bubble: React.FC<BubbleProps> = ({
   position,
   isChild = false
 }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onClick) {
+      onClick(e);
+    }
+  };
+
   return (
     <motion.div 
       className="absolute rounded-full flex flex-col items-center justify-center text-center cursor-pointer shadow-lg"
@@ -32,7 +39,7 @@ const Bubble: React.FC<BubbleProps> = ({
         left: position?.x,
         top: position?.y,
       }}
-      onClick={onClick}
+      onClick={handleClick}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       exit={{ scale: 0, opacity: 0 }}
