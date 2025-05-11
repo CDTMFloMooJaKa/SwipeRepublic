@@ -14,6 +14,24 @@ SwipeRepublic introduces three key features to make investing more accessible an
 2. **Personalized News** - Get tailored financial insights based on your watchlist
 3. **Yearly Investment Recap** - See your investment journey through shareable story-like recaps
 
+## Tour
+<p align="center">
+  <img src="pictures/Home.png" width="150"/>
+  <img src="pictures/L1.png" width="150"/>
+  <img src="pictures/L2.png" width="150"/>
+  <img src="pictures/L3.png" width="150"/>
+  <img src="pictures/L5.png" width="150"/>
+  <img src="pictures/L6.png" width="150"/>
+</p>
+<p align="center">
+  <img src="pictures/L7.png" width="150"/>
+  <img src="pictures/L8.png" width="150"/>
+  <img src="pictures/L9.png" width="150"/>
+  <img src="pictures/L10.png" width="150"/>
+  <img src="pictures/L11.png" width="150"/>
+  <img src="pictures/L12.png" width="150"/>
+</p>
+
 ## 🚀 Quick Start
 
 ### Option 1: Using Python (requires Python 3.11+)
