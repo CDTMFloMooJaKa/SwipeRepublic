@@ -1,73 +1,153 @@
-# Welcome to your Lovable project
+# SwipeRepublic - React Frontend
 
-## Project info
+<img src="pictures/SwipeRepublic.png" alt="SwipeRepublic Logo" width="200"/>
 
-**URL**: https://lovable.dev/projects/9edcbfc5-dd0a-4647-9be4-3da904262cbb
+> Just a swipe away from investing in you
 
-## How can I edit this code?
+This is a cross-platform FastAPI backend that powers the SwipeRepublic application - a stock discovery and financial literacy platform developed for Trade Republic as part of the CDTM HACK 2025.
 
-There are several ways of editing your application.
+## 📱 About SwipeRepublic
 
-**Use Lovable**
+SwipeRepublic introduces three key features to make investing more accessible and engaging:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/9edcbfc5-dd0a-4647-9be4-3da904262cbb) and start prompting.
+1. **Swipeable Stock Discovery** - Explore unfamiliar stocks with a familiar swiping interface
+2. **Personalized News** - Get tailored financial insights based on your watchlist
+3. **Yearly Investment Recap** - See your investment journey through shareable story-like recaps
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Quick Start
 
-**Use your preferred IDE**
+### Option 1: Using Python (requires Python 3.11+)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. Clone this repository
+   ```bash
+   git clone https://github.com/CDTMFloMooJaKa/CDTMBackend.git
+   cd CDTMBackend
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+2. Create a virtual environment
+   ```bash
+   python -m venv venv
+   ```
 
-Follow these steps:
+3. Activate the virtual environment
+   - Windows: `venv\Scripts\activate`
+   - macOS/Linux: `source venv/bin/activate`
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+4. Install dependencies
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+5. Start the server
+   ```bash
+   uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 📚 API Documentation
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+Once the server is running, you can access:
+- API endpoint: http://localhost:8080
+- Swagger UI documentation: http://localhost:8080/docs
+- ReDoc documentation: http://localhost:8080/redoc
+
+## 🔧 Development
+
+The server automatically reloads when you make changes to any Python file in the project.
+
+### Project Structure
+
 ```
+backend/
+├── app/
+│   ├── __init__.py
+│   ├── main.py          # Main FastAPI application
+│   ├── config.py        # Application settings
+│   ├── routers/         # API routes
+│   │   ├── __init__.py
+│   │   ├── items.py     # Example CRUD routes
+│   │   ├── stocks.py    # Stock discovery endpoints
+│   │   ├── insights.py  # Personalized news endpoints
+│   │   └── recap.py     # Yearly recap endpoints
+│   ├── services/        # Business logic
+│   │   ├── __init__.py
+│   │   ├── stock_service.py
+│   │   ├── news_service.py
+│   │   └── recap_service.py
+│   └── models/          # Pydantic models
+│       ├── __init__.py
+│       ├── item.py      # Example data models
+│       ├── stock.py     # Stock data models
+│       ├── news.py      # News data models
+│       └── recap.py     # Recap data models
+├── tests/               # Unit and integration tests
+│   ├── __init__.py
+│   ├── test_stocks.py
+│   ├── test_insights.py
+│   └── test_recap.py
+├── requirements.txt     # Python dependencies
+├── Dockerfile           # Docker configuration
+├── docker-compose.yml   # Docker Compose configuration
+└── README.md            # Project documentation
+```
+## 🚢 Deployment
 
-**Edit a file directly in GitHub**
+The backend is deployed on Render, while the frontend is hosted on Vercel.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+- Live Frontend Demo: https://trade-republic-replica-ui.vercel.app/
 
-**Use GitHub Codespaces**
+## 💻 Tech Stack
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Backend
+- FastAPI (Python web framework)
+- Pydantic (Data validation)
+- SQLAlchemy (ORM, optional)
+- Uvicorn (ASGI server)
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
+### Frontend
 - TypeScript
 - React
-- shadcn-ui
-- Tailwind CSS
+- Vite
+- TailwindCSS
 
-## How can I deploy this project?
+## ⚙️ Configuration
 
-Simply open [Lovable](https://lovable.dev/projects/9edcbfc5-dd0a-4647-9be4-3da904262cbb) and click on Share -> Publish.
+Environment variables can be set in a `.env` file:
+```
+DATABASE_URL=sqlite:///./app.db
+API_KEY=your_api_key_here
+DEBUG=True
+```
 
-## Can I connect a custom domain to my Lovable project?
+## 🔍 Troubleshooting
 
-Yes, you can!
+- **Port conflict**: If port 8080 is already in use, change the port in `docker-compose.yml` or in the uvicorn command.
+- **Docker issues**: Make sure Docker is running and you have appropriate permissions.
+- **Dependency issues**: Ensure you're using Python 3.8 or newer and have all dependencies installed.
+- **CORS errors**: If you're experiencing CORS issues when connecting with the frontend, check the CORS settings in `app/main.py`.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🌟 Team
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+**Team LMUnicorns - CDTM HACK 2025**
+<p align="left">
+  <img src="pictures/LMUUnicornsLogo.png" alt="LMUnicorns Logo" width="200"/>
+</p>
+
+- Florian Korn
+- Joseph Zgawlik
+- Kai Ponel
+- Mohamed Islam
+
+## 📄 Project Information
+
+- **Assigned Case:** Trade Republic
+- **Team Name:** LMUnicorns
+- **Project Name:** SwipeRepublic
+- **Pitch Video:** https://youtu.be/QG_v-Zfu9i4
+- **Demo:** https://trade-republic-replica-ui.vercel.app/
+- **GitHub Repositories:**
+  - Frontend: https://github.com/CDTMFloMooJaKa/SwipeRepublic
+  - Backend: https://github.com/CDTMFloMooJaKa/CDTMBackend
+
+## 📝 License
+
+[MIT License]
