@@ -38,8 +38,8 @@ SwipeRepublic introduces three key features to make investing more accessible an
 
 1. Clone this repository
    ```bash
-   git clone https://github.com/CDTMFloMooJaKa/CDTMBackend.git
-   cd CDTMBackend
+   git clone https://github.com/CDTMFloMooJaKa/trade-republic-replica-ui.git
+   cd trade-republic-replica-ui
    ```
 
 2. Create a virtual environment
@@ -58,7 +58,7 @@ SwipeRepublic introduces three key features to make investing more accessible an
 
 5. Start the server
    ```bash
-   uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+   npm run dev
    ```
 
 ## 📚 API Documentation
